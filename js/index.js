@@ -17,11 +17,9 @@ function initialize() {
 // Main
 function map() {
 
-    //  ============================================================================================================  //
-    //  ============================================================================================================  //
-    //                                                                                                    MAP SETUP   //
-    //  ============================================================================================================  //
-    //  ============================================================================================================  //
+/*/==================================================================================================================
+----------------------------------------------------------------------------------------------------------- MAP SETUP
+===================================================================================================================== /*/
 
     // token
     L.mapbox.accessToken = 'pk.eyJ1IjoiamhjYXJuZXkiLCJhIjoiY2pmbHE2ZTVlMDJnbTJybzdxNTNjaWsyMiJ9.hoiyrXTX3pOuEExAnhUtIQ';
@@ -41,13 +39,6 @@ function map() {
         .setView([37.6903, -121.72615], 17);
 
     // controls
-    // layer toggle and basemap toggle
-    let layerControl = L.control.layers({
-        'Streets': baseStreets.addTo(map),
-        'Satellite': baseAerial
-    }, {
-    }).addTo(map);
-
     // geolocate user control
     L.control.locate({
         icon: 'fas fa-crosshairs ',
@@ -57,21 +48,24 @@ function map() {
         }
     }).addTo(map);
 
-    /*/  ============================================================================================================
-         ============================================================================================================
-                                                                                              LOAD LAYERS FROM SERVER
-         ============================================================================================================
-         ============================================================================================================ /*/
+    // scale
+    L.control.scale({metric: false}).addTo(map);
 
+/*/==================================================================================================================
+-------------------------------------------------------------------------------------------------- MAKE LAYER CONTROL
+===================================================================================================================== /*/
     // load empty layer groups to Control first, to specify order in legend
 
     // tree canopy placeholder
-    let lyrTrees = L.mapbox.featureLayer().addTo(map);
-    layerControl.addOverlay(lyrTrees,'Tree Canopy');
+    let lyrTrees = L.mapbox.featureLayer();
+    lyrTrees.on('add', function () {
+        lyrTrees.eachLayer(function(layer){
+            layer.bringToFront();
+        });
+    });
 
     // group layer for tables and benches
-    let lyrSeating = L.mapbox.featureLayer().addTo(map);
-    layerControl.addOverlay(lyrSeating, 'Tables & Benches');
+    let lyrSeating = L.mapbox.featureLayer();
 
     // group layer for playground equipment
     let lyrEquipment = L.mapbox.featureLayer(null, {
@@ -79,14 +73,14 @@ function map() {
             if (feature.properties.f1 == 2 || feature.properties.f1 == 3) {
                 let iconSwingSet = L.divIcon({
                     className: 'fa-icon-swingset',
-                    html: '<div class="fa-4x">\n' +
+                    html: '<div class="fa-2x">\n' +
                         '  <span class="fa-layers " style="background:rgba(0,0,0,0)">\n' +
                         '    <i class="far fa-circle" data-fa-transform="grow-1" style="color:#fdfbfe"></i>\n' +
                         '    <i class="fas fa-circle" style="color:#207375"></i>\n' +
                         '    <i class="fa-inverse fas fa-rocket" data-fa-transform="shrink-6"></i>\n' +
                         '  </span></div>',
-                    iconSize: [30, 30],
-                    popupAnchor: [10,-8]
+                    iconSize: [15, 15],
+                    popupAnchor: [5,-3]
                 });
 
                 return L.marker(latlng, {
@@ -96,14 +90,14 @@ function map() {
             } else {
                 let iconPlayStructure = L.divIcon({
                     className: 'fa-icon-playstructure',
-                    html: '<div class="fa-4x">\n' +
+                    html: '<div class="fa-2x">\n' +
                         '  <span class="fa-layers " style="background:rgba(0,0,0,0)">\n' +
                         '    <i class="far fa-circle" data-fa-transform="grow-1" style="color:#fdfbfe"></i>\n' +
                         '    <i class="fas fa-circle" style="color:#1c2e75"></i>\n' +
                         '    <i class="fa-inverse fas fa-shapes" data-fa-transform="shrink-6"></i>\n' +
                         '  </span></div>',
-                    iconSize: [30, 30],
-                    popupAnchor: [10,-8]
+                    iconSize: [15, 15],
+                    popupAnchor: [5,-3]
                 });
 
                 return L.marker(latlng, {
@@ -112,20 +106,41 @@ function map() {
                 });
             }
         }
-    })
-    .addTo(map);
-    layerControl.addOverlay(lyrEquipment, 'Playground Equip.');
+    });
+
+    // group layer for basemap/groundcover features; listener to push to back on add
+    let lyrGroundCover = L.mapbox.featureLayer();
+    lyrGroundCover.on('add', function () {
+        lyrGroundCover.eachLayer(function(layer){
+            layer.bringToBack();
+        });
+    });
 
     // group layer for loop path
-    let lyrPath = L.mapbox.featureLayer().addTo(map);
-    layerControl.addOverlay(lyrPath,'Loop Path');
+    let lyrPath = L.mapbox.featureLayer();
 
-    // group layer for basemap/groundcover features
-    let lyrGroundCover = L.mapbox.featureLayer().addTo(map);
-    layerControl.addOverlay(lyrGroundCover, 'Park Grounds');
+    // populate control and add groups in order
+    let layerControl = L.control.layers({
+        'Streets': baseStreets.addTo(map),
+        'Satellite': baseAerial
+    }, {
+        'Tree Canopy': lyrTrees.addTo(map),
+        'Playground Equip.': lyrEquipment.addTo(map),
+        'Tables & Benches': lyrSeating.addTo(map),
+        'Loop Path': lyrPath.addTo(map),
+        'Park Grounds': lyrGroundCover.addTo(map)
+    },{
+        sortLayers: false,
+        autoZIndex: false
+    }).addTo(map);
 
-    // async calls to server
+/*/==================================================================================================================
+--------------------------------------------------------------------------------------------- LOAD LAYERS FROM SERVER
+===================================================================================================================== /*/
 
+
+
+    // async calls to server and style results
     lyrTrees
         .loadURL('https://thecarney2.ngrok.io/p2/trees')
         .on('ready', function() {
@@ -141,6 +156,9 @@ function map() {
                 lineCap: 'round',
                 lineJoin: 'round',
             });
+            lyrTrees.eachLayer(function(layer){
+                layer.bringToFront();
+            });
         });
 
     let lyrLawn = L.mapbox.featureLayer()
@@ -148,7 +166,9 @@ function map() {
         .on('ready', function() {
             lyrLawn.eachLayer(function(layer) {
                 let popup = L.popup({closeButton: false})
-                    .setContent(layer.feature.properties.f2);
+                    .setContent('<strong>' + layer.feature.properties.f2 + '</strong><br><i>' +
+                        layer.feature.properties.f3 +
+                        '</i><br><strong>Accessible? </strong>' + layer.feature.properties.f4);
                 layer.bindPopup(popup);
             });
             lyrLawn.setStyle({
@@ -163,6 +183,9 @@ function map() {
                 lineCap: 'round',
                 lineJoin: 'round',
             });
+            lyrLawn.eachLayer(function(layer){
+                layer.bringToBack();
+            });
         })
         .addTo(lyrGroundCover);
 
@@ -171,7 +194,9 @@ function map() {
         .on('ready', function() {
             lyrMulch.eachLayer(function(layer) {
                 let popup = L.popup({closeButton: false})
-                    .setContent(layer.feature.properties.f2);
+                    .setContent('<strong>' + layer.feature.properties.f2 + '</strong><br><i>' +
+                        layer.feature.properties.f3 +
+                        '</i><br><strong>Accessible? </strong>' + layer.feature.properties.f4);
                 layer.bindPopup(popup);
             });
             lyrMulch.setStyle({
@@ -186,6 +211,9 @@ function map() {
                 lineCap: 'round',
                 lineJoin: 'round',
             });
+            lyrMulch.eachLayer(function(layer){
+                layer.bringToBack();
+            });
         })
         .addTo(lyrGroundCover);
 
@@ -194,7 +222,7 @@ function map() {
         .on('ready', function() {
             lyrPavement.eachLayer(function(layer) {
                 let popup = L.popup({closeButton: false})
-                    .setContent(layer.feature.properties.f2);
+                    .setContent('<strong>'+layer.feature.properties.f2+'</strong>');
                 layer.bindPopup(popup);
             });
             lyrPavement.setStyle({
@@ -209,6 +237,9 @@ function map() {
                 lineCap: 'round',
                 lineJoin: 'round',
             });
+            lyrPavement.eachLayer(function(layer){
+                layer.bringToBack();
+            });
         })
         .addTo(lyrGroundCover);
 
@@ -217,7 +248,9 @@ function map() {
         .on('ready', function() {
             lyrPlayground.eachLayer(function(layer) {
                 let popup = L.popup({closeButton: false})
-                    .setContent(layer.feature.properties.f2);
+                    .setContent('<strong>' + layer.feature.properties.f2 + '</strong><br><i>' +
+                        layer.feature.properties.f3 +
+                        '</i><br><strong>Accessible? </strong>' + layer.feature.properties.f4);
                 layer.bindPopup(popup);
             });
             lyrPlayground.setStyle({
@@ -232,6 +265,9 @@ function map() {
                 lineCap: 'round',
                 lineJoin: 'round',
             });
+            lyrPlayground.eachLayer(function(layer){
+                layer.bringToBack();
+            });
         })
         .addTo(lyrGroundCover);
 
@@ -240,16 +276,18 @@ function map() {
         .on('ready', function() {
             lyrSandbox.eachLayer(function(layer) {
                 let popup = L.popup({closeButton: false})
-                    .setContent(layer.feature.properties.f2);
+                    .setContent('<strong>' + layer.feature.properties.f2 + '</strong><br><i>' +
+                        layer.feature.properties.f3 +
+                        '</i><br><strong>Accessible? </strong>' + layer.feature.properties.f4);
                 layer.bindPopup(popup);
             });
             lyrSandbox.setStyle({
                 //clickable: false,
                 fill: true,
-                fillColor: '#f0e93c',
+                fillColor: '#e1da3c',
                 fillOpacity: 0.5,
                 stroke: true,
-                color: '#e1da3c',
+                color: '#d4cd3b',
                 weight: 1,
                 opacity: 0.5,
                 lineCap: 'round',
@@ -263,7 +301,9 @@ function map() {
         .on('ready', function() {
             lyrCourt.eachLayer(function(layer) {
                 let popup = L.popup({closeButton: false})
-                    .setContent(layer.feature.properties.f2);
+                    .setContent('<strong>' + layer.feature.properties.f2 + '</strong><br><i>' +
+                        layer.feature.properties.f3 +
+                        '</i><br><strong>Accessible? </strong>' + layer.feature.properties.f4);
                 layer.bindPopup(popup);
             });
             lyrCourt.setStyle({
@@ -283,14 +323,14 @@ function map() {
 
     let iconBench = L.divIcon({
         className: 'fa-icon-bench',
-        html: '<div class="fa-4x">\n' +
+        html: '<div class="fa-2x">\n' +
             '  <span class="fa-layers " style="background:rgba(0,0,0,0)">\n' +
             '    <i class="far fa-circle" data-fa-transform="grow-1" style="color:#fdfbfe"></i>\n' +
             '    <i class="fas fa-circle" style="color:#75543a"></i>\n' +
             '    <i class="fa-inverse fas fa-chair" data-fa-transform="shrink-6"></i>\n' +
             '  </span></div>',
-        iconSize: [30, 30],
-        popupAnchor: [10,-8]
+        iconSize: [15, 15],
+        popupAnchor: [5,-3]
     });
     let lyrBench = L.mapbox.featureLayer(null,{
         pointToLayer: function(feature, latlng){
@@ -304,7 +344,9 @@ function map() {
         .on('ready', function() {
             lyrBench.eachLayer(function(layer) {
                 let popup = L.popup({closeButton: false})
-                    .setContent(layer.feature.properties.f2);
+                    .setContent('<i>' +
+                        layer.feature.properties.f3 +
+                        '</i><br><strong>Accessible? </strong>' + layer.feature.properties.f4);
                 layer.bindPopup(popup);
             });
         })
@@ -312,14 +354,14 @@ function map() {
 
     let iconTable = L.divIcon({
         className: 'fa-icon-table',
-        html: '<div class="fa-4x">\n' +
+        html: '<div class="fa-2x">\n' +
             '  <span class="fa-layers " style="background:rgba(0,0,0,0)">\n' +
             '    <i class="far fa-circle" data-fa-transform="grow-1" style="color:#fdfbfe"></i>\n' +
             '    <i class="fas fa-circle" style="color:#dc7f2f"></i>\n' +
             '    <i class="fa-inverse fas fa-glass-whiskey fa-rotate-180" data-fa-transform="shrink-6"></i>\n' +
             '  </span></div>',
-        iconSize: [30, 30],
-        popupAnchor: [10,-8]
+        iconSize: [15, 15],
+        popupAnchor: [5,-3]
     });
     let lyrTables = L.mapbox.featureLayer(null, {
         pointToLayer: function(feature, latlng){
@@ -333,19 +375,22 @@ function map() {
         .on('ready', function() {
             lyrTables.eachLayer(function(layer) {
                 let popup = L.popup({closeButton: false})
-                    .setContent(layer.feature.properties.f2);
+                    .setContent('<i>' +
+                        layer.feature.properties.f3 +
+                        '</i><br><strong>Accessible? </strong>' + layer.feature.properties.f4);
                 layer.bindPopup(popup);
             });
         })
         .addTo(lyrSeating);
-
 
     lyrEquipment
         .loadURL('https://thecarney2.ngrok.io/p2/equipment')
         .on('ready', function() {
             lyrEquipment.eachLayer(function(layer) {
                 let popup = L.popup({closeButton: false})
-                    .setContent(layer.feature.properties.f2);
+                    .setContent('<strong>' + layer.feature.properties.f2 + '</strong><br><i>' +
+                        layer.feature.properties.f3 +
+                        '</i><br><strong>Accessible? </strong>' + layer.feature.properties.f4);
                 layer.bindPopup(popup);
             });
         });
@@ -355,7 +400,9 @@ function map() {
         .on('ready', function() {
             lyrPath.eachLayer(function(layer) {
                 let popup = L.popup({closeButton: false})
-                    .setContent(layer.feature.properties.f2);
+                    .setContent('<strong>' + layer.feature.properties.f2 + '</strong><br><i>' +
+                        layer.feature.properties.f3 +
+                        '</i><br><strong>Accessible? </strong>' + layer.feature.properties.f4);
                 layer.bindPopup(popup);
             });
             lyrPath.setStyle({

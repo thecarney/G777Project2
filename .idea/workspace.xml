@@ -4,7 +4,10 @@
     <option name="SCOPE_TYPE" value="3" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5cf5e188-102b-4576-8d7d-c1b1cb5168fe" name="Default Changelist" comment="" />
+    <list default="true" id="5cf5e188-102b-4576-8d7d-c1b1cb5168fe" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/index.js" afterDir="false" />
+    </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
     <ignored path="$PROJECT_DIR$/tmp/" />
@@ -19,8 +22,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state>
-              <caret line="72" column="9" lean-forward="true" selection-start-line="72" selection-start-column="9" selection-end-line="72" selection-end-column="9" />
+            <state relative-caret-position="-7">
+              <caret line="72" column="9" selection-start-line="72" selection-start-column="9" selection-end-line="72" selection-end-column="9" />
               <folding>
                 <element signature="n#div#0;n#main#0;n#body#0;n#html#0;n#html#0;n#!!top" />
                 <element signature="n#div#1;n#main#0;n#body#0;n#html#0;n#html#0;n#!!top" />
@@ -43,21 +46,15 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/js/index.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="306">
-              <caret line="116" column="60" selection-start-line="116" selection-start-column="60" selection-end-line="116" selection-end-column="60" />
+            <state relative-caret-position="336">
+              <caret line="288" column="29" lean-forward="true" selection-start-line="288" selection-start-column="29" selection-end-line="288" selection-end-column="29" />
               <folding>
-                <element signature="e#3070#4906#0" />
                 <element signature="n#style#0;n#span#0;n#div#0;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#i#0;n#span#0;n#div#0;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#i#1;n#span#0;n#div#0;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#span#0;n#div#0;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#i#0;n#span#0;n#div#0;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#i#1;n#span#0;n#div#0;n#!!top" expanded="true" />
-                <element signature="e#4794#5404#0" />
-                <element signature="e#5577#6191#0" />
-                <element signature="e#6368#6988#0" />
-                <element signature="e#7159#7773#0" />
-                <element signature="e#7942#8552#0" />
                 <element signature="n#style#0;n#span#0;n#div#0;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#i#0;n#span#0;n#div#0;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#i#0;n#span#0;n#div#0;n#!!top" expanded="true" />
@@ -72,20 +69,9 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://C:/TEMP777/PROJ2/P2APP/index.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="498">
-              <caret line="207" column="32" selection-start-line="207" selection-start-column="32" selection-end-line="207" selection-end-column="32" />
+            <state relative-caret-position="-7">
+              <caret line="322" selection-start-line="322" selection-end-line="322" />
               <folding>
-                <element signature="e#1464#2236#0" />
-                <element signature="e#2297#3069#0" />
-                <element signature="e#3136#3908#0" />
-                <element signature="e#3982#4754#0" />
-                <element signature="e#4814#5586#0" />
-                <element signature="e#5651#6423#0" />
-                <element signature="e#6444#7210#0" />
-                <element signature="e#7289#8059#0" />
-                <element signature="e#8120#8884#0" />
-                <element signature="e#8955#9719#0" />
-                <element signature="e#611#1828#0" />
                 <element signature="e#1987#2095#0" />
               </folding>
             </state>
@@ -102,6 +88,11 @@
       </list>
     </option>
   </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>pane</find>
+    </findStrings>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
@@ -113,8 +104,8 @@
         <option value="$PROJECT_DIR$/css/xxx.css" />
         <option value="$PROJECT_DIR$/css/locateControlAdjust.css" />
         <option value="$PROJECT_DIR$/index.html" />
-        <option value="C:/TEMP777/PROJ2/P2APP/index.js" />
         <option value="$PROJECT_DIR$/css/style.css" />
+        <option value="C:/TEMP777/PROJ2/P2APP/index.js" />
         <option value="$PROJECT_DIR$/js/index.js" />
       </list>
     </option>
@@ -126,9 +117,10 @@
     <auto-save>true</auto-save>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="657" />
-    <option name="width" value="1270" />
-    <option name="height" value="1177" />
+    <option name="x" value="584" />
+    <option name="y" value="1" />
+    <option name="width" value="1343" />
+    <option name="height" value="1147" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
@@ -173,7 +165,7 @@
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
-    <property name="settings.editor.selected.configurable" value="Settings.JavaScript" />
+    <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -228,25 +220,25 @@
       <updated>1551587636450</updated>
       <workItem from="1551587637614" duration="25121000" />
       <workItem from="1551748682071" duration="21947000" />
-      <workItem from="1551935225739" duration="56908000" />
+      <workItem from="1551935225739" duration="67967000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="103976000" />
+    <option name="totallyTimeSpent" value="115035000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="657" y="0" width="1270" height="1177" extended-state="0" />
+    <frame x="584" y="1" width="1343" height="1147" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.15422077" />
+      <window_info content_ui="combo" id="Project" order="0" weight="0.14559387" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Inspection Results" order="0" weight="0.32950193" />
       <window_info anchor="bottom" id="Message" order="1" />
       <window_info anchor="bottom" id="Find" order="2" weight="0.32950193" />
       <window_info anchor="bottom" id="Run" order="3" weight="0.328585" />
-      <window_info active="true" anchor="bottom" x="11" y="458" width="1898" height="253" id="Debug" order="4" sideWeight="0.4989059" visible="true" weight="0.2394636" />
+      <window_info anchor="bottom" x="11" y="458" width="1898" height="253" id="Debug" order="4" sideWeight="0.4989059" weight="0.24654832" />
       <window_info anchor="bottom" id="Cvs" order="5" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="6" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="7" />
@@ -259,6 +251,27 @@
       <window_info anchor="right" id="Ant Build" order="2" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="3" weight="0.25" />
     </layout>
+    <layout-to-restore>
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.14559387" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info anchor="bottom" id="Inspection Results" order="0" weight="0.32950193" />
+      <window_info anchor="bottom" id="Message" order="1" />
+      <window_info anchor="bottom" id="Find" order="2" weight="0.32950193" />
+      <window_info anchor="bottom" id="Run" order="3" weight="0.328585" />
+      <window_info active="true" anchor="bottom" x="11" y="458" width="1898" height="253" id="Debug" order="4" sideWeight="0.4989059" visible="true" weight="0.24654832" />
+      <window_info anchor="bottom" id="Cvs" order="5" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="6" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="7" />
+      <window_info anchor="bottom" id="Docker" order="8" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Version Control" order="9" />
+      <window_info anchor="bottom" id="Terminal" order="10" />
+      <window_info anchor="bottom" id="Event Log" order="11" sideWeight="0.5010941" side_tool="true" weight="0.4157088" />
+      <window_info anchor="right" id="Coverage" order="0" side_tool="true" weight="0.32995737" />
+      <window_info anchor="right" id="Commander" order="1" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="2" weight="0.25" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="3" weight="0.25" />
+    </layout-to-restore>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
@@ -280,36 +293,25 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://C:/TEMP777/PROJ2/P2APP/index.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="498">
-          <caret line="207" column="32" selection-start-line="207" selection-start-column="32" selection-end-line="207" selection-end-column="32" />
-          <folding>
-            <element signature="e#1464#2236#0" />
-            <element signature="e#2297#3069#0" />
-            <element signature="e#3136#3908#0" />
-            <element signature="e#3982#4754#0" />
-            <element signature="e#4814#5586#0" />
-            <element signature="e#5651#6423#0" />
-            <element signature="e#6444#7210#0" />
-            <element signature="e#7289#8059#0" />
-            <element signature="e#8120#8884#0" />
-            <element signature="e#8955#9719#0" />
-            <element signature="e#611#1828#0" />
-            <element signature="e#1987#2095#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret line="72" column="9" lean-forward="true" selection-start-line="72" selection-start-column="9" selection-end-line="72" selection-end-column="9" />
+        <state relative-caret-position="-7">
+          <caret line="72" column="9" selection-start-line="72" selection-start-column="9" selection-end-line="72" selection-end-column="9" />
           <folding>
             <element signature="n#div#0;n#main#0;n#body#0;n#html#0;n#html#0;n#!!top" />
             <element signature="n#div#1;n#main#0;n#body#0;n#html#0;n#html#0;n#!!top" />
             <element signature="n#div#2;n#main#0;n#body#0;n#html#0;n#html#0;n#!!top" />
             <element signature="n#div#3;n#main#0;n#body#0;n#html#0;n#html#0;n#!!top" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/TEMP777/PROJ2/P2APP/index.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-7">
+          <caret line="322" selection-start-line="322" selection-end-line="322" />
+          <folding>
+            <element signature="e#1987#2095#0" />
           </folding>
         </state>
       </provider>
@@ -323,21 +325,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/js/index.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
-          <caret line="116" column="60" selection-start-line="116" selection-start-column="60" selection-end-line="116" selection-end-column="60" />
+        <state relative-caret-position="336">
+          <caret line="288" column="29" lean-forward="true" selection-start-line="288" selection-start-column="29" selection-end-line="288" selection-end-column="29" />
           <folding>
-            <element signature="e#3070#4906#0" />
             <element signature="n#style#0;n#span#0;n#div#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#i#0;n#span#0;n#div#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#i#1;n#span#0;n#div#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#span#0;n#div#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#i#0;n#span#0;n#div#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#i#1;n#span#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="e#4794#5404#0" />
-            <element signature="e#5577#6191#0" />
-            <element signature="e#6368#6988#0" />
-            <element signature="e#7159#7773#0" />
-            <element signature="e#7942#8552#0" />
             <element signature="n#style#0;n#span#0;n#div#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#i#0;n#span#0;n#div#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#i#0;n#span#0;n#div#0;n#!!top" expanded="true" />
