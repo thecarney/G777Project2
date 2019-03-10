@@ -1,0 +1,38 @@
+/* Stylesheet by J Carney, 2018 */
+
+body {
+    padding-top: 0px;
+    -webkit-padding-before: 0px;
+	overflow: hidden !important;
+    /*overflow: hidden;*/
+}
+
+.bg-custom-darkblue {background-color: #0056b3;}
+
+#mainCard {
+    height: 100vh;
+    width: 100%;
+}
+
+#mainContainer {
+    height: 100vh;
+    width: 100%;
+}
+
+#map {
+    height: 100%;
+    width: 100%;
+    /*position: relative;*/
+}
+
+.fa-icon-bench {
+}
+
+.fa-icon-table {
+}
+
+.fa-icon-playstructure {
+}
+
+.fa-icon-swingset {
+}
