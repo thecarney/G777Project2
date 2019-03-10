@@ -43,6 +43,7 @@ function map() {
     L.control.locate({
         icon: 'fas fa-crosshairs ',
         iconElementTag: 'span',
+        keepCurrentZoomLevel: true,
         locateOptions: {
             enableHighAccuracy: true
         }
@@ -130,8 +131,7 @@ function map() {
         'Loop Path': lyrPath.addTo(map),
         'Park Grounds': lyrGroundCover.addTo(map)
     },{
-        sortLayers: false,
-        autoZIndex: false
+        position: 'topleft'
     }).addTo(map);
 
 /*/==================================================================================================================
@@ -165,7 +165,7 @@ function map() {
         .loadURL('https://thecarney2.ngrok.io/p2/lawn')
         .on('ready', function() {
             lyrLawn.eachLayer(function(layer) {
-                let popup = L.popup({closeButton: false})
+                let popup = L.popup({closeButton: true})
                     .setContent('<strong>' + layer.feature.properties.f2 + '</strong><br><i>' +
                         layer.feature.properties.f3 +
                         '</i><br><strong>Accessible? </strong>' + layer.feature.properties.f4);
@@ -193,7 +193,7 @@ function map() {
         .loadURL('https://thecarney2.ngrok.io/p2/mulch')
         .on('ready', function() {
             lyrMulch.eachLayer(function(layer) {
-                let popup = L.popup({closeButton: false})
+                let popup = L.popup({closeButton: true})
                     .setContent('<strong>' + layer.feature.properties.f2 + '</strong><br><i>' +
                         layer.feature.properties.f3 +
                         '</i><br><strong>Accessible? </strong>' + layer.feature.properties.f4);
@@ -221,7 +221,7 @@ function map() {
         .loadURL('https://thecarney2.ngrok.io/p2/pavement')
         .on('ready', function() {
             lyrPavement.eachLayer(function(layer) {
-                let popup = L.popup({closeButton: false})
+                let popup = L.popup({closeButton: true})
                     .setContent('<strong>'+layer.feature.properties.f2+'</strong>');
                 layer.bindPopup(popup);
             });
@@ -247,7 +247,7 @@ function map() {
         .loadURL('https://thecarney2.ngrok.io/p2/playground')
         .on('ready', function() {
             lyrPlayground.eachLayer(function(layer) {
-                let popup = L.popup({closeButton: false})
+                let popup = L.popup({closeButton: true})
                     .setContent('<strong>' + layer.feature.properties.f2 + '</strong><br><i>' +
                         layer.feature.properties.f3 +
                         '</i><br><strong>Accessible? </strong>' + layer.feature.properties.f4);
@@ -275,7 +275,7 @@ function map() {
         .loadURL('https://thecarney2.ngrok.io/p2/sandbox')
         .on('ready', function() {
             lyrSandbox.eachLayer(function(layer) {
-                let popup = L.popup({closeButton: false})
+                let popup = L.popup({closeButton: true})
                     .setContent('<strong>' + layer.feature.properties.f2 + '</strong><br><i>' +
                         layer.feature.properties.f3 +
                         '</i><br><strong>Accessible? </strong>' + layer.feature.properties.f4);
@@ -300,7 +300,7 @@ function map() {
         .loadURL('https://thecarney2.ngrok.io/p2/bbcourt')
         .on('ready', function() {
             lyrCourt.eachLayer(function(layer) {
-                let popup = L.popup({closeButton: false})
+                let popup = L.popup({closeButton: true})
                     .setContent('<strong>' + layer.feature.properties.f2 + '</strong><br><i>' +
                         layer.feature.properties.f3 +
                         '</i><br><strong>Accessible? </strong>' + layer.feature.properties.f4);
