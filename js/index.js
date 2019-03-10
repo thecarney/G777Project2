@@ -134,6 +134,24 @@ function map() {
         position: 'topleft'
     }).addTo(map);
 
+    // keep overlays in correct z order
+    map.on('overlayadd', function (event) {
+        lyrGroundCover.bringToFront();
+        lyrCourt.bringToFront();
+        lyrPath.bringToFront();
+        lyrTrees.bringToFront();
+    });
+
+    // keep overlays in correct z order
+    map.on('overlayremove', function (event) {
+        lyrGroundCover.bringToFront();
+        lyrCourt.bringToFront();
+        lyrPath.bringToFront();
+        lyrTrees.bringToFront();
+    });
+
+
+
 /*/==================================================================================================================
 --------------------------------------------------------------------------------------------- LOAD LAYERS FROM SERVER
 ===================================================================================================================== /*/
@@ -284,10 +302,10 @@ function map() {
             lyrSandbox.setStyle({
                 //clickable: false,
                 fill: true,
-                fillColor: '#e1da3c',
+                fillColor: '#ae9959',
                 fillOpacity: 0.5,
                 stroke: true,
-                color: '#d4cd3b',
+                color: '#a37752',
                 weight: 1,
                 opacity: 0.5,
                 lineCap: 'round',
