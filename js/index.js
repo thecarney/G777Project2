@@ -1,25 +1,67 @@
 /* ATTRIBUTIONS */
 
-// call initialize functions after page ready
+// call map initialize functions after page ready
 $(document).ready(initialize);
 
-// photo form validator
-(function() {
-    'use strict';
-    window.addEventListener('load', function() {
-        // get photo form
-        let photoForm = document.getElementById("formPhoto");
-        $("#btnSubmitPhoto").on('click', function () {
-            if (photoForm.checkValidity() === false) {
-                event.preventDefault();
-                event.stopPropagation();
-                console.log("invalid");
+// close menu on click handler
+$(document).ready(function () {
+    $(document).click(function (event) {
+        var clickover = $(event.target);
+        var _opened = $(".navbar-collapse").hasClass("show");
+        if (_opened === true && !clickover.hasClass("navbar-toggler")) {
+            $(".navbar-toggler").click();
+        }
+    });
+});
+
+// for validation of photo form
+$("#btnSubmitPhoto").on('click', function () {
+    // get photo form
+    let photoForm = document.getElementById("formPhoto");
+    // not valid
+    if (photoForm.checkValidity() === false) {
+        event.preventDefault();
+        event.stopPropagation();
+        console.log("invalid");
+        photoForm.classList.add('was-validated');
+    } else {
+        console.log("valid");
+        // build form data
+        let form = $('#formPhoto')[0];
+        let formData = new FormData(form);
+        // toggle modal, open loading modal
+        $('#modalPhoto').modal('toggle');
+        $('#modalLoading').modal('toggle');
+        // post and show modals to user
+        $.ajax({
+            url: 'https://thecarney2.ngrok.io/p2/postPhoto',
+            data: formData,
+            type: 'POST',
+            contentType: false,
+            processData: false,
+            success: function () {
+                console.log("photo posted");
+                $('#modalLoading').modal('toggle');
+                $('#modalSuccess').modal('toggle');
+                },
+            error: function () {
+                console.log("error posting photo");
+                $('#modalLoading').modal('toggle');
+                $('#modalFailure').modal('toggle');
             }
-            photoForm.classList.add('was-validated');
-            console.log("valid");
-        });
-    }, false);
-})();
+        })
+
+
+
+
+    }
+});
+
+
+
+
+
+
 
 // put selected file name in photo modal
 $('#inputGroupFile01').on('change',function(){
@@ -34,7 +76,8 @@ $('#inputGroupFile01').on('change',function(){
 
 // starting point for script
 function initialize() {
-    // // initialize all tooltips
+
+    // initialize all tooltips
     // $(function () {
     //     $('[data-toggle="tooltip"]').tooltip({trigger: "hover"})
     // });
