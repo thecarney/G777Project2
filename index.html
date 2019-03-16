@@ -74,27 +74,31 @@
                                 </div>
                                 <div class="custom-file">
                                     <input type="file" class="custom-file-input" id="inputGroupFile01" accept="image/*" name="photo" required>
-                                    <!--<input type="file" class="input-default-js" id="inputGroupFile01" accept="image/*" name="photo" required>-->
                                     <label class="custom-file-label" for="inputGroupFile01" id="fileInputLabel1"> Choose file </label>
-                                    <!--<label class="custom-file-label" for="inputGroupFile01"> <span class="span-choose-file"> Choose file </span> <div class="float-right span-browse rounded">Browse</div> </label>-->
+                                    <div class="valid-feedback"> Looks good! </div>
+                                    <div class="invalid-feedback"> Choose JPG <1MB </div>
                                 </div>
-                                <div class="valid-feedback"> Looks good! </div>
-                                <div class="invalid-feedback"> Choose JPG <1MB </div>
+
                             </div>
                         </div>
 
                         <div class="form-row">
                             <div class="input-default-wrapper mt-3 mb-3  col-12">
-                                <div class="input-group-prepend"> <span class="input-group-text" id="inputGroupPrepend1">Caption</span> </div>
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="inputGroupPrepend1">Caption</span>
+                                </div>
                                 <input type="text" class="form-control" id="validationCustom02" required>
+                                <div class="valid-feedback" id="feed1">Looks good! </div>
+                                <div class="invalid-feedback" id="feed2">Add caption </div>
                             </div>
-                            <div class="valid-feedback"> Looks good! </div>
-                            <div class="invalid-feedback"> Add caption </div>
+
                         </div>
 
                         <div class="form-row">
                             <div class="input-default-wrapper mt-3 mb-3 col-12">
-                                <div class="input-group-prepend"> <span class="input-group-text" id="inputGroupPrepend2">Facing</span> </div>
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="inputGroupPrepend2">Facing</span>
+                                </div>
                                 <select class="form-control custom-select custom-select-sm" id="validationCustom03" required>
                                     <option value="">--Choose a Direction--</option>
                                     <option value="North">North</option>
@@ -106,9 +110,10 @@
                                     <option value="West">West</option>
                                     <option value="Northwest">Northwest</option>
                                 </select>
+                                <div class="valid-feedback" id="feed3"> Looks good! </div>
+                                <div class="invalid-feedback" id="feed4"> Set direction </div>
                             </div>
-                            <div class="valid-feedback"> Looks good! </div>
-                            <div class="invalid-feedback"> Set direction </div>
+
                         </div>
 
                         <div class="form-row">

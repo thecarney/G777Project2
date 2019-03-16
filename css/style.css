@@ -39,8 +39,6 @@ body {
 }
 
 
-
-
 .fa-icon-bench {
 }
 
@@ -156,14 +154,27 @@ body {
 }
 
 
+.input {
+    padding-bottom: 1em;
+}
 
+.select {
+    padding-bottom: 1em;
+}
 
+#feed1, #feed2 {
+    position: absolute;
+    left: 0;
+    top: 2.5em;
+    margin-left: 85px;
+}
 
-
-
-
-
-
+#feed3, #feed4 {
+    position: absolute;
+    left: 0;
+    top: 2.5em;
+    margin-left: 78px;
+}
 
 
 /* --------------------------------------EASY BUTTON*/
@@ -216,7 +227,6 @@ body {
     height: 100%;
     position: relative;
 }
-
 
 .leaflet-touch .leaflet-bar button {
     width: 26px;
