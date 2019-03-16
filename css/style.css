@@ -25,6 +25,22 @@ body {
     /*position: relative;*/
 }
 
+
+@-moz-document url-prefix() {
+    .myCustomHomeButton{
+        margin-left: -1px;
+    }
+}
+
+@media (-moz-device-pixel-ratio){
+    .myCustomHomeButton{
+        margin-left: -1px;
+    }
+}
+
+
+
+
 .fa-icon-bench {
 }
 

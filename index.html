@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <!-- Font Awesome 5 PRO -->
     <!--<script defer src="https://use.fontawesome.com/releases/v5.6.3/js/all.js" integrity="sha384-EIHISlAOj4zgYieurP0SdoiBYfGJKkgWedPHH4jCzpCXLmzVsw1ouK59MuUtP4a1" crossorigin="anonymous"></script>-->
-    <script defer src="https://pro.fontawesome.com/releases/v5.7.2/js/all.js" integrity="sha384-I3Hhe9TkmlsxzooTtbRzdeLbmkFQE9DVzX/19uTZfHk1zn/uWUyk+a+GyrHyseSq" crossorigin="anonymous"></script>
+    <script defer src="js/all.js"></script>
     <!--bootstrap 4-->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">    <!-- Material Design Bootstrap -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.5.0/css/mdb.min.css" rel="stylesheet">
@@ -36,11 +36,9 @@
             <div class="collapse navbar-collapse text-right " id="myTogglerNav">
                 <div class="navbar-nav ml-auto ">
 
-                    <!--<a class="nav-item nav-link " href="http://thecarney.github.io/Projects.html">Event Calendar</a>-->
-                    <!--<a class="nav-item nav-link " href="http://thecarney.github.io/Resume.html">Report a Problem</a>-->
-                    <!--<a class="nav-item nav-link " href="http://thecarney.github.io/About.html">About</a>-->
-                    <!--<a class="nav-item nav-link " href="http://thecarney.github.io/Contact.html">Contact</a>-->
-                    <a class="nav-item nav-link " href="http://thecarney.github.io">Developer's Portfolio</a>
+                    <a class="nav-item nav-link align-middle" href="" data-toggle="modal" data-target="#modalPhoto" id="menuBtnPhoto">Add a Photo<i class="fas fa-camera-alt fa-lg ml-2 mr-2" data-fa-transform=""></i></a>
+                    <a class="nav-item nav-link align-middle" href="">Get Directions<i class="fas fa-directions fa-lg ml-2 mr-2" data-fa-transform=""></i></a>
+                    <a class="nav-item nav-link align-middle" href="" style="margin-right: 2px">Make a Report<i class="fas fa-map-marker-exclamation fa-lg ml-2 mr-2" data-fa-transform=""></i></a>
                 </div><!-- navbar -->
             </div><!-- collapse -->
         </div><!-- container -->
@@ -51,20 +49,74 @@
 <main role="main">
     <!-- Photo Modal -->
     <div class="modal fade" id="modalPhoto" tabindex="-1" role="dialog" aria-labelledby="modalPhotoLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalPhotoTitle">Submit Your Tex Spruiell Photo!</h5>
+                    <h5 class="modal-title" id="modalPhotoTitle">Submit Your Photo!</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <div class="pl-1">XXXXXXXXXXXXXXXXXXX<br>SSSSSSSSSSSSSSSS<br>SSSSSSSSSSSSSSSSSSSSSS
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-light btn-sm" data-dismiss="modal">Close</button>
+                    <form class="needs-validation" novalidate id="formPhoto" action="" enctype="multipart/form-data">
+                        <div class="form-row">
+                            <!--<div class="col-md-4 mb-3">-->
+                                <!--<label for="validationCustom01">CaptionOld</label>-->
+                                <!--<input type="file" id="validationCustom01" accept="image/*" id="filewithcurrent" class="form-control" required name="photo">-->
+                                <!--<label class="label-for-default-js rounded-right mb-3" for="validationCustom01"><span class="span-choose-file">Choose File</span>-->
+                                    <!--<div class="float-right span-browse">Browse</div>-->
+                                <!--</label>-->
+                                <!--<div class="valid-feedback"> Looks good! </div>-->
+                            <!--</div>-->
+                            <div class="input-default-wrapper mt-3 mb-3 col-12">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">Upload</span>
+                                </div>
+                                <div class="custom-file">
+                                    <input type="file" class="custom-file-input" id="inputGroupFile01" accept="image/*" name="photo" required>
+                                    <!--<input type="file" class="input-default-js" id="inputGroupFile01" accept="image/*" name="photo" required>-->
+                                    <label class="custom-file-label" for="inputGroupFile01" id="fileInputLabel1"> Choose file </label>
+                                    <!--<label class="custom-file-label" for="inputGroupFile01"> <span class="span-choose-file"> Choose file </span> <div class="float-right span-browse rounded">Browse</div> </label>-->
+                                </div>
+                                <div class="valid-feedback"> Looks good! </div>
+                                <div class="invalid-feedback"> Choose JPG <1MB </div>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="input-default-wrapper mt-3 mb-3  col-12">
+                                <div class="input-group-prepend"> <span class="input-group-text" id="inputGroupPrepend1">Caption</span> </div>
+                                <input type="text" class="form-control" id="validationCustom02" required>
+                            </div>
+                            <div class="valid-feedback"> Looks good! </div>
+                            <div class="invalid-feedback"> Add caption </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="input-default-wrapper mt-3 mb-3 col-12">
+                                <div class="input-group-prepend"> <span class="input-group-text" id="inputGroupPrepend2">Facing</span> </div>
+                                <select class="form-control custom-select custom-select-sm" id="validationCustom03" required>
+                                    <option value="">--Choose a Direction--</option>
+                                    <option value="North">North</option>
+                                    <option value="Northeast">Northeast</option>
+                                    <option value="East">East</option>
+                                    <option value="Southeast">Southeast</option>
+                                    <option value="South">South</option>
+                                    <option value="Southwest">Southwest</option>
+                                    <option value="West">West</option>
+                                    <option value="Northwest">Northwest</option>
+                                </select>
+                            </div>
+                            <div class="valid-feedback"> Looks good! </div>
+                            <div class="invalid-feedback"> Set direction </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="col text-center">
+                                <button class="btn btn-primary btn-sm" type="button" id="btnSubmitPhoto">Submit</button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -147,7 +199,7 @@
 <!-- MAIN -->
 <!-- FOOTER -->
 <footer class="navbar footer-dark light-green darken-4 navbar-expand-sm mb-0 box-shadow fixed-bottom" id="footer1">
-    <p class="navbar-nav ml-auto text-light font-weight-light h6 "><small>© James Carney</small></p>
+    <p class="navbar-nav ml-auto text-light font-weight-light h6"><small>© James Carney</small></p>
 </footer>
 <!-- FOOTER -->
 <!-- device size tester -->
@@ -161,6 +213,10 @@
 <!-- device size tester -->
 <!--bootstap 4 scripts-->
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.0/dist/jquery.validate.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.0/dist/additional-methods.js"></script>
+
+
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.2.1/js/bootstrap.min.js"></script>
 <!-- material design bootstrap core JavaScript -->
@@ -175,6 +231,7 @@
 <script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v1.0.0/leaflet.markercluster.js'></script>
 
 <!--my scripts-->
+
 <script type="text/javascript" src="js/index.js"></script>
 </body>
 </html>

@@ -5,6 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5cf5e188-102b-4576-8d7d-c1b1cb5168fe" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/G777Project2.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/G777Project2.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/css/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/style.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
@@ -24,12 +25,15 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-416">
-              <caret line="25" column="45" selection-start-line="25" selection-start-column="45" selection-end-line="25" selection-end-column="45" />
+            <state relative-caret-position="288">
+              <caret line="80" column="63" lean-forward="true" selection-start-line="80" selection-start-column="63" selection-end-line="80" selection-end-column="63" />
               <folding>
+                <element signature="n#style#0;n#a#2;n#div#0;n#div#0;n#div#0;n#nav#0;n#header#0;n#body#0;n#html#0;n#html#0;n#!!top" expanded="true" />
+                <element signature="e#3835#3842#1" expanded="true" />
                 <element signature="n#div#1;n#main#0;n#body#0;n#html#0;n#html#0;n#!!top" />
                 <element signature="n#div#2;n#main#0;n#body#0;n#html#0;n#html#0;n#!!top" />
                 <element signature="n#div#3;n#main#0;n#body#0;n#html#0;n#html#0;n#!!top" />
+                <marker date="1552693849144" expanded="false" signature="4137:4864" ph="..." />
               </folding>
             </state>
           </provider>
@@ -38,23 +42,12 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/css/style.css">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1680">
-              <caret line="139" selection-start-line="139" selection-end-line="139" />
+            <state relative-caret-position="480">
+              <caret line="40" selection-start-line="40" selection-end-line="40" />
               <folding>
-                <element signature="e#402#405#0" />
-                <element signature="e#422#425#0" />
-                <element signature="e#450#453#0" />
-                <element signature="e#473#476#0" />
-                <element signature="e#493#496#0" />
-                <element signature="e#493#537#0" />
-                <element signature="e#586#817#0" />
-                <element signature="e#839#952#0" />
-                <element signature="e#980#1014#0" />
-                <element signature="e#1050#1120#0" />
-                <element signature="e#1155#1256#0" />
-                <element signature="e#1310#1377#0" />
-                <element signature="e#1412#1494#0" />
-                <element signature="e#1532#1593#0" />
+                <element signature="e#217#256#0" />
+                <element signature="e#273#312#0" />
+                <element signature="e#319#385#0" />
               </folding>
             </state>
           </provider>
@@ -63,44 +56,26 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/js/index.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="647">
-              <caret line="498" column="45" selection-start-line="498" selection-start-column="45" selection-end-line="498" selection-end-column="45" />
+            <state relative-caret-position="640">
+              <caret line="49" lean-forward="true" selection-start-line="49" selection-end-line="49" />
               <folding>
-                <element signature="e#1380#1563#0" />
-                <element signature="e#2644#4046#0" />
                 <element signature="n#style#0;n#span#0;n#div#0;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#i#0;n#span#0;n#div#0;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#i#1;n#span#0;n#div#0;n#!!top" expanded="true" />
-                <element signature="e#5153#5752#0" />
-                <element signature="e#4711#7039#0" />
-                <element signature="e#4772#5451#0" />
                 <element signature="n#style#0;n#span#0;n#div#0;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#i#0;n#span#0;n#div#0;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#i#1;n#span#0;n#div#0;n#!!top" expanded="true" />
-                <element signature="e#5385#6069#0" />
                 <element signature="n#style#0;n#span#0;n#div#0;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#i#0;n#span#0;n#div#0;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#i#1;n#span#0;n#div#0;n#!!top" expanded="true" />
-                <element signature="e#4755#7561#0" />
-                <element signature="e#4815#5370#0" />
                 <element signature="n#style#0;n#span#0;n#div#0;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#i#0;n#span#0;n#div#0;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#i#1;n#span#0;n#div#0;n#!!top" expanded="true" />
-                <element signature="e#5408#5985#0" />
                 <element signature="n#style#0;n#span#0;n#div#0;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#i#0;n#span#0;n#div#0;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#i#1;n#span#0;n#div#0;n#!!top" expanded="true" />
-                <element signature="e#11383#13547#0" />
-                <element signature="e#12914#13279#0" />
-                <element signature="e#13329#13369#0" />
-                <element signature="e#13748#13788#0" />
-                <element signature="e#14203#14243#0" />
-                <element signature="e#14621#14661#0" />
-                <element signature="e#8689#9675#0" />
-                <element signature="e#18598#20036#0" />
-                <element signature="e#18646#18849#0" />
-                <element signature="n#!!block;n#resize#0" />
-                <element signature="e#18381#18422#0" />
+                <marker date="1552695125214" expanded="false" signature="1898:3536" ph="..." />
+                <marker date="1552695125214" expanded="true" signature="1898:3565" ph="..." />
               </folding>
             </state>
           </provider>
@@ -109,22 +84,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://C:/TEMP777/PROJ2/P2APP/index.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-111">
-              <caret line="6" column="11" lean-forward="true" selection-start-line="6" selection-start-column="11" selection-end-line="6" selection-end-column="11" />
-              <folding>
-                <element signature="e#604#1390#0" />
-                <element signature="e#606#1401#0" />
-                <element signature="e#1466#2252#0" />
-                <element signature="e#2321#3111#0" />
-                <element signature="e#3175#3955#0" />
-                <element signature="e#4023#4805#0" />
-                <element signature="e#4877#5665#0" />
-                <element signature="e#5741#6533#0" />
-                <element signature="e#6604#7392#0" />
-                <element signature="e#7462#8248#0" />
-                <element signature="e#8318#9109#0" />
-                <element signature="e#9176#9960#0" />
-              </folding>
+            <state relative-caret-position="960">
+              <caret line="105" column="26" selection-start-line="105" selection-start-column="26" selection-end-line="105" selection-end-column="26" />
             </state>
           </provider>
         </entry>
@@ -141,13 +102,16 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>pane</find>
       <find>close</find>
       <find>bringT</find>
       <find>bringTo</find>
       <find>lyrEquipment</find>
       <find>court</find>
       <find>test</find>
+      <find>pane</find>
+      <find>L.popup</find>
+      <find>fa-</find>
+      <find>console</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -163,8 +127,8 @@
         <option value="$PROJECT_DIR$/js/leaflet.zoomhome.min.js" />
         <option value="$PROJECT_DIR$/css/leaflet.zoomhome.css" />
         <option value="C:/TEMP777/PROJ2/P2APP/index.js" />
-        <option value="$PROJECT_DIR$/index.html" />
         <option value="$PROJECT_DIR$/css/style.css" />
+        <option value="$PROJECT_DIR$/index.html" />
         <option value="$PROJECT_DIR$/js/index.js" />
       </list>
     </option>
@@ -175,9 +139,9 @@
     <other-services-enabled>true</other-services-enabled>
     <auto-save>true</auto-save>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="953" />
-    <option name="width" value="974" />
+  <component name="ProjectFrameBounds">
+    <option name="x" value="-2" />
+    <option name="width" value="1616" />
     <option name="height" value="1177" />
   </component>
   <component name="ProjectView">
@@ -185,7 +149,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -206,12 +169,22 @@
             <path>
               <item name="G777Project2" type="b2602c69:ProjectViewProjectNode" />
               <item name="G777Project2" type="462c0819:PsiDirectoryNode" />
+              <item name="img" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="G777Project2" type="b2602c69:ProjectViewProjectNode" />
+              <item name="G777Project2" type="462c0819:PsiDirectoryNode" />
               <item name="js" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="G777Project2" type="b2602c69:ProjectViewProjectNode" />
+              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -226,13 +199,13 @@
     <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
   </component>
   <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\GitHub\G777Project2\data" />
+    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\GitHub\G777Project2\js" />
       <recent name="C:\GitHub\G777Project2\css" />
       <recent name="C:\GitHub\G777Project2" />
-    </key>
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\GitHub\G777Project2\data" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -280,17 +253,40 @@
       <workItem from="1551748682071" duration="21947000" />
       <workItem from="1551935225739" duration="74423000" />
       <workItem from="1552251340400" duration="50598000" />
+      <workItem from="1552452963232" duration="41248000" />
+      <workItem from="1552695050331" duration="75000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="172089000" />
+    <option name="totallyTimeSpent" value="213412000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1186" extended-state="6" />
+    <frame x="-2" y="0" width="1616" height="1177" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.14541623" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.14512041" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info anchor="bottom" id="Inspection Results" order="0" weight="0.32950193" />
+      <window_info anchor="bottom" id="Message" order="1" />
+      <window_info anchor="bottom" id="Find" order="2" weight="0.328585" />
+      <window_info anchor="bottom" id="Run" order="3" weight="0.328585" />
+      <window_info anchor="bottom" x="11" y="458" width="1898" height="253" id="Debug" order="4" sideWeight="0.4989059" weight="0.24760994" />
+      <window_info anchor="bottom" id="Cvs" order="5" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="6" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="7" />
+      <window_info anchor="bottom" id="Docker" order="8" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Version Control" order="9" />
+      <window_info anchor="bottom" id="Terminal" order="10" />
+      <window_info anchor="bottom" id="Event Log" order="11" sideWeight="0.5010941" side_tool="true" weight="0.4157088" />
+      <window_info anchor="right" id="Coverage" order="0" side_tool="true" weight="0.32995737" />
+      <window_info anchor="right" id="Commander" order="1" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="2" weight="0.25" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="3" weight="0.25" />
+    </layout>
+    <layout-to-restore>
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.12065332" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Inspection Results" order="0" weight="0.32950193" />
@@ -309,7 +305,7 @@
       <window_info anchor="right" id="Commander" order="1" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="2" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="3" weight="0.25" />
-    </layout>
+    </layout-to-restore>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
@@ -331,123 +327,90 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/css/leaflet.zoomhome.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="128">
-          <caret line="8" column="1" lean-forward="true" selection-start-line="8" selection-start-column="1" selection-end-line="8" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/js/leaflet.zoomhome.min.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="64">
-          <caret line="4" column="590" selection-start-line="4" selection-start-column="590" selection-end-line="4" selection-end-column="590" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-            <element signature="n#style#0;n#i#0;n#!!top" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://C:/TEMP777/PROJ2/P2APP/index.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-111">
-          <caret line="6" column="11" lean-forward="true" selection-start-line="6" selection-start-column="11" selection-end-line="6" selection-end-column="11" />
-          <folding>
-            <element signature="e#604#1390#0" />
-            <element signature="e#606#1401#0" />
-            <element signature="e#1466#2252#0" />
-            <element signature="e#2321#3111#0" />
-            <element signature="e#3175#3955#0" />
-            <element signature="e#4023#4805#0" />
-            <element signature="e#4877#5665#0" />
-            <element signature="e#5741#6533#0" />
-            <element signature="e#6604#7392#0" />
-            <element signature="e#7462#8248#0" />
-            <element signature="e#8318#9109#0" />
-            <element signature="e#9176#9960#0" />
-          </folding>
-        </state>
-      </provider>
+    <entry file="file://$PROJECT_DIR$/css/leaflet.zoomhome.css" />
+    <entry file="file://$PROJECT_DIR$/js/leaflet.zoomhome.min.js" />
+    <entry file="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js">
+      <provider selected="true" editor-type-id="httpFileEditor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-416">
-          <caret line="25" column="45" selection-start-line="25" selection-start-column="45" selection-end-line="25" selection-end-column="45" />
+        <state relative-caret-position="288">
+          <caret line="80" column="63" lean-forward="true" selection-start-line="80" selection-start-column="63" selection-end-line="80" selection-end-column="63" />
           <folding>
+            <element signature="n#style#0;n#a#2;n#div#0;n#div#0;n#div#0;n#nav#0;n#header#0;n#body#0;n#html#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="e#3835#3842#1" expanded="true" />
             <element signature="n#div#1;n#main#0;n#body#0;n#html#0;n#html#0;n#!!top" />
             <element signature="n#div#2;n#main#0;n#body#0;n#html#0;n#html#0;n#!!top" />
             <element signature="n#div#3;n#main#0;n#body#0;n#html#0;n#html#0;n#!!top" />
+            <marker date="1552693849144" expanded="false" signature="4137:4864" ph="..." />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/css/style.css">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1680">
-          <caret line="139" selection-start-line="139" selection-end-line="139" />
+        <state relative-caret-position="480">
+          <caret line="40" selection-start-line="40" selection-end-line="40" />
           <folding>
+            <element signature="e#217#256#0" />
+            <element signature="e#273#312#0" />
+            <element signature="e#319#385#0" />
             <element signature="e#402#405#0" />
             <element signature="e#422#425#0" />
             <element signature="e#450#453#0" />
             <element signature="e#473#476#0" />
             <element signature="e#493#496#0" />
-            <element signature="e#493#537#0" />
-            <element signature="e#586#817#0" />
-            <element signature="e#839#952#0" />
-            <element signature="e#980#1014#0" />
-            <element signature="e#1050#1120#0" />
-            <element signature="e#1155#1256#0" />
-            <element signature="e#1310#1377#0" />
-            <element signature="e#1412#1494#0" />
-            <element signature="e#1532#1593#0" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/TEMP777/PROJ2/P2APP/index.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="960">
+          <caret line="105" column="26" selection-start-line="105" selection-start-column="26" selection-end-line="105" selection-end-column="26" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/js/index.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="647">
-          <caret line="498" column="45" selection-start-line="498" selection-start-column="45" selection-end-line="498" selection-end-column="45" />
+        <state relative-caret-position="640">
+          <caret line="49" lean-forward="true" selection-start-line="49" selection-end-line="49" />
           <folding>
-            <element signature="e#1380#1563#0" />
-            <element signature="e#2644#4046#0" />
             <element signature="n#style#0;n#span#0;n#div#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#i#0;n#span#0;n#div#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#i#1;n#span#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="e#5153#5752#0" />
-            <element signature="e#4711#7039#0" />
-            <element signature="e#4772#5451#0" />
             <element signature="n#style#0;n#span#0;n#div#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#i#0;n#span#0;n#div#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#i#1;n#span#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="e#5385#6069#0" />
             <element signature="n#style#0;n#span#0;n#div#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#i#0;n#span#0;n#div#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#i#1;n#span#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="e#4755#7561#0" />
-            <element signature="e#4815#5370#0" />
             <element signature="n#style#0;n#span#0;n#div#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#i#0;n#span#0;n#div#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#i#1;n#span#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="e#5408#5985#0" />
             <element signature="n#style#0;n#span#0;n#div#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#i#0;n#span#0;n#div#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#i#1;n#span#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="e#11383#13547#0" />
-            <element signature="e#12914#13279#0" />
-            <element signature="e#13329#13369#0" />
-            <element signature="e#13748#13788#0" />
-            <element signature="e#14203#14243#0" />
-            <element signature="e#14621#14661#0" />
-            <element signature="e#8689#9675#0" />
-            <element signature="e#18598#20036#0" />
-            <element signature="e#18646#18849#0" />
-            <element signature="n#!!block;n#resize#0" />
-            <element signature="e#18381#18422#0" />
+            <marker date="1552695125214" expanded="false" signature="1898:3536" ph="..." />
+            <marker date="1552695125214" expanded="true" signature="1898:3565" ph="..." />
           </folding>
         </state>
       </provider>
     </entry>
+  </component>
+  <component name="masterDetails">
+    <states>
+      <state key="ScopeChooserConfigurable.UI">
+        <settings>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+    </states>
   </component>
 </project>
