@@ -3,178 +3,46 @@
 // call map initialize functions after page ready
 $(document).ready(initialize);
 
-// close menu on click handler
-$(document).ready(function () {
-    $(document).click(function (event) {
-        var clickover = $(event.target);
-        var _opened = $(".navbar-collapse").hasClass("show");
-        if (_opened === true && !clickover.hasClass("navbar-toggler")) {
-            $(".navbar-toggler").click();
-        }
-    });
-});
-
-// for validation of photo form
-$("#btnSubmitPhoto").on('click', function () {
-    // get photo form
-    let photoForm = document.getElementById("formPhoto");
-    // not valid
-    if (photoForm.checkValidity() === false) {
-        event.preventDefault();
-        event.stopPropagation();
-        console.log("invalid");
-        photoForm.classList.add('was-validated');
-    } else {
-        console.log("valid");
-        // build form data
-        let form = $('#formPhoto')[0];
-        let formData = new FormData(form);
-        // toggle modal, open loading modal
-        $('#modalPhoto').modal('toggle');
-        $('#modalLoading').modal('toggle');
-        // post and show modals to user
-        $.ajax({
-            url: 'https://thecarney2.ngrok.io/p2/postPhoto',
-            data: formData,
-            type: 'POST',
-            contentType: false,
-            processData: false,
-            success: function () {
-                console.log("photo posted");
-                $('#modalLoading').modal('toggle');
-                $('#modalSuccess').modal('toggle');
-                },
-            error: function () {
-                console.log("error posting photo");
-                $('#modalLoading').modal('toggle');
-                $('#modalFailure').modal('toggle');
-            }
-        })
-
-
-
-
-    }
-});
-
-
-
-
-
-
-
-// put selected file name in photo modal
-$('#inputGroupFile01').on('change',function(){
-    let fileName = $(this).val();
-    $('#fileInputLabel1').html(fileName);
-    let pathName = $('#fileInputLabel1').html();
-    let shortName = pathName.replace("C:\\fakepath\\","");
-    $('#fileInputLabel1').html(shortName);
-});
-
-
-
 // starting point for script
 function initialize() {
-
-    // initialize all tooltips
-    // $(function () {
-    //     $('[data-toggle="tooltip"]').tooltip({trigger: "hover"})
-    // });
-
-
-
-
-
-
-
     // resize function wraps the main function to allow responsive sizing of panel with map
     let defaultMap = resize(map('default'));
 
     //let directionsMap = resize(map('directions'));
 
 
-
-
-
 }
 
 // Main
 function map(type) {
+    // sub-functions employed mostly for code management and ordered to minimize passing of objects
 
+    let arr = setupMap();
+    let map = arr[0];
+    let baseStreets = arr[1];
+    let baseAerial = arr[2];
 
+    setupListeners();
 
+    addScaleControl();
 
-    // map setup
-    // token
-    L.mapbox.accessToken = 'pk.eyJ1IjoiamhjYXJuZXkiLCJhIjoiY2pmbHE2ZTVlMDJnbTJybzdxNTNjaWsyMiJ9.hoiyrXTX3pOuEExAnhUtIQ';
-    // basemaps, enable over zoom
-    let baseStreets = L.mapbox.styleLayer('mapbox://styles/jhcarney/cjk1yuwd6b9mv2sqvu8452gfu', {
-        maxZoom: 22,
-        maxNativeZoom: 21
-    });
-    let baseAerial = L.mapbox.styleLayer('mapbox://styles/jhcarney/cjk1ywa89015v2sqks2r6ivwj', {
-        maxZoom: 22,
-        maxNativeZoom: 20
-    });
-    // make map
-    var map = L.mapbox.map('map')
-        .setView([37.6909, -121.72615], 17);
-    // panes for marker z ordering
-    map.createPane('photo').style.zIndex = 610;
-    map.createPane('equipment').style.zIndex = 609;
-    map.createPane('seats').style.zIndex = 608;
-    // pane for trees to show on top of other features
-    map.createPane('trees').style.zIndex = 611;
-    // series of panes for z order of polygons
-    map.createPane('polyg510').style.zIndex = 510;
-    map.createPane('polyg509').style.zIndex = 509;
-    map.createPane('polyg508').style.zIndex = 508;
-    map.createPane('polyg507').style.zIndex = 507;
-    map.createPane('polyg506').style.zIndex = 506;
-    map.createPane('polyg505').style.zIndex = 505;
-    map.createPane('polyg504').style.zIndex = 504;
-    map.createPane('polyg503').style.zIndex = 503;
-    map.createPane('polyg502').style.zIndex = 502;
-    map.createPane('polyg501').style.zIndex = 501;
-    // make sure popups stay on top
-    map.getPane('popupPane').style.zIndex = 700;
-    // this is a pane for a transparent polygon overlay used to control user interaction with the popup layer
-    map.createPane('hiddenOverlay').style.zIndex = 699;
+    addHomeButtonControl();
 
+    addLocateUserControl();
 
-    // home button
-    L.easyButton('<i class="fas fa-home myCustomHomeButton" data-fa-transform="grow-4 up-2"></i>', function () {
-        map.setView([37.6903, -121.72615], 17);
-    }).addTo(map);
+    addPostPhotoControl();
 
-    // geolocate user control
-    L.control.locate({
-        icon: 'fas fa-crosshairs ',
-        iconElementTag: 'span',
-        keepCurrentZoomLevel: true,
-        locateOptions: {
-            enableHighAccuracy: true
-        }
-    }).addTo(map); // MAKE MAP, CONTROLS, PANES
+    addOnLoadPopup();
 
-    // scale
-    L.control.scale({metric: false}).addTo(map);
+    let lyrPhoto = makeLayerPhoto(function () {});
+    let lyrTrees = makeLayerTrees();
+    let lyrEquipment = makeLayerEquipment();
+    let lyrSeating = makeLayerSeating();
+    let lyrPath = makeLayerPath();
+    let lyrGroundCover = makeLayerGroundCover();
+    let lyrCourt = makeLayerCourt();
 
-    let popupOnLoad = L.popup({
-        closeButton: false,
-        className: 'popup-on-load',
-        offset: L.point(0, 0),
-        maxWidth: 190
-    })
-        .setLatLng([37.6912, -121.72615])
-        .setContent('<div><h6 class="mb-0">Welcome!</h6><br>Explore the park using the controls at the ' +
-            'top left, or by accessing some additional functionality from the main menu at the top right. </div>')
-        .openOn(map);
-
-    // setTimeout(function () {
-    //     popupOnLoad.setContent(popupOnLoad.getContent() + '<br>DOGS DOGS DOGS!');
-    // }, 5000);
+    addLayerControlAndDefaultLayers();
 
 
     let reports = fetch("https://thecarney2.ngrok.io/p2/reports")
@@ -186,19 +54,391 @@ function map(type) {
         });
 
 
-    // setup calls to fetch data and make layers
-    let lyrPhoto = makeLayerPhoto();
-    let lyrTrees = makeLayerTrees();
-    let lyrEquipment = makeLayerEquipment();
-    let lyrSeating = makeLayerSeating();
-    let lyrPath = makeLayerPath();
-    let lyrGroundCover = makeLayerGroundCover();
-    let lyrCourt = makeLayerCourt();
+    function setupMap() {
+        // token
+        L.mapbox.accessToken = 'pk.eyJ1IjoiamhjYXJuZXkiLCJhIjoiY2pmbHE2ZTVlMDJnbTJybzdxNTNjaWsyMiJ9.hoiyrXTX3pOuEExAnhUtIQ';
+        // basemaps, enable over zoom
+        let baseStreets = L.mapbox.styleLayer('mapbox://styles/jhcarney/cjk1yuwd6b9mv2sqvu8452gfu', {
+            maxZoom: 22,
+            maxNativeZoom: 21
+        });
+        let baseAerial = L.mapbox.styleLayer('mapbox://styles/jhcarney/cjk1ywa89015v2sqks2r6ivwj', {
+            maxZoom: 22,
+            maxNativeZoom: 20
+        });
+        // make map
+        let map = L.mapbox.map('map')
+            .setView([37.6909, -121.72615], 17);
+        // panes for marker z ordering
+        map.createPane('photo').style.zIndex = 610;
+        map.createPane('equipment').style.zIndex = 609;
+        map.createPane('seats').style.zIndex = 608;
+        // pane for trees to show on top of other features
+        map.createPane('trees').style.zIndex = 611;
+        // series of panes for z order of polygons
+        map.createPane('polyg510').style.zIndex = 510;
+        map.createPane('polyg509').style.zIndex = 509;
+        map.createPane('polyg508').style.zIndex = 508;
+        map.createPane('polyg507').style.zIndex = 507;
+        map.createPane('polyg506').style.zIndex = 506;
+        map.createPane('polyg505').style.zIndex = 505;
+        map.createPane('polyg504').style.zIndex = 504;
+        map.createPane('polyg503').style.zIndex = 503;
+        map.createPane('polyg502').style.zIndex = 502;
+        map.createPane('polyg501').style.zIndex = 501;
+        // make sure popups stay on top
+        map.getPane('popupPane').style.zIndex = 700;
+        // this is a pane for a transparent polygon overlay used to control user interaction with the popup layer
+        map.createPane('hiddenOverlay').style.zIndex = 698;
+        // pane for new photo interaction
+        map.createPane('newPhoto').style.zIndex = 699;
 
-    // add layers to map
-    addLayerControlAndDefaultLayers();
+        return [map, baseStreets, baseAerial];
+    }
 
-    function makeLayerPhoto() {
+    function setupListeners() {
+        // validation and post for make photo
+        $("#btnSubmitPhoto").on('click', function () {
+            // get photo form
+            let photoForm = document.getElementById("formPhoto");
+            // not valid
+            if (photoForm.checkValidity() === false) {
+                event.preventDefault();
+                event.stopPropagation();
+                console.log("invalid");
+                photoForm.classList.add('was-validated');
+            } else {
+                console.log("valid");
+                // build form data, append fields before file
+
+                let latlon = document.getElementById('modalPhotoLatLon').value;
+                console.log(latlon);
+
+                let caption = document.getElementById('validationCustom02').value;
+                console.log(caption);
+
+                let facing = document.getElementById('validationCustom03').value;
+                console.log(facing);
+
+                let fileInput = document.getElementById('inputGroupFile01');
+                let file = fileInput.files[0];
+
+                let formData = new FormData();
+                formData.append('latlon', latlon);
+                formData.append('caption', caption);
+                formData.append('facing', facing);
+                formData.append('photo', file);
+
+                // simple way, whole form, but no ordering
+                //let form = $('#formPhoto')[0];
+                //let formData = new FormData(form);
+
+                // toggle modal, open loading modal
+                $('#modalPhoto').modal('toggle');
+                $('#modalLoading').modal('toggle');
+                // post and show modals to user
+                $.ajax({
+                    url: 'https://thecarney2.ngrok.io/p2/postPhoto',
+                    data: formData,
+                    type: 'POST',
+                    contentType: false,
+                    processData: false,
+                    success: function (data, status, jqXHR) {
+                        console.log("photo posted");
+                        console.log(data);
+
+                        $('#modalLoading').modal('hide');
+                        $('#modalSuccess').modal('show');
+
+                        loadNewPhotosAfterPost();
+                    },
+                    error: function (jqXHR, status, err) {
+                        console.log("error posting photo");
+                        $('#modalLoading').modal('hide');
+                        $('#modalFailure').modal('show');
+                    }
+                })
+            }
+        });
+
+        // put selected file name in photo modal
+        $('#inputGroupFile01').on('change', function () {
+            let fileName = $(this).val();
+            $('#fileInputLabel1').html(fileName);
+            let pathName = $('#fileInputLabel1').html();
+            let shortName = pathName.replace("C:\\fakepath\\", "");
+            $('#fileInputLabel1').html(shortName);
+        });
+
+        // close hamburger menu on selection
+        $(document).click(function (event) {
+            var clickover = $(event.target);
+            var _opened = $(".navbar-collapse").hasClass("show");
+            if (_opened === true && !clickover.hasClass("navbar-toggler")) {
+                $(".navbar-toggler").click();
+            }
+        });
+
+        // initialize all tooltips
+        // $(function () {
+        //     $('[data-toggle="tooltip"]').tooltip({trigger: "hover"})
+        // });
+    }
+
+    function addScaleControl() {
+        // scale
+        L.control.scale({metric: false}).addTo(map);
+    }
+
+    function addHomeButtonControl() {
+        // home button
+        L.easyButton('<i class="fas fa-home myCustomHomeButton" data-fa-transform="grow-4 up-2"></i>', function () {
+            map.setView([37.6903, -121.72615], 17);
+        }).addTo(map);
+    }
+
+    function addLocateUserControl() {
+        // geolocate user control
+        L.control.locate({
+            icon: 'fas fa-crosshairs ',
+            iconElementTag: 'span',
+            keepCurrentZoomLevel: true,
+            locateOptions: {
+                enableHighAccuracy: true
+            }
+        }).addTo(map);
+    }
+
+    function addPostPhotoControl() {
+        // photo button
+        L.easyButton('<i class="fas fa-camera myCustomPhotoButton" data-fa-transform="grow-4 up-2"></i>', function () {
+
+            let markerLatLng = map.getCenter();
+
+            let iconNewPhoto = L.divIcon({
+                className: 'fa-icon-photo',
+                html: '<div class="fa-2x">\n' +
+                    '  <span class="fa-layers " style="background:rgba(0,0,0,0)">\n' +
+                    '    <i class="far fa-circle" data-fa-transform="grow-1" style="color:#fdfbfe"></i>\n' +
+                    '    <i class="fas fa-circle" style="color:#dc00b3"></i>\n' +
+                    '    <i class="fa-inverse fas fa-camera" data-fa-transform="shrink-8"></i>\n' +
+                    '  </span></div>',
+                iconSize: [15, 15],
+                popupAnchor: [5, -3],
+                draggable: true
+            });
+
+            let newPhotoMarker = new L.marker(markerLatLng, {
+                icon: iconNewPhoto,
+                opacity: 1,
+                pane: 'newPhoto'
+            });
+
+            let popup = L.popup({
+                closeButton: false,
+                closeOnClick: false,
+                className: 'popup-grey',
+                maxWidth: 250,
+                autoPanPaddingTopLeft: L.point(60, 40),
+                offset: L.point(0, -4)
+            });
+            popup.setContent('<div class="col text-center m-0 p-0"> <strong> Drag marker to photo location </strong></div>' +
+                '<div class="col text-center m-0 p-0"><button class="btn btn-primary btn-sm p-1" type="button" id="btnOpenPhotoModal" style="box-shadow: none; border: 1px solid #656565">Add Photo</button>' +
+                '<button class="btn btn-light btn-sm p-1" type="button" id="btnCancelNewPhoto" style="box-shadow: none; border: 1px solid #656565">Close</button></div>');
+            newPhotoMarker.bindPopup(popup);
+
+            // click event for buttons in popup
+            $('#map').on('click', '#btnOpenPhotoModal', function () {
+                console.log('clicked add photo button');
+
+                // get marker latlon
+                let lat = newPhotoMarker.getLatLng().lat;
+                let latRnd = round(lat, 6);
+                let lon = newPhotoMarker.getLatLng().lng;
+                let lonRnd = round(lon, 6);
+                $("#modalPhotoLatLon").val(latRnd + ", " + lonRnd);
+                console.log(latRnd + ", " + lonRnd);
+
+                // open modal, pass latlon to form
+                $("#modalPhoto").modal('toggle');
+
+                // remove the temp layer at the end
+                map.removeLayer(newPhotoMarker);
+
+                function round(number, precision) {
+                    var shift = function (number, exponent) {
+                        var numArray = ("" + number).split("e");
+                        return +(numArray[0] + "e" + (numArray[1] ? (+numArray[1] + exponent) : exponent));
+                    };
+                    return shift(Math.round(shift(number, +precision)), -precision);
+                };
+            });
+
+            $('#map').on('click', '#btnCancelNewPhoto', function () {
+                console.log('clicked close button on add photo');
+                map.removeLayer(newPhotoMarker);
+            });
+
+            newPhotoMarker.addTo(map);
+
+            newPhotoMarker.dragging.enable();
+
+            newPhotoMarker.openPopup();
+
+            newPhotoMarker.on('dragend', function () {
+                newPhotoMarker.openPopup();
+            });
+
+        }).addTo(map);
+    }
+
+    function loadNewPhotosAfterPost() {
+        // get locations of photos we already had
+        let arrPhotoLatLon = [];
+        lyrPhoto.eachLayer(function (layer1) {
+            layer1.eachLayer(function (layer2) {
+                arrPhotoLatLon.push(layer2.getLatLng().toString());
+            })
+        });
+
+        // make photo layer from server again, use callback to only add new one to map
+        let lyrWithNewPhotos = makeLayerPhoto(function () {
+            lyrWithNewPhotos.eachLayer(function (layer3) {
+                layer3.eachLayer(function (layer4) {
+                    if ( $.inArray(layer4.getLatLng().toString(), arrPhotoLatLon) === -1 ){
+                        console.log('add new photo marker to layergroup');
+                        lyrPhoto.addLayer(layer3);
+                    } else {
+                    }
+                })
+            });
+        });
+
+        map.addLayer(lyrPhoto);
+    }
+
+    function addOnLoadPopup() {
+        let popupOnLoad = L.popup({
+            closeButton: false,
+            className: 'popup-on-load',
+            offset: L.point(0, 0),
+            maxWidth: 215
+        })
+            .setLatLng([37.6912, -121.72615])
+            .setContent('<div><h6 class="mb-0">Welcome!</h6><br>Explore the park using the controls at the ' +
+                'top left, or by accessing some additional functionality from the main menu at the top right. <br><br></div>')
+            .openOn(map);
+
+
+        // inelegantly show when popup will auto-close
+
+        let origContent = popupOnLoad.getContent();
+
+        popupOnLoad.setContent(origContent + '<i class="text-warning">- 8 -</i>');
+
+        setTimeout(function () {
+            popupOnLoad.setContent(origContent + '<i class="text-warning">- 7 -</i>');
+        }, 1000);
+
+        setTimeout(function () {
+            popupOnLoad.setContent(origContent + '<i class="text-warning">- 6 -</i>');
+        }, 2000);
+
+        setTimeout(function () {
+            popupOnLoad.setContent(origContent + '<i class="text-warning">- 5 -</i>');
+        }, 3000);
+
+        setTimeout(function () {
+            popupOnLoad.setContent(origContent + '<i class="text-warning">- 4 -</i>');
+        }, 4000);
+
+        setTimeout(function () {
+            popupOnLoad.setContent(origContent + '<i class="text-warning">- 3 -</i>');
+        }, 5000);
+
+        setTimeout(function () {
+            popupOnLoad.setContent(origContent + '<i class="text-warning">- 2 -</i>');
+        }, 6000);
+
+        setTimeout(function () {
+            popupOnLoad.setContent(origContent + '<i class="text-warning">- 1 -</i>');
+        }, 7000);
+
+        setTimeout(function () {
+            map.closePopup(popupOnLoad);
+        }, 8000);
+
+    }
+
+    function addLayerControlAndDefaultLayers() {
+        // lyrCourt is controlled by lyrGroundCover
+        map.on('overlayadd', function (event) {
+            if (event.layer === lyrGroundCover) {
+                map.addLayer(lyrCourt);
+            }
+        });
+        map.on('overlayremove', function (event) {
+            if (event.layer === lyrGroundCover) {
+                map.removeLayer(lyrCourt);
+            }
+        });
+
+        let layerControl = L.control.layers({
+            'Streets': baseStreets.addTo(map),
+            'Satellite': baseAerial
+        }, {
+            'Visitor Photos': lyrPhoto,
+            'Tree Canopy': lyrTrees,
+            'Playground Equip.': lyrEquipment,
+            'Tables & Benches': lyrSeating,
+            'Loop Path': lyrPath,
+            'Park Grounds': lyrGroundCover
+        }, {
+            position: 'topleft',
+        }).addTo(map);
+
+        map.addLayer(lyrGroundCover);
+        map.addLayer(lyrPath);
+        map.addLayer(lyrSeating);
+        map.addLayer(lyrEquipment);
+        //map.addLayer(lyrTrees);
+        //map.addLayer(lyrPhoto);
+
+        // make a hidden polygon overlay
+        let hiddenData = [{
+            "type": "Feature",
+            "properties": {
+                "name": "overlay",
+                "popupContent": "test"
+            },
+            "geometry": {
+                "type": "Polygon",
+                "coordinates": [[[-121.728602, 37.691681], [-121.724186, 37.691543], [-121.723973, 37.689516], [-121.728260, 37.689467]]]
+            }
+        }];
+
+        let transparentStyle = {
+            color: "#ff0b00",
+            weight: 5,
+            fillOpacity: 0,
+            opacity: 0
+        };
+
+        let hiddenLayer = L.geoJSON(hiddenData, {
+            pane: 'hiddenOverlay',
+            style: transparentStyle
+        });
+
+        map.on('popupopen', function (e) {
+            map.addLayer(hiddenLayer);
+        });
+
+        map.on('popupclose', function (e) {
+            map.removeLayer(hiddenLayer);
+        })
+    }
+
+    function makeLayerPhoto(callback) {
         let lyr = L.mapbox.featureLayer(null, {
             pointToLayer: function (feature, latlng) {
                 let iconPhoto = L.divIcon({
@@ -225,14 +465,18 @@ function map(type) {
                     let popup = L.popup({
                         closeButton: false,
                         className: 'popup-blue',
-                        maxWidth: 250,
+                        maxWidth: 'auto',
                         autoPanPaddingTopLeft: L.point(60, 40),
                         offset: L.point(0, -4)
                     })
-                        .setContent('<strong>' + layer.feature.properties.f3 + '</strong><i>: ' +
-                            layer.feature.properties.f2 + '</i>');
+                        .setContent('<img src="https://thecarney2.ngrok.io/images/'
+                            +layer.feature.properties.f4+
+                            '" alt="pic" style="width: 275px;height: 275px;border-radius: 4px";">' +
+                            '<strong>Caption</strong><i>: ' + layer.feature.properties.f2 + '</i>' +
+                            '<br><strong>Facing</strong><i>: ' + layer.feature.properties.f5 + '</i>');
                     layer.bindPopup(popup);
                 });
+                callback();
             });
         return lyr;
     }
@@ -662,73 +906,7 @@ function map(type) {
         return lyr;
     }
 
-    function addLayerControlAndDefaultLayers() {
-        // lyrCourt is controlled by lyrGroundCover
-        map.on('overlayadd', function (event) {
-            if (event.layer === lyrGroundCover) {
-                map.addLayer(lyrCourt);
-            }
-        });
-        map.on('overlayremove', function (event) {
-            if (event.layer === lyrGroundCover) {
-                map.removeLayer(lyrCourt);
-            }
-        });
 
-        let layerControl = L.control.layers({
-            'Streets': baseStreets.addTo(map),
-            'Satellite': baseAerial
-        }, {
-            'Visitor Photos': lyrPhoto,
-            'Tree Canopy': lyrTrees,
-            'Playground Equip.': lyrEquipment,
-            'Tables & Benches': lyrSeating,
-            'Loop Path': lyrPath,
-            'Park Grounds': lyrGroundCover
-        }, {
-            position: 'topleft',
-        }).addTo(map);
-
-        map.addLayer(lyrGroundCover);
-        map.addLayer(lyrPath);
-        map.addLayer(lyrSeating);
-        map.addLayer(lyrEquipment);
-        //map.addLayer(lyrTrees);
-        //map.addLayer(lyrPhoto);
-
-        // make a hidden polygon overlay
-        let hiddenData = [{
-            "type": "Feature",
-            "properties": {
-                "name": "overlay",
-                "popupContent": "test"
-            },
-            "geometry": {
-                "type": "Polygon",
-                "coordinates": [[[-121.728602, 37.691681],[-121.724186, 37.691543],[-121.723973, 37.689516],[-121.728260, 37.689467]]]
-            }
-        }];
-
-        let transparentStyle = {
-            color: "#ff0b00",
-            weight: 5,
-            fillOpacity: 0,
-            opacity: 0
-        };
-
-        let hiddenLayer = L.geoJSON(hiddenData, {
-            pane: 'hiddenOverlay',
-            style: transparentStyle
-        });
-
-        map.on('popupopen', function(e){
-            map.addLayer(hiddenLayer);
-        });
-
-        map.on('popupclose', function(e){
-            map.removeLayer(hiddenLayer);
-        })
-    }
 
 
     // return map object

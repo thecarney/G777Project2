@@ -58,16 +58,21 @@
                     </button>
                 </div>
                 <div class="modal-body">
+                    <!--<div class="row pl-3">-->
+                        <!--<div class="h6 mr-2">Point: </div> <div class="h6" id="modalPhotoLatLon"></div>-->
+                    <!--</div>-->
+
+
+                    <div class="input-default-wrapper mt-3 mb-3  col-12 px-0">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="inputGroupPrepend4">Point</span>
+                        </div>
+                        <input type="text" class="form-control" id="modalPhotoLatLon">
+                    </div>
+
+
                     <form class="needs-validation" novalidate id="formPhoto" action="" enctype="multipart/form-data">
                         <div class="form-row">
-                            <!--<div class="col-md-4 mb-3">-->
-                                <!--<label for="validationCustom01">CaptionOld</label>-->
-                                <!--<input type="file" id="validationCustom01" accept="image/*" id="filewithcurrent" class="form-control" required name="photo">-->
-                                <!--<label class="label-for-default-js rounded-right mb-3" for="validationCustom01"><span class="span-choose-file">Choose File</span>-->
-                                    <!--<div class="float-right span-browse">Browse</div>-->
-                                <!--</label>-->
-                                <!--<div class="valid-feedback"> Looks good! </div>-->
-                            <!--</div>-->
                             <div class="input-default-wrapper mt-3 mb-3 col-12">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">Upload</span>
@@ -76,12 +81,11 @@
                                     <input type="file" class="custom-file-input" id="inputGroupFile01" accept="image/*" name="photo" required>
                                     <label class="custom-file-label" for="inputGroupFile01" id="fileInputLabel1"> Choose file </label>
                                     <div class="valid-feedback"> Looks good! </div>
-                                    <div class="invalid-feedback"> Choose JPG <1MB </div>
+                                    <div class="invalid-feedback"> Choose JPG or PNG <2MB </div>
                                 </div>
 
                             </div>
                         </div>
-
                         <div class="form-row">
                             <div class="input-default-wrapper mt-3 mb-3  col-12">
                                 <div class="input-group-prepend">
@@ -89,11 +93,10 @@
                                 </div>
                                 <input type="text" class="form-control" id="validationCustom02" required>
                                 <div class="valid-feedback" id="feed1">Looks good! </div>
-                                <div class="invalid-feedback" id="feed2">Add caption </div>
+                                <div class="invalid-feedback" id="feed2">Please add caption </div>
                             </div>
 
                         </div>
-
                         <div class="form-row">
                             <div class="input-default-wrapper mt-3 mb-3 col-12">
                                 <div class="input-group-prepend">
@@ -111,11 +114,10 @@
                                     <option value="Northwest">Northwest</option>
                                 </select>
                                 <div class="valid-feedback" id="feed3"> Looks good! </div>
-                                <div class="invalid-feedback" id="feed4"> Set direction </div>
+                                <div class="invalid-feedback" id="feed4"> Choose a direction </div>
                             </div>
 
                         </div>
-
                         <div class="form-row">
                             <div class="col text-center">
                                 <button class="btn btn-dark-green btn-sm" type="button" id="btnSubmitPhoto">Submit</button>

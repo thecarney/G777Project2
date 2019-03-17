@@ -30,10 +30,16 @@ body {
     .myCustomHomeButton{
         margin-left: -1px;
     }
+    .myCustomPhotoButton{
+        margin-left: -1px;
+    }
 }
 
 @media (-moz-device-pixel-ratio){
     .myCustomHomeButton{
+        margin-left: -1px;
+    }
+    .myCustomPhotoButton{
         margin-left: -1px;
     }
 }
@@ -61,6 +67,7 @@ body {
 
 /*popup styling*/
 .popup-on-load .leaflet-popup-content-wrapper {
+    width: auto;
     padding: 7px;
     background-color: rgba(70, 120, 72, 0.97);
     color: #ffffff;
@@ -234,3 +241,9 @@ body {
     line-height: 26px;
 }
 /* --------------------------------------EASY BUTTON*/
+
+
+
+.leaflet-control-layers.leaflet-control.leaflet-control-layers-expanded {
+    padding-top: 25px;
+}
