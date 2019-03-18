@@ -32,6 +32,8 @@ function map(type) {
 
     addPostPhotoControl();
 
+    addFilterControl();
+
     addOnLoadPopup();
 
     let lyrPhoto = makeLayerPhoto(function () {});
@@ -178,11 +180,6 @@ function map(type) {
                 $(".navbar-toggler").click();
             }
         });
-
-        // initialize all tooltips
-        // $(function () {
-        //     $('[data-toggle="tooltip"]').tooltip({trigger: "hover"})
-        // });
     }
 
     function addScaleControl() {
@@ -292,6 +289,104 @@ function map(type) {
         }).addTo(map);
     }
 
+    function addFilterControl() {
+        // div with icon for easy button
+        htmlString =
+            '<div class="p-0 m-0" id="filterPopover" data-toggle="popover">' +
+            '<i class="fas fa-filter myCustomHomeButton filterButton" data-fa-transform="grow-3 up-1"></i>' +
+            '</div>';
+
+        L.easyButton(htmlString, function () {
+            // doesnt need anything for popover to work
+        }).addTo(map);
+
+        //initialize popover
+        $(function () {
+            $('#filterPopover').popover({
+                title: "Filters",
+                html: true,
+                content: $("#filters"), // div with checks/radios/buttons
+                placement: 'right',
+                trigger: 'click'
+            })
+        });
+
+        // handle selections and filter layers
+
+        //setupFilters();
+
+        function setupFilters() {
+            let filters = document.getElementById('filters');
+            let types = ['All', 'Accessible'];
+            let checkboxes = [];
+            for (let i = 0; i < types.length; i++) {
+                // Create an an input checkbox and label inside.
+                let item = filters.appendChild(document.createElement('div'));
+                let checkbox = item.appendChild(document.createElement('input'));
+                let label = item.appendChild(document.createElement('label'));
+                checkbox.type = 'checkbox';
+                checkbox.id = types[i];
+                checkbox.checked = true;
+                // create a label to the right of the checkbox with explanatory text
+                label.innerHTML = types[i];
+                label.setAttribute('for', types[i]);
+                // Whenever a person clicks on this checkbox, call the update().
+                checkbox.addEventListener('change', update);
+                checkboxes.push(checkbox);
+            }
+            console.log(checkboxes);
+        }  //// not working
+
+        function update() {
+            let enabled = {};
+            // Run through each checkbox and record whether it is checked. If it is,
+            // add it to the object of types to display, otherwise do not.
+            for (let i = 0; i < checkboxes.length; i++) {
+                if (checkboxes[i].checked) enabled[checkboxes[i].id] = true;
+            }
+            lyrSeating.setFilter(function(feature) {
+                // If this symbol is in the list, return true. if not, return false.
+                // The 'in' operator in javascript does exactly that: given a string
+                // or number, it says if that is in a object.
+                // 2 in { 2: true } // true
+                // 2 in { } // false
+                return (feature.properties['marker-symbol'] in enabled);
+            });
+        }  //// not working
+
+    }
+
+    function moveLayerControlToPopover(layerControl){
+        // div with icon for easy button
+        htmlString =
+            '<div class="p-0 m-0" id="layersPopover" data-toggle="popover">' +
+            '<i class="fas fa-layer-group myCustomHomeButton filterButton" data-fa-transform="grow-3 up-1"></i>' +
+            '</div>';
+
+        L.easyButton(htmlString, function () {
+            // doesnt need anything for popover to work
+        }).addTo(map);
+
+        //initialize popover
+        $(function () {
+            $('#layersPopover').popover({
+                title: "Layers",
+                html: true,
+                content: $("#layersControl"), // div with checks/radios/buttons
+                placement: 'right',
+                trigger: 'click'
+            })
+        });
+
+        let htmlObject = layerControl.getContainer();
+        let a = document.getElementById('layersControl');
+        function setParent(el, newParent){
+            newParent.appendChild(el);
+        }
+        setParent(htmlObject, a);
+
+    }
+
     function loadNewPhotosAfterPost() {
         // get locations of photos we already had
         let arrPhotoLatLon = [];
@@ -395,7 +490,10 @@ function map(type) {
             'Park Grounds': lyrGroundCover
         }, {
             position: 'topleft',
+            collapsed: false
         }).addTo(map);
+
+        moveLayerControlToPopover(layerControl);
 
         map.addLayer(lyrGroundCover);
         map.addLayer(lyrPath);
@@ -439,6 +537,8 @@ function map(type) {
     }
 
     function makeLayerPhoto(callback) {
+        let lyrFinal = L.geoJSON();
+
         let lyr = L.mapbox.featureLayer(null, {
             pointToLayer: function (feature, latlng) {
                 let iconPhoto = L.divIcon({
@@ -477,13 +577,14 @@ function map(type) {
                     layer.bindPopup(popup);
                 });
                 callback();
-            });
-        return lyr;
-    }
+            })
+            .addTo(lyrFinal);
+        return lyrFinal;
+    }  // geoJSON
 
     function makeLayerTrees() {
         // Mapbox featureLayer for its async loading
-        // then extract its json and pass to L.geoJSON, to allow pane asssingment
+        // then extract its json and pass to L.geoJSON, to allow pane assignment
         let lyr = L.geoJSON(null, {
             pane: 'trees',
             interactive: false,
@@ -507,7 +608,7 @@ function map(type) {
                 lyr.addData(json);
             });
         return lyr;
-    }
+    }  // geoJSON
 
     function makeLayerEquipment() {
         let iconSwingSet = L.divIcon({
@@ -533,7 +634,9 @@ function map(type) {
             popupAnchor: [5, -3]
         });
 
-        let lyr = L.mapbox.featureLayer(null, {
+        let lyr = L.geoJSON();
+
+        let lyrEquipment = L.mapbox.featureLayer(null, {
             pointToLayer: function (feature, latlng) {
                 if (feature.properties.f1 == 2 || feature.properties.f1 == 3) {
                     return L.marker(latlng, {
@@ -565,11 +668,13 @@ function map(type) {
                             '</i><br><strong>Accessible? </strong>' + layer.feature.properties.f4);
                     layer.bindPopup(popup);
                 });
-            });
+            })
+            .addTo(lyr);
         return lyr;
-    }
+    }  // geoJSON
 
     function makeLayerSeating() {
+
         let iconBench = L.divIcon({
             className: 'fa-icon-bench',
             html: '<div class="fa-2x">\n' +
@@ -593,7 +698,8 @@ function map(type) {
             popupAnchor: [5, -3]
         });
 
-        let lyr = L.mapbox.featureLayer();
+        let lyr = L.geoJSON();
+        //let lyr = L.mapbox.featureLayer();
 
         let lyrBench = L.mapbox.featureLayer(null, {
             pointToLayer: function (feature, latlng) {
@@ -650,7 +756,7 @@ function map(type) {
             .addTo(lyr);
 
         return lyr;
-    }
+    }  // geoJSON
 
     function makeLayerPath() {
         let lyr = L.geoJSON(null, {
@@ -688,7 +794,7 @@ function map(type) {
                 });
             });
         return lyr;
-    }
+    }  // geoJSON
 
     function makeLayerGroundCover() {
         let lyrFinal = L.geoJSON();
@@ -867,7 +973,7 @@ function map(type) {
             });
 
         return lyrFinal;
-    }
+    }  // geoJSON
 
     function makeLayerCourt() {
         let lyr = L.geoJSON(null, {
@@ -904,10 +1010,7 @@ function map(type) {
                 });
             });
         return lyr;
-    }
-
-
-
+    }  // geoJSON
 
     // return map object
     return map;

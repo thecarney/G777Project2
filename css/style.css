@@ -242,8 +242,17 @@ body {
 }
 /* --------------------------------------EASY BUTTON*/
 
-
-
-.leaflet-control-layers.leaflet-control.leaflet-control-layers-expanded {
-    padding-top: 25px;
+.bs-popover-right {
+    margin-left: 10px;
 }
+
+.easy-button-button.leaflet-bar-part {
+    padding-right: 0;
+    padding-left: 0;
+}
+
+.leaflet-control-layers.leaflet-control-layers-expanded.leaflet-control {
+    border: none;
+}
+
+
