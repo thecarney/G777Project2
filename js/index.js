@@ -8,15 +8,12 @@ function initialize() {
     // resize function wraps the main function to allow responsive sizing of panel with map
     let defaultMap = resize(map('default'));
 
-    //let directionsMap = resize(map('directions'));
-
 
 }
 
 // Main
 function map(type) {
     // sub-functions employed mostly for code management and ordered to minimize passing of objects
-
     // map init
     let [map, baseStreets, baseAerial] = setupMap();
     let layerControl;
@@ -30,7 +27,7 @@ function map(type) {
     addFilterControl();
     addLayerControl();
 
-    // store server response data
+    // to store server response data
     let jsonPhoto = [];
     let jsonTrees = [];
     let jsonEquipment = [];
@@ -39,7 +36,16 @@ function map(type) {
     let jsonGroundCover = [];
     let jsonCourt = [];
 
-    // declare main group vars for easier access in other functions
+    // to hold the layer groups actually displayed on the map
+    let mapPhoto = L.layerGroup();
+    let mapTrees = L.layerGroup();
+    let mapEquipment = L.layerGroup();
+    let mapSeating = L.layerGroup();
+    let mapPath = L.layerGroup();
+    let mapGroundCover = L.layerGroup();
+    let mapCourt = L.layerGroup();
+
+    // to hold default layer groups
     let lyrPhoto = L.layerGroup();
     let lyrTrees = L.layerGroup();
     let lyrEquipment = L.layerGroup();
@@ -48,7 +54,7 @@ function map(type) {
     let lyrGroundCover = L.layerGroup();
     let lyrCourt = L.layerGroup();
 
-    // declare group vars for accessible-only features
+    // to hold layer groups filtered to accessible features
     let lyrEquipmentfAccess = L.layerGroup();
     let lyrSeatingfAccess = L.layerGroup();
     let lyrPathfAccess = L.layerGroup();
@@ -62,9 +68,10 @@ function map(type) {
     loadEverything()
         .then((response) => {
             addDefaultLayers();
+            addOnLoadPopup();
         })
         .then((response) => {
-            addOnLoadPopup();
+            // ?
         });
 
     async function loadEverything () {
@@ -75,6 +82,7 @@ function map(type) {
                 let data = await response.json();
                 jsonPhoto.push(data);
                 lyrPhoto = await makeLayerPhoto(jsonPhoto);
+                mapPhoto = await lyrPhoto;
             } catch (e) {
                 console.log(e);
             }
@@ -86,6 +94,7 @@ function map(type) {
                 let data = await response.json();
                 jsonTrees.push(data);
                 lyrTrees = await makeLayerTrees(jsonTrees);
+                mapTrees = await lyrTrees;
             } catch (e) {
                 console.log(e);
             }
@@ -100,6 +109,7 @@ function map(type) {
                 lyrEquipmentfAccess = makeLayerEquipment(jsonEquipment, filterAccess);
                 await lyrEquipment;
                 await lyrEquipmentfAccess;
+                mapEquipment = await lyrEquipment;
             } catch (e) {
                 console.log(e);
             }
@@ -111,18 +121,15 @@ function map(type) {
                     (fetch("https://thecarney2.ngrok.io/p2/benches")).then((response) => response.json()),
                     (fetch("https://thecarney2.ngrok.io/p2/picnic")).then((response) => response.json())
                 ]);
-
                 let data1 = multipleFetch[0];
                 let data2 = multipleFetch[1];
-
                 jsonSeating.push(data1);
                 jsonSeating.push(data2);
-
                 lyrSeating = makeLayerSeating(jsonSeating);
                 lyrSeatingfAccess = makeLayerSeating(jsonSeating, filterAccess);
-
                 await lyrSeating;
                 await lyrSeatingfAccess;
+                mapSeating = await lyrSeating;
             } catch (e) {
                 console.log(e);
             }
@@ -137,6 +144,7 @@ function map(type) {
                 lyrPathfAccess = makeLayerPath(jsonPath, filterAccess);
                 await lyrPath;
                 await lyrPathfAccess;
+                mapPath = await lyrPath;
             } catch (e) {
                 console.log(e);
             }
@@ -151,14 +159,12 @@ function map(type) {
                     (fetch("https://thecarney2.ngrok.io/p2/playground")).then((response) => response.json()),
                     (fetch("https://thecarney2.ngrok.io/p2/sandbox")).then((response) => response.json())
                 ]);
-
                 Array.prototype.push.apply(jsonGroundCover, multipleFetch);
-
                 lyrGroundCover = makeLayerGroundCover(jsonGroundCover);
                 lyrGroundCoverfAccess = makeLayerGroundCover(jsonGroundCover, filterAccess);
-
                 await lyrGroundCover;
                 await lyrGroundCoverfAccess;
+                mapGroundCover = await lyrGroundCover;
             } catch (e) {
                 console.log(e);
             }
@@ -173,6 +179,7 @@ function map(type) {
                 lyrCourtfAccess = makeLayerCourt(jsonCourt, filterAccess);
                 await lyrCourt;
                 await lyrCourtfAccess;
+                mapCourt = await lyrCourt;
             } catch (e) {
                 console.log(e);
             }
@@ -711,27 +718,27 @@ function map(type) {
     function addDefaultLayers() {
         // lyrCourt is controlled by lyrGroundCover
         map.on('overlayadd', function (event) {
-            if (event.layer === lyrGroundCover) {
-                map.addLayer(lyrCourt);
+            if (event.layer === mapGroundCover) {
+                map.addLayer(mapCourt);
             }
         });
         map.on('overlayremove', function (event) {
-            if (event.layer === lyrGroundCover) {
-                map.removeLayer(lyrCourt);
+            if (event.layer === mapGroundCover) {
+                map.removeLayer(mapCourt);
             }
         });
 
-        layerControl.addOverlay(lyrPhoto, 'Visitor Photos');
-        layerControl.addOverlay(lyrTrees, 'Tree Canopy');
-        layerControl.addOverlay(lyrEquipment, 'Playground Equip.');
-        layerControl.addOverlay(lyrSeating, 'Tables & Benches');
-        layerControl.addOverlay(lyrPath, 'Loop Path');
-        layerControl.addOverlay(lyrGroundCover, 'Park Grounds');
+        layerControl.addOverlay(mapPhoto, 'Visitor Photos');
+        layerControl.addOverlay(mapTrees, 'Tree Canopy');
+        layerControl.addOverlay(mapEquipment, 'Playground Equip.');
+        layerControl.addOverlay(mapSeating, 'Tables & Benches');
+        layerControl.addOverlay(mapPath, 'Loop Path');
+        layerControl.addOverlay(mapGroundCover, 'Park Grounds');
 
-        map.addLayer(lyrPath);
-        map.addLayer(lyrEquipment);
-        map.addLayer(lyrSeating);
-        map.addLayer(lyrGroundCover);
+        map.addLayer(mapPath);
+        map.addLayer(mapEquipment);
+        map.addLayer(mapSeating);
+        map.addLayer(mapGroundCover);
     }
 
     function setupListeners() {
@@ -814,6 +821,15 @@ function map(type) {
             if (_opened === true && !clickover.hasClass("navbar-toggler")) {
                 $(".navbar-toggler").click();
             }
+        });
+
+        // close popovers on lose focus
+        $('body').on('click', function (e) {
+            $('[data-toggle="popover"]').each(function () {
+                if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0) {
+                    $(this).popover('hide');
+                }
+            });
         });
     }
 
@@ -926,10 +942,11 @@ function map(type) {
 
     function addFilterControl() {
         // div with icon for easy button
-        htmlString =
-            '<div class="p-0 m-0" id="filterPopover" data-toggle="popover">' +
-            '<i class="fas fa-filter myCustomHomeButton filterButton" data-fa-transform="grow-3 up-1"></i>' +
-            '</div>';
+        let htmlString =
+            '<div class="p-0 m-0" id="filterPopover" data-toggle="popover"><i id="filterIcon" class="fas fa-filter myCustomHomeButton filterButton" data-fa-transform="grow-3 up-1" style="color:#1e1e1e" ></i></div>';
+
+        //let htmlStringInactive =
+        //    '<div class="p-0 m-0" id="filterPopover" data-toggle="popover"><i id="filterIcon" class="fas fa-filter myCustomHomeButton filterButton" data-fa-transform="grow-3 up-1" style="color:#1e1e1e"  ></i></div>';
 
         L.easyButton(htmlString, function () {
             // doesnt need anything for popover to work
@@ -938,7 +955,7 @@ function map(type) {
         //initialize popover
         $(function () {
             $('#filterPopover').popover({
-                title: "Filters",
+                title: "Filter Features",
                 html: true,
                 content: $("#filters"), // div with checks/radios/buttons
                 placement: 'right',
@@ -947,48 +964,61 @@ function map(type) {
         });
 
         // handle selections and filter layers
-
-        //setupFilters();
-
-        function setupFilters() {
-            let filters = document.getElementById('filters');
-            let types = ['All', 'Accessible'];
-            let checkboxes = [];
-            for (let i = 0; i < types.length; i++) {
-                // Create an an input checkbox and label inside.
-                let item = filters.appendChild(document.createElement('div'));
-                let checkbox = item.appendChild(document.createElement('input'));
-                let label = item.appendChild(document.createElement('label'));
-                checkbox.type = 'checkbox';
-                checkbox.id = types[i];
-                checkbox.checked = true;
-                // create a label to the right of the checkbox with explanatory text
-                label.innerHTML = types[i];
-                label.setAttribute('for', types[i]);
-                // Whenever a person clicks on this checkbox, call the update().
-                checkbox.addEventListener('change', update);
-                checkboxes.push(checkbox);
+        $('input:radio').on('click', function(e) {
+            console.log(e.currentTarget.value); //e.currenTarget.value points to the property value of the 'clicked' target.
+            if (e.currentTarget.value.valueOf() === "All") {
+                $('#filterIcon').css('color','#1e1e1e');
+                fShowAllFeatures();
+            } else {
+                $('#filterIcon').css('color','#0030FF');
+                fShowAccessibleFeatures();
             }
-            console.log(checkboxes);
-        }  //// not working
+        });
 
-        function update() {
-            let enabled = {};
-            // Run through each checkbox and record whether it is checked. If it is,
-            // add it to the object of types to display, otherwise do not.
-            for (let i = 0; i < checkboxes.length; i++) {
-                if (checkboxes[i].checked) enabled[checkboxes[i].id] = true;
-            }
-            lyrSeating.setFilter(function(feature) {
-                // If this symbol is in the list, return true. if not, return false.
-                // The 'in' operator in javascript does exactly that: given a string
-                // or number, it says if that is in a object.
-                // 2 in { 2: true } // true
-                // 2 in { } // false
-                return (feature.properties['marker-symbol'] in enabled);
-            });
-        }  //// not working
+    }
 
+    function fShowAllFeatures() {
+        map.removeLayer(mapEquipment);
+        map.removeLayer(mapSeating);
+        map.removeLayer(mapPath);
+        map.removeLayer(mapGroundCover);
+        map.removeLayer(mapCourt);
+
+        mapEquipment = lyrEquipment;
+        mapSeating = lyrSeating;
+        mapPath = lyrPath;
+        mapGroundCover = lyrGroundCover;
+        mapCourt = lyrCourt;
+
+        map.addLayer(mapEquipment);
+        map.addLayer(mapSeating);
+        map.addLayer(mapPath);
+        map.addLayer(mapGroundCover);
+        map.addLayer(mapCourt);
+
+        console.log('tried to show ALL FEATURES');
+    }
+
+    function fShowAccessibleFeatures() {
+        map.removeLayer(mapEquipment);
+        map.removeLayer(mapSeating);
+        map.removeLayer(mapPath);
+        map.removeLayer(mapGroundCover);
+        map.removeLayer(mapCourt);
+
+        mapEquipment = lyrEquipmentfAccess;
+        mapSeating = lyrSeatingfAccess;
+        mapPath = lyrPathfAccess;
+        mapGroundCover = lyrGroundCoverfAccess;
+        mapCourt = lyrCourtfAccess;
+
+        map.addLayer(mapEquipment);
+        map.addLayer(mapSeating);
+        map.addLayer(mapPath);
+        map.addLayer(mapGroundCover);
+        map.addLayer(mapCourt);
+
+        console.log('tried to show ACCESSIBLE FEATURES');
     }
 
     function moveLayerControlToPopover(layerControl){
