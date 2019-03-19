@@ -17,44 +17,601 @@ function initialize() {
 function map(type) {
     // sub-functions employed mostly for code management and ordered to minimize passing of objects
 
-    let arr = setupMap();
-    let map = arr[0];
-    let baseStreets = arr[1];
-    let baseAerial = arr[2];
+    // map init
+    let [map, baseStreets, baseAerial] = setupMap();
+    let layerControl;
 
+    // interface setup
     setupListeners();
-
     addScaleControl();
-
     addHomeButtonControl();
-
     addLocateUserControl();
-
     addPostPhotoControl();
-
     addFilterControl();
+    addLayerControl();
 
-    addOnLoadPopup();
+    // store server response data
+    let jsonPhoto = [];
+    let jsonTrees = [];
+    let jsonEquipment = [];
+    let jsonSeating = [];
+    let jsonPath = [];
+    let jsonGroundCover = [];
+    let jsonCourt = [];
 
-    let lyrPhoto = makeLayerPhoto(function () {});
-    let lyrTrees = makeLayerTrees();
-    let lyrEquipment = makeLayerEquipment();
-    let lyrSeating = makeLayerSeating();
-    let lyrPath = makeLayerPath();
-    let lyrGroundCover = makeLayerGroundCover();
-    let lyrCourt = makeLayerCourt();
+    // declare main group vars for easier access in other functions
+    let lyrPhoto = L.layerGroup();
+    let lyrTrees = L.layerGroup();
+    let lyrEquipment = L.layerGroup();
+    let lyrSeating = L.layerGroup();
+    let lyrPath = L.layerGroup();
+    let lyrGroundCover = L.layerGroup();
+    let lyrCourt = L.layerGroup();
 
-    addLayerControlAndDefaultLayers();
+    // declare group vars for accessible-only features
+    let lyrEquipmentfAccess = L.layerGroup();
+    let lyrSeatingfAccess = L.layerGroup();
+    let lyrPathfAccess = L.layerGroup();
+    let lyrGroundCoverfAccess = L.layerGroup();
+    let lyrCourtfAccess = L.layerGroup();
 
+    // filter fn for accessible features
+    let filterAccess = function (feature) { if (feature.properties.f4 === "Yes") { return true; } };
 
-    let reports = fetch("https://thecarney2.ngrok.io/p2/reports")
-        .then(function (response) {
-            return response.json();
+    // init async loading and layer creation
+    loadEverything()
+        .then((response) => {
+            addDefaultLayers();
         })
-        .then(function (myJson) {
-            //console.log(JSON.stringify(myJson));
+        .then((response) => {
+            addOnLoadPopup();
         });
 
+    async function loadEverything () {
+
+        let a = (async() => {
+            try {
+                let response = await fetch("https://thecarney2.ngrok.io/p2/photos");
+                let data = await response.json();
+                jsonPhoto.push(data);
+                lyrPhoto = await makeLayerPhoto(jsonPhoto);
+            } catch (e) {
+                console.log(e);
+            }
+        })();
+
+        let b = (async() => {
+            try {
+                let response = await fetch("https://thecarney2.ngrok.io/p2/trees");
+                let data = await response.json();
+                jsonTrees.push(data);
+                lyrTrees = await makeLayerTrees(jsonTrees);
+            } catch (e) {
+                console.log(e);
+            }
+        })();
+
+        let c = (async() => {
+            try {
+                let response = await fetch("https://thecarney2.ngrok.io/p2/equipment");
+                let data = await response.json();
+                jsonEquipment.push(data);
+                lyrEquipment = makeLayerEquipment(jsonEquipment);
+                lyrEquipmentfAccess = makeLayerEquipment(jsonEquipment, filterAccess);
+                await lyrEquipment;
+                await lyrEquipmentfAccess;
+            } catch (e) {
+                console.log(e);
+            }
+        })();
+
+        let d = (async() => {
+            try {
+                let multipleFetch = await Promise.all([
+                    (fetch("https://thecarney2.ngrok.io/p2/benches")).then((response) => response.json()),
+                    (fetch("https://thecarney2.ngrok.io/p2/picnic")).then((response) => response.json())
+                ]);
+
+                let data1 = multipleFetch[0];
+                let data2 = multipleFetch[1];
+
+                jsonSeating.push(data1);
+                jsonSeating.push(data2);
+
+                lyrSeating = makeLayerSeating(jsonSeating);
+                lyrSeatingfAccess = makeLayerSeating(jsonSeating, filterAccess);
+
+                await lyrSeating;
+                await lyrSeatingfAccess;
+            } catch (e) {
+                console.log(e);
+            }
+        })();
+
+        let e = (async() => {
+            try {
+                let response = await fetch("https://thecarney2.ngrok.io/p2/parkloop");
+                let data = await response.json();
+                jsonPath.push(data);
+                lyrPath = makeLayerPath(jsonPath);
+                lyrPathfAccess = makeLayerPath(jsonPath, filterAccess);
+                await lyrPath;
+                await lyrPathfAccess;
+            } catch (e) {
+                console.log(e);
+            }
+        })();
+
+        let f = (async() => {
+            try {
+                let multipleFetch = await Promise.all([
+                    (fetch("https://thecarney2.ngrok.io/p2/lawn")).then((response) => response.json()),
+                    (fetch("https://thecarney2.ngrok.io/p2/mulch")).then((response) => response.json()),
+                    (fetch("https://thecarney2.ngrok.io/p2/pavement")).then((response) => response.json()),
+                    (fetch("https://thecarney2.ngrok.io/p2/playground")).then((response) => response.json()),
+                    (fetch("https://thecarney2.ngrok.io/p2/sandbox")).then((response) => response.json())
+                ]);
+
+                Array.prototype.push.apply(jsonGroundCover, multipleFetch);
+
+                lyrGroundCover = makeLayerGroundCover(jsonGroundCover);
+                lyrGroundCoverfAccess = makeLayerGroundCover(jsonGroundCover, filterAccess);
+
+                await lyrGroundCover;
+                await lyrGroundCoverfAccess;
+            } catch (e) {
+                console.log(e);
+            }
+        })();
+
+        let g = (async() => {
+            try {
+                let response = await fetch("https://thecarney2.ngrok.io/p2/bbcourt");
+                let data = await response.json();
+                jsonCourt.push(data);
+                lyrCourt = makeLayerCourt(jsonCourt);
+                lyrCourtfAccess = makeLayerCourt(jsonCourt, filterAccess);
+                await lyrCourt;
+                await lyrCourtfAccess;
+            } catch (e) {
+                console.log(e);
+            }
+        })();
+
+        let everything = await Promise.all([a,b,c,d,e,f,g]);
+    }
+
+    function makeLayerPhoto(data, callback = function(){} ) {
+        let lyr = L.geoJSON(null,{
+            pointToLayer: function (feature, latlng) {
+                let iconPhoto = L.divIcon({
+                    className: 'fa-icon-photo',
+                    html: '<div class="fa-2x">\n' +
+                        '  <span class="fa-layers " style="background:rgba(0,0,0,0)">\n' +
+                        '    <i class="far fa-circle" data-fa-transform="grow-1" style="color:#fdfbfe"></i>\n' +
+                        '    <i class="fas fa-circle" style="color:#2943dc"></i>\n' +
+                        '    <i class="fa-inverse fas fa-camera" data-fa-transform="shrink-8"></i>\n' +
+                        '  </span></div>',
+                    iconSize: [15, 15],
+                    popupAnchor: [5, -3]
+                });
+                return L.marker(latlng, {
+                    icon: iconPhoto,
+                    opacity: 1,
+                    pane: 'photo'
+                });
+            },
+            onEachFeature: function (feature, layer) {
+                let popup = L.popup({
+                    closeButton: false,
+                    className: 'popup-blue',
+                    maxWidth: 'auto',
+                    autoPanPaddingTopLeft: L.point(60, 40),
+                    offset: L.point(0, -4)
+                })
+                    .setContent('<img src="https://thecarney2.ngrok.io/images/'
+                        +layer.feature.properties.f4+
+                        '" alt="pic" style="width: 275px;height: 275px;border-radius: 4px";">' +
+                        '<strong>Caption</strong><i>: ' + layer.feature.properties.f2 + '</i>' +
+                        '<br><strong>Facing</strong><i>: ' + layer.feature.properties.f5 + '</i>');
+                layer.bindPopup(popup);
+            }
+        });
+
+        lyr.addData(data[0]);
+
+        callback();
+
+        return lyr;
+
+    }  // geoJSON
+
+    function makeLayerTrees(data) {
+        let lyr = L.geoJSON(null, {
+            pane: 'trees',
+            interactive: false,
+            style: {
+                //clickable: false,
+                fill: true,
+                fillColor: '#398033',
+                fillOpacity: 0.4,
+                stroke: true,
+                color: '#005e1d',
+                weight: 1,
+                opacity: 0.4,
+                lineCap: 'round',
+                lineJoin: 'round'
+            }
+        });
+
+        lyr.addData(data[0]);
+
+        return lyr;
+    }  // geoJSON
+
+    function makeLayerEquipment( data, filter = function(){return true;}  ) {
+        let iconSwingSet = L.divIcon({
+            className: 'fa-icon-swingset',
+            html: '<div class="fa-2x">\n' +
+                '  <span class="fa-layers " style="background:rgba(0,0,0,0)">\n' +
+                '    <i class="far fa-circle" data-fa-transform="grow-1" style="color:#fdfbfe"></i>\n' +
+                '    <i class="fas fa-circle" style="color:#207375"></i>\n' +
+                '    <i class="fa-inverse fas fa-rocket" data-fa-transform="shrink-6"></i>\n' +
+                '  </span></div>',
+            iconSize: [15, 15],
+            popupAnchor: [5, -3]
+        });
+        let iconPlayStructure = L.divIcon({
+            className: 'fa-icon-playstructure',
+            html: '<div class="fa-2x">\n' +
+                '  <span class="fa-layers " style="background:rgba(0,0,0,0)">\n' +
+                '    <i class="far fa-circle" data-fa-transform="grow-1" style="color:#fdfbfe"></i>\n' +
+                '    <i class="fas fa-circle" style="color:#1c2e75"></i>\n' +
+                '    <i class="fa-inverse fas fa-shapes" data-fa-transform="shrink-6"></i>\n' +
+                '  </span></div>',
+            iconSize: [15, 15],
+            popupAnchor: [5, -3]
+        });
+
+        let lyr = L.geoJSON(null, {
+            pointToLayer: function (feature, latlng) {
+                if (feature.properties.f1 == 2 || feature.properties.f1 == 3) {
+                    return L.marker(latlng, {
+                        icon: iconSwingSet,
+                        opacity: 1,
+                        pane: 'equipment'
+                    });
+                } else {
+                    return L.marker(latlng, {
+                        icon: iconPlayStructure,
+                        opacity: 1,
+                        pane: 'equipment'
+                    });
+                }
+            },
+            onEachFeature: function (feature, layer) {
+                let popup = L.popup({
+                    closeButton: false,
+                    className: 'popup-blue',
+                    maxWidth: 250,
+                    autoPanPaddingTopLeft: L.point(60, 40),
+                    offset: L.point(0, -4)
+                })
+                    .setContent('<strong>' + layer.feature.properties.f2 + '</strong><br><i>' +
+                        layer.feature.properties.f3 +
+                        '</i><br><strong>Accessible? </strong>' + layer.feature.properties.f4);
+                layer.bindPopup(popup);
+            },
+            filter: filter
+        });
+
+        lyr.addData(data[0]);
+
+        return lyr;
+    }  // geoJSON  // access filter
+
+    function makeLayerSeating(data, filter = function(){return true;} ) {
+        let iconBench = L.divIcon({
+            className: 'fa-icon-bench',
+            html: '<div class="fa-2x">\n' +
+                '  <span class="fa-layers " style="background:rgba(0,0,0,0)">\n' +
+                '    <i class="far fa-circle" data-fa-transform="grow-1" style="color:#fdfbfe"></i>\n' +
+                '    <i class="fas fa-circle" style="color:#75543a"></i>\n' +
+                '    <i class="fa-inverse fas fa-chair" data-fa-transform="shrink-6"></i>\n' +
+                '  </span></div>',
+            iconSize: [15, 15],
+            popupAnchor: [5, -3]
+        });
+        let iconTable = L.divIcon({
+            className: 'fa-icon-table',
+            html: '<div class="fa-2x">\n' +
+                '  <span class="fa-layers " style="background:rgba(0,0,0,0)">\n' +
+                '    <i class="far fa-circle" data-fa-transform="grow-1" style="color:#fdfbfe"></i>\n' +
+                '    <i class="fas fa-circle" style="color:#dc7f2f"></i>\n' +
+                '    <i class="fa-inverse fas fa-glass-whiskey fa-rotate-180" data-fa-transform="shrink-6"></i>\n' +
+                '  </span></div>',
+            iconSize: [15, 15],
+            popupAnchor: [5, -3]
+        });
+
+        let lyr = L.geoJSON(null, {
+            pointToLayer: function (feature, latlng) {
+                if (feature.properties.f2 === "Table") {
+                    return L.marker(latlng, {
+                        icon: iconTable,
+                        opacity: 1,
+                        pane: 'seats'
+                    });
+                } else {
+                    return L.marker(latlng, {
+                        icon: iconBench,
+                        opacity: 1,
+                        pane: 'seats'
+                    });
+                }
+            },
+            onEachFeature: function (feature, layer) {
+                if (feature.properties.f2 === "Table") {
+                    let popup = L.popup({
+                        closeButton: false,
+                        className: 'popup-yellow',
+                        maxWidth: 250,
+                        autoPanPaddingTopLeft: L.point(60, 40),
+                        offset: L.point(0, -4)
+                    })
+                        .setContent('<i>' +
+                            layer.feature.properties.f3 +
+                            '</i><br><strong>Accessible? </strong>' + layer.feature.properties.f4);
+                    layer.bindPopup(popup);
+                } else {
+                    let popup = L.popup({
+                        closeButton: false,
+                        className: 'popup-brown',
+                        maxWidth: 250,
+                        autoPanPaddingTopLeft: L.point(60, 40),
+                        offset: L.point(0, -4)
+                    })
+                        .setContent('<i>' +
+                            layer.feature.properties.f3 +
+                            '</i><br><strong>Accessible? </strong>' + layer.feature.properties.f4);
+                    layer.bindPopup(popup);
+                }
+            },
+            filter: filter
+        });
+
+        let arr = data;
+        let arrLen = arr.length;
+        for (let i=0; i < arrLen; i++) {
+            lyr.addData(arr[i]);
+        }
+
+        return lyr;
+    }  // geoJSON  // access filter
+
+    function makeLayerPath(data, filter = function(){return true;}) {
+        let lyr = L.geoJSON(null, {
+            pane: 'polyg509',
+            style: {
+                fill: false,
+                //fillColor: '#bcbabd',
+                //fillOpacity: 0.5,
+                stroke: true,
+                color: '#9f0011',
+                weight: 5,
+                opacity: 0.3,
+                lineCap: 'round',
+                lineJoin: 'round',
+                dashArray: '5 9'
+            },
+            onEachFeature: function (feature, layer) {
+                let popup = L.popup({
+                    closeButton: false,
+                    className: 'popup-red',
+                    maxWidth: 250,
+                    autoPanPaddingTopLeft: L.point(60, 40),
+                    offset: L.point(0, -4)
+                })
+                    .setContent('<strong>' + layer.feature.properties.f2 + '</strong><br><i>' +
+                        layer.feature.properties.f3 +
+                        '</i><br><strong>Accessible? </strong>' + layer.feature.properties.f4);
+                layer.bindPopup(popup);
+            },
+            filter: filter
+        });
+
+        lyr.addData(data[0]);
+
+        return lyr;
+    }  // geoJSON  // access filter
+
+    function makeLayerGroundCover(data, filter = function(){return true;} ) {
+        let styleLawn = {
+            fill: true,
+            fillColor: '#d5f46b',
+            fillOpacity: 0.5,
+            stroke: true,
+            color: '#688342',
+            weight: 1,
+            opacity: 0.5,
+            lineCap: 'round',
+            lineJoin: 'round',
+            pane: 'polyg502'
+        };
+        let styleMulch = {
+            fill: true,
+            fillColor: '#cb9e49',
+            fillOpacity: 0.5,
+            stroke: true,
+            color: '#bb8e4a',
+            weight: 1,
+            opacity: 0.5,
+            lineCap: 'round',
+            lineJoin: 'round',
+            pane: 'polyg501'
+        };
+        let stylePavement = {
+            clickable: false,
+            fill: true,
+            fillColor: '#d8d6d9',
+            fillOpacity: 0.9,
+            stroke: true,
+            color: '#bcbabd',
+            weight: 1,
+            opacity: 0.9,
+            lineCap: 'round',
+            lineJoin: 'round',
+            pane: 'polyg503'
+        };
+        let stylePlayground = {
+            fill: true,
+            fillColor: '#f0c930',
+            fillOpacity: 0.5,
+            stroke: true,
+            color: '#d4af2e',
+            weight: 1,
+            opacity: 0.5,
+            lineCap: 'round',
+            lineJoin: 'round',
+            pane: 'polyg504'
+        };
+        let styleSandbox = {
+            fill: true,
+            fillColor: '#ae9959',
+            fillOpacity: 0.5,
+            stroke: true,
+            color: '#a37752',
+            weight: 1,
+            opacity: 0.5,
+            lineCap: 'round',
+            lineJoin: 'round',
+            pane: 'polyg505'
+        };
+
+        let lyr = L.geoJSON(null,{
+            style: function (feature) {
+                if (feature.properties.f5 === "lawn") {
+                    return styleLawn;
+                } else if (feature.properties.f5 === "mulch") {
+                    return styleMulch;
+                } else if (feature.properties.f5 === "pavement") {
+                    return stylePavement;
+                } else if (feature.properties.f5 === "playground") {
+                    return stylePlayground;
+                } else {
+                    return styleSandbox;
+                }
+            },
+            onEachFeature: function (feature, layer) {
+                if (feature.properties.f5 === "lawn") {
+                    let popup = L.popup({
+                        closeButton: false,
+                        className: 'popup-green',
+                        maxWidth: 250,
+                        autoPanPaddingTopLeft: L.point(60, 40),
+                        offset: L.point(0, -4)
+                    })
+                        .setContent('<strong>' + layer.feature.properties.f2 + '</strong><br><i>' +
+                            layer.feature.properties.f3 +
+                            '</i><br><strong>Accessible? </strong>' + layer.feature.properties.f4);
+                    layer.bindPopup(popup);
+                } else if (feature.properties.f5 === "mulch") {
+                    let popup = L.popup({
+                        closeButton: false,
+                        className: 'popup-brown',
+                        maxWidth: 250,
+                        autoPanPaddingTopLeft: L.point(60, 40),
+                        offset: L.point(0, -4)
+                    })
+                        .setContent('<strong>' + layer.feature.properties.f2 + '</strong><br><i>' +
+                            layer.feature.properties.f3 +
+                            '</i><br><strong>Accessible? </strong>' + layer.feature.properties.f4);
+                    layer.bindPopup(popup);
+                } else if (feature.properties.f5 === "pavement") {
+                    let popup = L.popup({
+                        closeButton: false,
+                        className: 'popup-grey',
+                        maxWidth: 250,
+                        autoPanPaddingTopLeft: L.point(60, 40),
+                        offset: L.point(0, -4)
+                    })
+                        .setContent('<strong>' + layer.feature.properties.f2 + '</strong>');
+                    layer.bindPopup(popup);
+                } else if (feature.properties.f5 === "playground") {
+                    let popup = L.popup({
+                        closeButton: false,
+                        className: 'popup-yellow',
+                        maxWidth: 250,
+                        autoPanPaddingTopLeft: L.point(60, 40),
+                        offset: L.point(0, -4)
+                    })
+                        .setContent('<strong>' + layer.feature.properties.f2 + '</strong><br><i>' +
+                            layer.feature.properties.f3 +
+                            '</i><br><strong>Accessible? </strong>' + layer.feature.properties.f4);
+                    layer.bindPopup(popup);
+                } else {
+                    let popup = L.popup({
+                        closeButton: false,
+                        className: 'popup-brown',
+                        maxWidth: 250,
+                        autoPanPaddingTopLeft: L.point(60, 40),
+                        offset: L.point(0, -4)
+                    })
+                        .setContent('<strong>' + layer.feature.properties.f2 + '</strong><br><i>' +
+                            layer.feature.properties.f3 +
+                            '</i><br><strong>Accessible? </strong>' + layer.feature.properties.f4);
+                    layer.bindPopup(popup);
+                }
+            },
+            filter: filter
+        });
+
+        let arr = data;
+        let arrLen = arr.length;
+        for (let i=0; i < arrLen; i++) {
+            lyr.addData(arr[i]);
+        }
+
+        return lyr;
+
+    }  // geoJSON  // access filter
+
+    function makeLayerCourt(data, filter = function(){return true;} ) {
+
+        let lyr = L.geoJSON(null, {
+            pane: 'polyg508',
+            style: {
+                fill: true,
+                fillColor: '#bcbabd',
+                fillOpacity: 0.8,
+                stroke: true,
+                color: '#fdfbfe',
+                weight: 2,
+                opacity: 0.8,
+                lineCap: 'round',
+                lineJoin: 'round',
+            },
+            onEachFeature: function (feature, layer) {
+                let popup = L.popup({
+                    closeButton: false,
+                    className: 'popup-grey',
+                    maxWidth: 250,
+                    autoPanPaddingTopLeft: L.point(60, 40),
+                    offset: L.point(0, -4)
+                })
+                    .setContent('<strong>' + layer.feature.properties.f2 + '</strong><br><i>' +
+                        layer.feature.properties.f3 +
+                        '</i><br><strong>Accessible? </strong>' + layer.feature.properties.f4);
+                layer.bindPopup(popup);
+            },
+            filter: filter
+        });
+
+        lyr.addData(data[0]);
+
+        return lyr;
+
+    }  // geoJSON  // access filter
 
     function setupMap() {
         // token
@@ -96,6 +653,85 @@ function map(type) {
         map.createPane('newPhoto').style.zIndex = 699;
 
         return [map, baseStreets, baseAerial];
+    }
+
+    function addLayerControl() {
+
+        layerControl = L.control.layers({
+            'Streets': baseStreets.addTo(map),
+            'Satellite': baseAerial
+        }, {
+            // 'Visitor Photos': lyrPhoto,
+            // 'Tree Canopy': lyrTrees,
+            // 'Playground Equip.': lyrEquipment,
+            // 'Tables & Benches': lyrSeating,
+            // 'Loop Path': lyrPath,
+            // 'Park Grounds': lyrGroundCover
+        }, {
+            position: 'topleft',
+            collapsed: false
+        }).addTo(map);
+
+        moveLayerControlToPopover(layerControl);
+
+        // make a hidden polygon overlay
+        let hiddenData = [{
+            "type": "Feature",
+            "properties": {
+                "name": "overlay",
+                "popupContent": "test"
+            },
+            "geometry": {
+                "type": "Polygon",
+                "coordinates": [[[-121.728602, 37.691681], [-121.724186, 37.691543], [-121.723973, 37.689516], [-121.728260, 37.689467]]]
+            }
+        }];
+
+        let transparentStyle = {
+            color: "#ff0b00",
+            weight: 5,
+            fillOpacity: 0,
+            opacity: 0
+        };
+
+        let hiddenLayer = L.geoJSON(hiddenData, {
+            pane: 'hiddenOverlay',
+            style: transparentStyle
+        });
+
+        map.on('popupopen', function (e) {
+            map.addLayer(hiddenLayer);
+        });
+
+        map.on('popupclose', function (e) {
+            map.removeLayer(hiddenLayer);
+        })
+    }
+
+    function addDefaultLayers() {
+        // lyrCourt is controlled by lyrGroundCover
+        map.on('overlayadd', function (event) {
+            if (event.layer === lyrGroundCover) {
+                map.addLayer(lyrCourt);
+            }
+        });
+        map.on('overlayremove', function (event) {
+            if (event.layer === lyrGroundCover) {
+                map.removeLayer(lyrCourt);
+            }
+        });
+
+        layerControl.addOverlay(lyrPhoto, 'Visitor Photos');
+        layerControl.addOverlay(lyrTrees, 'Tree Canopy');
+        layerControl.addOverlay(lyrEquipment, 'Playground Equip.');
+        layerControl.addOverlay(lyrSeating, 'Tables & Benches');
+        layerControl.addOverlay(lyrPath, 'Loop Path');
+        layerControl.addOverlay(lyrGroundCover, 'Park Grounds');
+
+        map.addLayer(lyrPath);
+        map.addLayer(lyrEquipment);
+        map.addLayer(lyrSeating);
+        map.addLayer(lyrGroundCover);
     }
 
     function setupListeners() {
@@ -147,7 +783,6 @@ function map(type) {
                     processData: false,
                     success: function (data, status, jqXHR) {
                         console.log("photo posted");
-                        console.log(data);
 
                         $('#modalLoading').modal('hide');
                         $('#modalSuccess').modal('show');
@@ -465,553 +1100,6 @@ function map(type) {
 
     }
 
-    function addLayerControlAndDefaultLayers() {
-        // lyrCourt is controlled by lyrGroundCover
-        map.on('overlayadd', function (event) {
-            if (event.layer === lyrGroundCover) {
-                map.addLayer(lyrCourt);
-            }
-        });
-        map.on('overlayremove', function (event) {
-            if (event.layer === lyrGroundCover) {
-                map.removeLayer(lyrCourt);
-            }
-        });
-
-        let layerControl = L.control.layers({
-            'Streets': baseStreets.addTo(map),
-            'Satellite': baseAerial
-        }, {
-            'Visitor Photos': lyrPhoto,
-            'Tree Canopy': lyrTrees,
-            'Playground Equip.': lyrEquipment,
-            'Tables & Benches': lyrSeating,
-            'Loop Path': lyrPath,
-            'Park Grounds': lyrGroundCover
-        }, {
-            position: 'topleft',
-            collapsed: false
-        }).addTo(map);
-
-        moveLayerControlToPopover(layerControl);
-
-        map.addLayer(lyrGroundCover);
-        map.addLayer(lyrPath);
-        map.addLayer(lyrSeating);
-        map.addLayer(lyrEquipment);
-        //map.addLayer(lyrTrees);
-        //map.addLayer(lyrPhoto);
-
-        // make a hidden polygon overlay
-        let hiddenData = [{
-            "type": "Feature",
-            "properties": {
-                "name": "overlay",
-                "popupContent": "test"
-            },
-            "geometry": {
-                "type": "Polygon",
-                "coordinates": [[[-121.728602, 37.691681], [-121.724186, 37.691543], [-121.723973, 37.689516], [-121.728260, 37.689467]]]
-            }
-        }];
-
-        let transparentStyle = {
-            color: "#ff0b00",
-            weight: 5,
-            fillOpacity: 0,
-            opacity: 0
-        };
-
-        let hiddenLayer = L.geoJSON(hiddenData, {
-            pane: 'hiddenOverlay',
-            style: transparentStyle
-        });
-
-        map.on('popupopen', function (e) {
-            map.addLayer(hiddenLayer);
-        });
-
-        map.on('popupclose', function (e) {
-            map.removeLayer(hiddenLayer);
-        })
-    }
-
-    function makeLayerPhoto(callback) {
-        let lyrFinal = L.geoJSON();
-
-        let lyr = L.mapbox.featureLayer(null, {
-            pointToLayer: function (feature, latlng) {
-                let iconPhoto = L.divIcon({
-                    className: 'fa-icon-photo',
-                    html: '<div class="fa-2x">\n' +
-                        '  <span class="fa-layers " style="background:rgba(0,0,0,0)">\n' +
-                        '    <i class="far fa-circle" data-fa-transform="grow-1" style="color:#fdfbfe"></i>\n' +
-                        '    <i class="fas fa-circle" style="color:#2943dc"></i>\n' +
-                        '    <i class="fa-inverse fas fa-camera" data-fa-transform="shrink-8"></i>\n' +
-                        '  </span></div>',
-                    iconSize: [15, 15],
-                    popupAnchor: [5, -3]
-                });
-                return L.marker(latlng, {
-                    icon: iconPhoto,
-                    opacity: 1,
-                    pane: 'photo'
-                });
-            },
-        })
-            .loadURL('https://thecarney2.ngrok.io/p2/photos')
-            .on('ready', function () {
-                lyr.eachLayer(function (layer) {
-                    let popup = L.popup({
-                        closeButton: false,
-                        className: 'popup-blue',
-                        maxWidth: 'auto',
-                        autoPanPaddingTopLeft: L.point(60, 40),
-                        offset: L.point(0, -4)
-                    })
-                        .setContent('<img src="https://thecarney2.ngrok.io/images/'
-                            +layer.feature.properties.f4+
-                            '" alt="pic" style="width: 275px;height: 275px;border-radius: 4px";">' +
-                            '<strong>Caption</strong><i>: ' + layer.feature.properties.f2 + '</i>' +
-                            '<br><strong>Facing</strong><i>: ' + layer.feature.properties.f5 + '</i>');
-                    layer.bindPopup(popup);
-                });
-                callback();
-            })
-            .addTo(lyrFinal);
-        return lyrFinal;
-    }  // geoJSON
-
-    function makeLayerTrees() {
-        // Mapbox featureLayer for its async loading
-        // then extract its json and pass to L.geoJSON, to allow pane assignment
-        let lyr = L.geoJSON(null, {
-            pane: 'trees',
-            interactive: false,
-            style: {
-                //clickable: false,
-                fill: true,
-                fillColor: '#398033',
-                fillOpacity: 0.4,
-                stroke: true,
-                color: '#005e1d',
-                weight: 1,
-                opacity: 0.4,
-                lineCap: 'round',
-                lineJoin: 'round'
-            }
-        });
-        let loader = L.mapbox.featureLayer()
-            .loadURL('https://thecarney2.ngrok.io/p2/trees')
-            .on('ready', function () {
-                let json = loader.getGeoJSON();
-                lyr.addData(json);
-            });
-        return lyr;
-    }  // geoJSON
-
-    function makeLayerEquipment() {
-        let iconSwingSet = L.divIcon({
-            className: 'fa-icon-swingset',
-            html: '<div class="fa-2x">\n' +
-                '  <span class="fa-layers " style="background:rgba(0,0,0,0)">\n' +
-                '    <i class="far fa-circle" data-fa-transform="grow-1" style="color:#fdfbfe"></i>\n' +
-                '    <i class="fas fa-circle" style="color:#207375"></i>\n' +
-                '    <i class="fa-inverse fas fa-rocket" data-fa-transform="shrink-6"></i>\n' +
-                '  </span></div>',
-            iconSize: [15, 15],
-            popupAnchor: [5, -3]
-        });
-        let iconPlayStructure = L.divIcon({
-            className: 'fa-icon-playstructure',
-            html: '<div class="fa-2x">\n' +
-                '  <span class="fa-layers " style="background:rgba(0,0,0,0)">\n' +
-                '    <i class="far fa-circle" data-fa-transform="grow-1" style="color:#fdfbfe"></i>\n' +
-                '    <i class="fas fa-circle" style="color:#1c2e75"></i>\n' +
-                '    <i class="fa-inverse fas fa-shapes" data-fa-transform="shrink-6"></i>\n' +
-                '  </span></div>',
-            iconSize: [15, 15],
-            popupAnchor: [5, -3]
-        });
-
-        let lyr = L.geoJSON();
-
-        let lyrEquipment = L.mapbox.featureLayer(null, {
-            pointToLayer: function (feature, latlng) {
-                if (feature.properties.f1 == 2 || feature.properties.f1 == 3) {
-                    return L.marker(latlng, {
-                        icon: iconSwingSet,
-                        opacity: 1,
-                        pane: 'equipment'
-                    });
-                } else {
-                    return L.marker(latlng, {
-                        icon: iconPlayStructure,
-                        opacity: 1,
-                        pane: 'equipment'
-                    });
-                }
-            }
-        })
-            .loadURL('https://thecarney2.ngrok.io/p2/equipment')
-            .on('ready', function () {
-                lyrEquipment.eachLayer(function (layer) {
-                    let popup = L.popup({
-                        closeButton: false,
-                        className: 'popup-blue',
-                        maxWidth: 250,
-                        autoPanPaddingTopLeft: L.point(60, 40),
-                        offset: L.point(0, -4)
-                    })
-                        .setContent('<strong>' + layer.feature.properties.f2 + '</strong><br><i>' +
-                            layer.feature.properties.f3 +
-                            '</i><br><strong>Accessible? </strong>' + layer.feature.properties.f4);
-                    layer.bindPopup(popup);
-                });
-            })
-            .addTo(lyr);
-        return lyr;
-    }  // geoJSON
-
-    function makeLayerSeating() {
-
-        let iconBench = L.divIcon({
-            className: 'fa-icon-bench',
-            html: '<div class="fa-2x">\n' +
-                '  <span class="fa-layers " style="background:rgba(0,0,0,0)">\n' +
-                '    <i class="far fa-circle" data-fa-transform="grow-1" style="color:#fdfbfe"></i>\n' +
-                '    <i class="fas fa-circle" style="color:#75543a"></i>\n' +
-                '    <i class="fa-inverse fas fa-chair" data-fa-transform="shrink-6"></i>\n' +
-                '  </span></div>',
-            iconSize: [15, 15],
-            popupAnchor: [5, -3]
-        });
-        let iconTable = L.divIcon({
-            className: 'fa-icon-table',
-            html: '<div class="fa-2x">\n' +
-                '  <span class="fa-layers " style="background:rgba(0,0,0,0)">\n' +
-                '    <i class="far fa-circle" data-fa-transform="grow-1" style="color:#fdfbfe"></i>\n' +
-                '    <i class="fas fa-circle" style="color:#dc7f2f"></i>\n' +
-                '    <i class="fa-inverse fas fa-glass-whiskey fa-rotate-180" data-fa-transform="shrink-6"></i>\n' +
-                '  </span></div>',
-            iconSize: [15, 15],
-            popupAnchor: [5, -3]
-        });
-
-        let lyr = L.geoJSON();
-        //let lyr = L.mapbox.featureLayer();
-
-        let lyrBench = L.mapbox.featureLayer(null, {
-            pointToLayer: function (feature, latlng) {
-                return L.marker(latlng, {
-                    icon: iconBench,
-                    opacity: 1,
-                    pane: 'seats'
-                });
-            }
-        })
-            .loadURL('https://thecarney2.ngrok.io/p2/benches')
-            .on('ready', function () {
-                lyrBench.eachLayer(function (layer) {
-                    let popup = L.popup({
-                        closeButton: false,
-                        className: 'popup-brown',
-                        maxWidth: 250,
-                        autoPanPaddingTopLeft: L.point(60, 40),
-                        offset: L.point(0, -4)
-                    })
-                        .setContent('<i>' +
-                            layer.feature.properties.f3 +
-                            '</i><br><strong>Accessible? </strong>' + layer.feature.properties.f4);
-                    layer.bindPopup(popup);
-                });
-            })
-            .addTo(lyr);
-
-        let lyrTables = L.mapbox.featureLayer(null, {
-            pointToLayer: function (feature, latlng) {
-                return L.marker(latlng, {
-                    icon: iconTable,
-                    opacity: 1,
-                    pane: 'seats'
-                });
-            }
-        })
-            .loadURL('https://thecarney2.ngrok.io/p2/picnic')
-            .on('ready', function () {
-                lyrTables.eachLayer(function (layer) {
-                    let popup = L.popup({
-                        closeButton: false,
-                        className: 'popup-yellow',
-                        maxWidth: 250,
-                        autoPanPaddingTopLeft: L.point(60, 40),
-                        offset: L.point(0, -4)
-                    })
-                        .setContent('<i>' +
-                            layer.feature.properties.f3 +
-                            '</i><br><strong>Accessible? </strong>' + layer.feature.properties.f4);
-                    layer.bindPopup(popup);
-                });
-            })
-            .addTo(lyr);
-
-        return lyr;
-    }  // geoJSON
-
-    function makeLayerPath() {
-        let lyr = L.geoJSON(null, {
-            pane: 'polyg509',
-            style: {
-                fill: false,
-                //fillColor: '#bcbabd',
-                //fillOpacity: 0.5,
-                stroke: true,
-                color: '#9f0011',
-                weight: 5,
-                opacity: 0.3,
-                lineCap: 'round',
-                lineJoin: 'round',
-                dashArray: '5 9'
-            }
-        });
-        let loader = L.mapbox.featureLayer()
-            .loadURL('https://thecarney2.ngrok.io/p2/parkloop')
-            .on('ready', function () {
-                let json = loader.getGeoJSON();
-                lyr.addData(json);
-                lyr.eachLayer(function (layer) {
-                    let popup = L.popup({
-                        closeButton: false,
-                        className: 'popup-red',
-                        maxWidth: 250,
-                        autoPanPaddingTopLeft: L.point(60, 40),
-                        offset: L.point(0, -4)
-                    })
-                        .setContent('<strong>' + layer.feature.properties.f2 + '</strong><br><i>' +
-                            layer.feature.properties.f3 +
-                            '</i><br><strong>Accessible? </strong>' + layer.feature.properties.f4);
-                    layer.bindPopup(popup);
-                });
-            });
-        return lyr;
-    }  // geoJSON
-
-    function makeLayerGroundCover() {
-        let lyrFinal = L.geoJSON();
-        let lyrLawn = L.geoJSON(null, {
-            pane: 'polyg502',
-            style: {
-                fill: true,
-                fillColor: '#d5f46b',
-                fillOpacity: 0.5,
-                stroke: true,
-                color: '#688342',
-                weight: 1,
-                opacity: 0.5,
-                lineCap: 'round',
-                lineJoin: 'round',
-            }
-        }).addTo(lyrFinal);
-
-        let lyrMulch = L.geoJSON(null, {
-            pane: 'polyg501',
-            style: {
-                fill: true,
-                fillColor: '#cb9e49',
-                fillOpacity: 0.5,
-                stroke: true,
-                color: '#bb8e4a',
-                weight: 1,
-                opacity: 0.5,
-                lineCap: 'round',
-                lineJoin: 'round',
-            }
-        }).addTo(lyrFinal);
-
-        let lyrPavement = L.geoJSON(null, {
-            pane: 'polyg503',
-            style: {
-                clickable: false,
-                fill: true,
-                fillColor: '#d8d6d9',
-                fillOpacity: 0.9,
-                stroke: true,
-                color: '#bcbabd',
-                weight: 1,
-                opacity: 0.9,
-                lineCap: 'round',
-                lineJoin: 'round',
-            }
-        }).addTo(lyrFinal);
-
-        let lyrPlayground = L.geoJSON(null, {
-            pane: 'polyg504',
-            style: {
-                fill: true,
-                fillColor: '#f0c930',
-                fillOpacity: 0.5,
-                stroke: true,
-                color: '#d4af2e',
-                weight: 1,
-                opacity: 0.5,
-                lineCap: 'round',
-                lineJoin: 'round',
-            }
-        }).addTo(lyrFinal);
-
-        let lyrSandbox = L.geoJSON(null, {
-            pane: 'polyg505',
-            style: {
-                fill: true,
-                fillColor: '#ae9959',
-                fillOpacity: 0.5,
-                stroke: true,
-                color: '#a37752',
-                weight: 1,
-                opacity: 0.5,
-                lineCap: 'round',
-                lineJoin: 'round',
-            }
-        }).addTo(lyrFinal);
-
-        let loaderLawn = L.mapbox.featureLayer()
-            .loadURL('https://thecarney2.ngrok.io/p2/lawn')
-            .on('ready', function () {
-                let json = loaderLawn.getGeoJSON();
-                lyrLawn.addData(json);
-                lyrLawn.eachLayer(function (layer) {
-                    let popup = L.popup({
-                        closeButton: false,
-                        className: 'popup-green',
-                        maxWidth: 250,
-                        autoPanPaddingTopLeft: L.point(60, 40),
-                        offset: L.point(0, -4)
-                    })
-                        .setContent('<strong>' + layer.feature.properties.f2 + '</strong><br><i>' +
-                            layer.feature.properties.f3 +
-                            '</i><br><strong>Accessible? </strong>' + layer.feature.properties.f4);
-                    layer.bindPopup(popup);
-                });
-            });
-
-        let loaderMulch = L.mapbox.featureLayer()
-            .loadURL('https://thecarney2.ngrok.io/p2/mulch')
-            .on('ready', function () {
-                let json = loaderMulch.getGeoJSON();
-                lyrMulch.addData(json);
-                lyrMulch.eachLayer(function (layer) {
-                    let popup = L.popup({
-                        closeButton: false,
-                        className: 'popup-brown',
-                        maxWidth: 250,
-                        autoPanPaddingTopLeft: L.point(60, 40),
-                        offset: L.point(0, -4)
-                    })
-                        .setContent('<strong>' + layer.feature.properties.f2 + '</strong><br><i>' +
-                            layer.feature.properties.f3 +
-                            '</i><br><strong>Accessible? </strong>' + layer.feature.properties.f4);
-                    layer.bindPopup(popup);
-                });
-            });
-
-        let loaderPavement = L.mapbox.featureLayer()
-            .loadURL('https://thecarney2.ngrok.io/p2/pavement')
-            .on('ready', function () {
-                let json = loaderPavement.getGeoJSON();
-                lyrPavement.addData(json);
-                lyrPavement.eachLayer(function (layer) {
-                    let popup = L.popup({
-                        closeButton: false,
-                        className: 'popup-grey',
-                        maxWidth: 250,
-                        autoPanPaddingTopLeft: L.point(60, 40),
-                        offset: L.point(0, -4)
-                    })
-                        .setContent('<strong>' + layer.feature.properties.f2 + '</strong>');
-                    layer.bindPopup(popup);
-                });
-            });
-
-        let loaderPlayground = L.mapbox.featureLayer()
-            .loadURL('https://thecarney2.ngrok.io/p2/playground')
-            .on('ready', function () {
-                let json = loaderPlayground.getGeoJSON();
-                lyrPlayground.addData(json);
-                lyrPlayground.eachLayer(function (layer) {
-                    let popup = L.popup({
-                        closeButton: false,
-                        className: 'popup-yellow',
-                        maxWidth: 250,
-                        autoPanPaddingTopLeft: L.point(60, 40),
-                        offset: L.point(0, -4)
-                    })
-                        .setContent('<strong>' + layer.feature.properties.f2 + '</strong><br><i>' +
-                            layer.feature.properties.f3 +
-                            '</i><br><strong>Accessible? </strong>' + layer.feature.properties.f4);
-                    layer.bindPopup(popup);
-                });
-            });
-
-        let loaderSandbox = L.mapbox.featureLayer()
-            .loadURL('https://thecarney2.ngrok.io/p2/sandbox')
-            .on('ready', function () {
-                let json = loaderSandbox.getGeoJSON();
-                lyrSandbox.addData(json);
-                lyrSandbox.eachLayer(function (layer) {
-                    let popup = L.popup({
-                        closeButton: false,
-                        className: 'popup-brown',
-                        maxWidth: 250,
-                        autoPanPaddingTopLeft: L.point(60, 40),
-                        offset: L.point(0, -4)
-                    })
-                        .setContent('<strong>' + layer.feature.properties.f2 + '</strong><br><i>' +
-                            layer.feature.properties.f3 +
-                            '</i><br><strong>Accessible? </strong>' + layer.feature.properties.f4);
-                    layer.bindPopup(popup);
-                });
-            });
-
-        return lyrFinal;
-    }  // geoJSON
-
-    function makeLayerCourt() {
-        let lyr = L.geoJSON(null, {
-            pane: 'polyg508',
-            style: {
-                fill: true,
-                fillColor: '#bcbabd',
-                fillOpacity: 0.8,
-                stroke: true,
-                color: '#fdfbfe',
-                weight: 2,
-                opacity: 0.8,
-                lineCap: 'round',
-                lineJoin: 'round',
-            }
-        });
-        let loader = L.mapbox.featureLayer()
-            .loadURL('https://thecarney2.ngrok.io/p2/bbcourt')
-            .on('ready', function () {
-                let json = loader.getGeoJSON();
-                lyr.addData(json);
-                lyr.eachLayer(function (layer) {
-                    let popup = L.popup({
-                        closeButton: false,
-                        className: 'popup-grey',
-                        maxWidth: 250,
-                        autoPanPaddingTopLeft: L.point(60, 40),
-                        offset: L.point(0, -4)
-                    })
-                        .setContent('<strong>' + layer.feature.properties.f2 + '</strong><br><i>' +
-                            layer.feature.properties.f3 +
-                            '</i><br><strong>Accessible? </strong>' + layer.feature.properties.f4);
-                    layer.bindPopup(popup);
-                });
-            });
-        return lyr;
-    }  // geoJSON
-
     // return map object
     return map;
 }
@@ -1056,60 +1144,3 @@ function resize(map) {
 //             });
 //         });
 //
-//         // process user request for new analysis
-//         function runUserAnalysis() {
-//             // based on ngrok url
-//             let baseURL = "https://thecarney.ngrok.io/idw/";  // MUST MATCH NGROK SUBDOMAIN
-//
-//             // get user param
-//             $("#runButton").click(function () {
-//                 let specifiedPower = $("#userEnteredPower").val();
-//                 let urlWithPower = baseURL + specifiedPower;
-//                 let requestSend = 0;
-//
-//                 if (new String(specifiedPower).valueOf() == "0") {  // need val 1 or greater
-//                     requestSend = 0;
-//                     alert("Please enter an interger greater than or equal to 1")
-//
-//                 } else { // do request
-//                     requestSend = 1;
-//                     let dummyResource = urlWithPower + ".txt";
-//                     lastRequestedPower = specifiedPower;
-//                     let modalTracker = 1;
-//
-//                     // open simple loading modal
-//                     $("#modalLoadingData").modal("show");
-//
-//                     //  request and await response
-//                     fetch(dummyResource).then(function (response) {
-//                         if (response.ok) {
-//                             return response.json();
-//                         }
-//                         throw new Error("Network response was not ok.");
-//                     }).then(function (newJSON) {
-//                         // use result
-//                         let newLayerJSON = newJSON;
-//                         // call layer builders
-//                         createGraphicsCustom(["Predicted Cancer Rate", newLayerJSON]);
-//                         createGraphicsCustom(["Standardized Residuals", newLayerJSON]);
-//                         // close loader modal
-//                         $("#modalLoadingData").modal("hide");
-//                         $("#seeInterpretationbtn").removeClass('d-none');
-//                     }).catch(function (error) {
-//                         // timeout to improve user feedback experience
-//                         setTimeout(function () {
-//                             $("#modalLoadingData").modal("toggle");
-//                             $("#modalServerError").modal("show");
-//                         }, 1000);
-//                         console.log("There was a problem with the fetch operation.", error.message);
-//                     });
-//                 }
-//             });
-//         }
-//
-//         // Catch erros on initial layer load
-//         function errback(error) {
-//             console.error("Something went wrong loading the default layers:  ", error);
-//         }
-//
-//     });  // end main function
