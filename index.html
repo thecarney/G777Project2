@@ -20,8 +20,8 @@
     <link href='https://api.mapbox.com/mapbox.js/v3.2.0/mapbox.css' rel='stylesheet' />
     <link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-locatecontrol/v0.43.0/L.Control.Locate.mapbox.css' rel='stylesheet' />
     <link rel="stylesheet" href="css/locateControlAdjust.css">
-    <link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v1.0.0/MarkerCluster.css' rel='stylesheet' />
-    <link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v1.0.0/MarkerCluster.Default.css' rel='stylesheet' />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
     <!--my css-->
     <link rel="stylesheet" href="css/style.css">
 </head>
@@ -29,18 +29,18 @@
 <!-- Navbar -->
 <header>
     <nav class="navbar navbar-dark light-green darken-4 navbar-expand-sm mb-0 fixed-top z-depth-1 "  id="header1">
-        <div class="container-fluid mx-2">
-            <a class="navbar-brand" href="https://thecarney.github.io/G777Project2/"><i class="far fa-map-marked pb-1"></i> Tex Spruiell Park</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#myTogglerNav"><span class="navbar-toggler-icon"></span></button>
+        <div class="container-fluid mx-0 my-0 py-0" id="appTitleInHeader1">
+            <a class="navbar-brand my-0 py-0" id="appTitleInHeader2" href="https://thecarney.github.io/G777Project2/"><i class="far fa-map-marked pb-1" data-fa-transform="up-7"></i> <small style="vertical-align: super">Tex Spruiell Park</small></a>
+            <!--<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#myTogglerNav"><span class="navbar-toggler-icon"></span></button>-->
 
-            <div class="collapse navbar-collapse text-right " id="myTogglerNav">
-                <div class="navbar-nav ml-auto ">
+            <!--<div class="collapse navbar-collapse text-right " id="myTogglerNav">-->
+                <!--<div class="navbar-nav ml-auto ">-->
 
                     <!--<a class="nav-item nav-link align-middle" href="" data-toggle="modal" data-target="#modalPhoto" id="menuBtnPhoto">Add a Photo<i class="fas fa-camera-alt fa-lg ml-2 mr-2" data-fa-transform=""></i></a>-->
-                    <a class="nav-item nav-link align-middle" href="">Get Directions<i class="fas fa-directions fa-lg ml-2 mr-2" data-fa-transform=""></i></a>
-                    <a class="nav-item nav-link align-middle" href="" style="margin-right: 2px">Make a Report<i class="fas fa-map-marker-exclamation fa-lg ml-2 mr-2" data-fa-transform=""></i></a>
-                </div><!-- navbar -->
-            </div><!-- collapse -->
+                    <!--<a class="nav-item nav-link align-middle" href="">Get Directions<i class="fas fa-directions fa-lg ml-2 mr-2" data-fa-transform=""></i></a>-->
+                    <!--<a class="nav-item nav-link align-middle" href="" style="margin-right: 2px">Make a Report<i class="fas fa-map-marker-exclamation fa-lg ml-2 mr-2" data-fa-transform=""></i></a>-->
+                <!--</div>&lt;!&ndash; navbar &ndash;&gt;-->
+            <!--</div>&lt;!&ndash; collapse &ndash;&gt;-->
         </div><!-- container -->
     </nav>
 </header>
@@ -49,7 +49,7 @@
 <main role="main">
     <!-- Photo Modal -->
     <div class="modal fade" id="modalPhoto" tabindex="-1" role="dialog" aria-labelledby="modalPhotoLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-dialog " role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="modalPhotoTitle">Submit Your Photo!</h5>
@@ -204,8 +204,8 @@
         <div class="row" id="rowParent">
             <!-- MAP -->
             <div class="" id="mainCard">
-                <div class="" id="map">
-                </div>
+                <div class="" id="map"></div>
+
             </div>
         </div>
     </div>
@@ -226,10 +226,15 @@
 
 <div id='layersControl' class="m-0 p-0"></div>
 
+<div id="geocodeControl" class="m-0 p-0"></div>
+
 <!-- MAIN -->
 <!-- FOOTER -->
-<footer class="navbar footer-dark light-green darken-4 navbar-expand-sm mb-0 box-shadow fixed-bottom" id="footer1">
-    <p class="navbar-nav ml-auto text-light font-weight-light h6"><small>© James Carney</small></p>
+<footer class="navbar footer-dark light-green darken-4 navbar-expand-sm mb-0 box-shadow fixed-bottom " id="footer1">
+    <p class="navbar-nav ml-auto">
+        <div id="attribution" class="collapse width text-light" >©JCarney ©Mapbox ©OSM</div>
+        <i role="button" class=" fas fa-info-circle fa-inverse fa-sm ml-2" data-fa-transform="" data-toggle="collapse" data-target="#attribution"></i>
+    </p>
 </footer>
 <!-- FOOTER -->
 <!-- device size tester -->
@@ -258,8 +263,8 @@
 <script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-locatecontrol/v0.43.0/L.Control.Locate.min.js'></script>
 <script src='//api.tiles.mapbox.com/mapbox.js/plugins/leaflet-omnivore/v0.3.1/leaflet-omnivore.min.js'></script>
 <script src="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.js"></script>
-<script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v1.0.0/leaflet.markercluster.js'></script>
-
+<script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+<script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
 <!--my scripts-->
 
 <script type="text/javascript" src="js/index.js"></script>

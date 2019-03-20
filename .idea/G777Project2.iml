@@ -19,5 +19,9 @@
     <orderEntry type="library" name="mdb" level="application" />
     <orderEntry type="library" name="jquery.validate" level="application" />
     <orderEntry type="library" name="additional-methods" level="application" />
+    <orderEntry type="library" name="mapbox.directions" level="application" />
+    <orderEntry type="library" name="leaflet-routing-machine" level="application" />
+    <orderEntry type="library" name="Control.Geocoder" level="application" />
+    <orderEntry type="library" name="mapbox-gl-geocoder" level="application" />
   </component>
 </module>

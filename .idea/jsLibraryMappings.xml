@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="JavaScriptLibraryMappings">
-    <file url="PROJECT" libraries="{L.Control.Locate, additional-methods, bootstrap, easy-button, jquery, jquery.validate, leaflet-omnivore, leaflet.markercluster, mapbox, mdb, popper}" />
+    <file url="PROJECT" libraries="{Control.Geocoder, L.Control.Locate, additional-methods, bootstrap, easy-button, jquery, jquery.validate, leaflet-omnivore, leaflet-routing-machine, leaflet.markercluster, mapbox, mapbox-gl-geocoder, mapbox.directions, mdb, popper}" />
   </component>
 </project>

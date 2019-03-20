@@ -20,12 +20,13 @@ function map(type) {
 
     // interface setup
     setupListeners();
-    addScaleControl();
+    //addScaleControl();
     addHomeButtonControl();
     addLocateUserControl();
     addPostPhotoControl();
     addFilterControl();
     addLayerControl();
+    addRoutingControl();
 
     // to store server response data
     let jsonPhoto = [];
@@ -71,7 +72,7 @@ function map(type) {
             addOnLoadPopup();
         })
         .then((response) => {
-            // ?
+            //?
         });
 
     async function loadEverything () {
@@ -633,8 +634,9 @@ function map(type) {
             maxNativeZoom: 20
         });
         // make map
-        let map = L.mapbox.map('map')
-            .setView([37.6909, -121.72615], 17);
+        let map = L.mapbox.map('map', null, {zoomControl: false, attributionControl: false});
+        map.setView([37.6909, -121.72615], 17);
+        //map.zoomControl.remove();
         // panes for marker z ordering
         map.createPane('photo').style.zIndex = 610;
         map.createPane('equipment').style.zIndex = 609;
@@ -835,7 +837,7 @@ function map(type) {
 
     function addScaleControl() {
         // scale
-        L.control.scale({metric: false}).addTo(map);
+        L.control.scale({metric: false, position: 'bottomright'}).addTo(map);
     }
 
     function addHomeButtonControl() {
@@ -940,13 +942,88 @@ function map(type) {
         }).addTo(map);
     }
 
+    function addRoutingControl() {
+        // let geocoderControl = L.mapbox.geocoderControl('mapbox.places', {
+        //     accessToken: 'pk.eyJ1IjoiamhjYXJuZXkiLCJhIjoiY2p0Z2k5Nzh0MDRkZDN5cDJidmk0c2lwMyJ9.lchq4koczU1lPsZOZ8pWew',
+        //     autocomplete: false,
+        //     proximity: L.latLng(37.6909, -121.72615),
+        //     country: 'us'
+        // }).addTo(map);
+        //
+        // geocoderControl.on('select', function(res) {
+        //     let data = JSON.stringify(res.results.features[0]);
+        //     console.log(data);
+        // });
+        //
+        // let start = "";
+
+
+
+        // div with icon for easy button
+        let htmlString =
+            '<div class="p-0 m-0" id="geocoderPopover" data-toggle="popover"><i id="geocoderIcon" class="fas fa-directions myCustomHomeButton" data-fa-transform="grow-3 up-1" style="color:#1e1e1e" ></i></div>';
+
+        L.easyButton(htmlString, function () {
+
+
+            //routingControl.setWaypoints([,L.latLng(37.6909, -121.72615)])
+
+        }).addTo(map);
+
+        //initialize popover
+        $(function () {
+            $('#geocoderPopover').popover({
+                title: "Get to Tex Spruiell",
+                html: true,
+                content: $("#geocodeControl"),
+                placement: 'right',
+                trigger: 'click'
+            })
+        });
+
+        let routerMapbox = L.Routing.mapbox('pk.eyJ1IjoiamhjYXJuZXkiLCJhIjoiY2p0Z2k5Nzh0MDRkZDN5cDJidmk0c2lwMyJ9.lchq4koczU1lPsZOZ8pWew');
+
+        let geocoderMapbox = L.Control.Geocoder.mapbox(
+            'pk.eyJ1IjoiamhjYXJuZXkiLCJhIjoiY2p0Z2k5Nzh0MDRkZDN5cDJidmk0c2lwMyJ9.lchq4koczU1lPsZOZ8pWew',
+            {
+                geocodingQueryParams: {
+                    proximity: L.latLng(37.6909, -121.72615),
+                    country: 'us'
+                },
+                reverseQueryParams: {
+                    proximity: L.latLng(37.6909, -121.72615),
+                    country: 'us'
+                }
+            });
+
+
+        let routingControl = L.Routing.control({
+            collapsed: true,
+            position: 'topleft',
+            routeWhileDragging: true,
+            router: routerMapbox,
+            geocoder: geocoderMapbox,
+            waypointMode: 'snap',
+            fitSelectedRoutes: true,
+        }).addTo(map);
+
+        let htmlObject = routingControl.getContainer();
+        let a = document.getElementById('geocodeControl');
+        function setParent(el, newParent){
+            newParent.appendChild(el);
+        }
+        setParent(htmlObject, a);
+
+
+
+    }
+
+
+
     function addFilterControl() {
         // div with icon for easy button
         let htmlString =
-            '<div class="p-0 m-0" id="filterPopover" data-toggle="popover"><i id="filterIcon" class="fas fa-filter myCustomHomeButton filterButton" data-fa-transform="grow-3 up-1" style="color:#1e1e1e" ></i></div>';
-
-        //let htmlStringInactive =
-        //    '<div class="p-0 m-0" id="filterPopover" data-toggle="popover"><i id="filterIcon" class="fas fa-filter myCustomHomeButton filterButton" data-fa-transform="grow-3 up-1" style="color:#1e1e1e"  ></i></div>';
+            '<div class="p-0 m-0" id="filterPopover" data-toggle="popover"><i id="filterIcon" class="fas fa-filter myCustomHomeButton" data-fa-transform="grow-3 up-1" style="color:#1e1e1e" ></i></div>';
 
         L.easyButton(htmlString, function () {
             // doesnt need anything for popover to work
@@ -995,8 +1072,6 @@ function map(type) {
         map.addLayer(mapPath);
         map.addLayer(mapGroundCover);
         map.addLayer(mapCourt);
-
-        console.log('tried to show ALL FEATURES');
     }
 
     function fShowAccessibleFeatures() {
@@ -1017,8 +1092,6 @@ function map(type) {
         map.addLayer(mapPath);
         map.addLayer(mapGroundCover);
         map.addLayer(mapCourt);
-
-        console.log('tried to show ACCESSIBLE FEATURES');
     }
 
     function moveLayerControlToPopover(layerControl){
@@ -1085,8 +1158,8 @@ function map(type) {
             maxWidth: 215
         })
             .setLatLng([37.6912, -121.72615])
-            .setContent('<div><h6 class="mb-0">Welcome!</h6><br>Explore the park using the controls at the ' +
-                'top left, or by accessing some additional functionality from the main menu at the top right. <br><br></div>')
+            .setContent('<div><h6 class="mb-0">Welcome!</h6><br>Explore your neighborhood park using the controls at the ' +
+                'left.<br><br> Have a great day outside! <br><br></div>')
             .openOn(map);
 
 
