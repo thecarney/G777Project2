@@ -1,28 +1,26 @@
-/* ATTRIBUTIONS */
+ /* JAMES CARNEY */
 
-// call map initialize functions after page ready
 $(document).ready(initialize);
 
-// starting point for script
-function initialize() {
-    // resize function wraps the main function to allow responsive sizing of panel with map
-    let defaultMap = resize(map('default'));
-
-
-}
+// resize function wraps the main function to allow responsive sizing of panel with map
+function initialize() { resize(map()); }
 
 // Main
-function map(type) {
-    // sub-functions employed mostly for code management and ordered to minimize passing of objects
+function map() {
+    // sub-functions mostly for code management, ordered to minimize passing args
+
     // map init
     let [map, baseStreets, baseAerial] = setupMap();
+
+    // to allow multiple functions to reference this later
     let layerControl;
 
     // interface setup
-    setupListeners();
-    //addScaleControl();
+    validateAndSendPhotoPostForm();
+    addScaleControl();
     addHomeButtonControl();
     addLocateUserControl();
+    addLayerControlEasyButton();
     addPostPhotoControl();
     addFilterControl();
     addLayerControl();
@@ -65,7 +63,7 @@ function map(type) {
     // filter fn for accessible features
     let filterAccess = function (feature) { if (feature.properties.f4 === "Yes") { return true; } };
 
-    // init async loading and layer creation
+    // async loading and layer creation
     loadEverything()
         .then((response) => {
             addDefaultLayers();
@@ -75,6 +73,7 @@ function map(type) {
             //?
         });
 
+    // server fetches
     async function loadEverything () {
 
         let a = (async() => {
@@ -189,6 +188,8 @@ function map(type) {
         let everything = await Promise.all([a,b,c,d,e,f,g]);
     }
 
+    // "makeLayer..." takes JSON and returns Leaflet "layers" (i.e. features) as L.GeoJSON feature groups
+    // some functions take a filter parameter to allow creation of a filtered L.GeoJSON feature group
     function makeLayerPhoto(data, callback = function(){} ) {
         let lyr = L.geoJSON(null,{
             pointToLayer: function (feature, latlng) {
@@ -232,7 +233,7 @@ function map(type) {
 
         return lyr;
 
-    }  // geoJSON
+    }
 
     function makeLayerTrees(data) {
         let lyr = L.geoJSON(null, {
@@ -255,7 +256,7 @@ function map(type) {
         lyr.addData(data[0]);
 
         return lyr;
-    }  // geoJSON
+    }
 
     function makeLayerEquipment( data, filter = function(){return true;}  ) {
         let iconSwingSet = L.divIcon({
@@ -316,7 +317,7 @@ function map(type) {
         lyr.addData(data[0]);
 
         return lyr;
-    }  // geoJSON  // access filter
+    }
 
     function makeLayerSeating(data, filter = function(){return true;} ) {
         let iconBench = L.divIcon({
@@ -395,7 +396,7 @@ function map(type) {
         }
 
         return lyr;
-    }  // geoJSON  // access filter
+    }
 
     function makeLayerPath(data, filter = function(){return true;}) {
         let lyr = L.geoJSON(null, {
@@ -431,7 +432,7 @@ function map(type) {
         lyr.addData(data[0]);
 
         return lyr;
-    }  // geoJSON  // access filter
+    }
 
     function makeLayerGroundCover(data, filter = function(){return true;} ) {
         let styleLawn = {
@@ -582,7 +583,7 @@ function map(type) {
 
         return lyr;
 
-    }  // geoJSON  // access filter
+    }
 
     function makeLayerCourt(data, filter = function(){return true;} ) {
 
@@ -619,7 +620,9 @@ function map(type) {
 
         return lyr;
 
-    }  // geoJSON  // access filter
+    }
+
+    // map setup and control setup
 
     function setupMap() {
         // token
@@ -635,7 +638,7 @@ function map(type) {
         });
         // make map
         let map = L.mapbox.map('map', null, {zoomControl: false, attributionControl: false});
-        map.setView([37.6909, -121.72615], 17);
+        map.setView([37.6913, -121.72615], 17);
         //map.zoomControl.remove();
         // panes for marker z ordering
         map.createPane('photo').style.zIndex = 610;
@@ -662,6 +665,32 @@ function map(type) {
         map.createPane('newPhoto').style.zIndex = 699;
 
         return [map, baseStreets, baseAerial];
+    }
+
+    function addLayerControlEasyButton() {
+        // empty button, but reserves control's position in stack
+        // div with icon for easy button
+        htmlString =
+            '<div class="p-0 m-0 layersPopoverDataToggle" id="layersPopover" data-toggle="popover">' +
+            '<i class="fas fa-layer-group myCustomHomeButton filterButton" data-fa-transform="grow-3 up-1"></i>' +
+            '</div>';
+
+        L.easyButton(htmlString, function () {
+            // doesnt need anything for popover to work
+        }).addTo(map);
+
+        //initialize popover
+        $(function () {
+            $('#layersPopover').popover({
+                title: "Layers",
+                html: true,
+                content: $("#layersControl"), // div with checks/radios/buttons
+                placement: 'right',
+                trigger: 'click',
+                container: 'popovers',
+                viewport: {selector: '#map', padding: 5 }
+            })
+        });
     }
 
     function addLayerControl() {
@@ -717,6 +746,31 @@ function map(type) {
         })
     }
 
+    function moveLayerControlToPopover(layerControl){
+        // now that layer control is ready, move it to popover
+        let htmlObject = layerControl.getContainer();
+        let a = document.getElementById('layersControl');
+        function setParent(el, newParent){
+            newParent.appendChild(el);
+        }
+        setParent(htmlObject, a);
+
+        // close popovers on lose focus
+        $('body').on('click', function (e) {
+            $('[data-toggle="popover"]').each(function () {
+                if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0) {
+                    $(this).popover('hide');
+                }
+            });
+        });
+
+
+
+
+
+
+    }
+
     function addDefaultLayers() {
         // lyrCourt is controlled by lyrGroundCover
         map.on('overlayadd', function (event) {
@@ -743,7 +797,7 @@ function map(type) {
         map.addLayer(mapGroundCover);
     }
 
-    function setupListeners() {
+    function validateAndSendPhotoPostForm() {
         // validation and post for make photo
         $("#btnSubmitPhoto").on('click', function () {
             // get photo form
@@ -824,27 +878,18 @@ function map(type) {
                 $(".navbar-toggler").click();
             }
         });
-
-        // close popovers on lose focus
-        $('body').on('click', function (e) {
-            $('[data-toggle="popover"]').each(function () {
-                if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0) {
-                    $(this).popover('hide');
-                }
-            });
-        });
     }
 
     function addScaleControl() {
         // scale
-        L.control.scale({metric: false, position: 'bottomright'}).addTo(map);
+        L.control.scale({metric: false, position: 'bottomleft'}).addTo(map);
     }
 
     function addHomeButtonControl() {
         // home button
         L.easyButton('<i class="fas fa-home myCustomHomeButton" data-fa-transform="grow-4 up-2"></i>', function () {
             map.setView([37.6903, -121.72615], 17);
-        }).addTo(map);
+        }, {position: 'topright'}).addTo(map);
     }
 
     function addLocateUserControl() {
@@ -853,6 +898,7 @@ function map(type) {
             icon: 'fas fa-crosshairs ',
             iconElementTag: 'span',
             keepCurrentZoomLevel: true,
+            position: 'topright',
             locateOptions: {
                 enableHighAccuracy: true
             }
@@ -943,43 +989,6 @@ function map(type) {
     }
 
     function addRoutingControl() {
-        // let geocoderControl = L.mapbox.geocoderControl('mapbox.places', {
-        //     accessToken: 'pk.eyJ1IjoiamhjYXJuZXkiLCJhIjoiY2p0Z2k5Nzh0MDRkZDN5cDJidmk0c2lwMyJ9.lchq4koczU1lPsZOZ8pWew',
-        //     autocomplete: false,
-        //     proximity: L.latLng(37.6909, -121.72615),
-        //     country: 'us'
-        // }).addTo(map);
-        //
-        // geocoderControl.on('select', function(res) {
-        //     let data = JSON.stringify(res.results.features[0]);
-        //     console.log(data);
-        // });
-        //
-        // let start = "";
-
-
-
-        // div with icon for easy button
-        let htmlString =
-            '<div class="p-0 m-0" id="geocoderPopover" data-toggle="popover"><i id="geocoderIcon" class="fas fa-directions myCustomHomeButton" data-fa-transform="grow-3 up-1" style="color:#1e1e1e" ></i></div>';
-
-        L.easyButton(htmlString, function () {
-
-
-            //routingControl.setWaypoints([,L.latLng(37.6909, -121.72615)])
-
-        }).addTo(map);
-
-        //initialize popover
-        $(function () {
-            $('#geocoderPopover').popover({
-                title: "Get to Tex Spruiell",
-                html: true,
-                content: $("#geocodeControl"),
-                placement: 'right',
-                trigger: 'click'
-            })
-        });
 
         let routerMapbox = L.Routing.mapbox('pk.eyJ1IjoiamhjYXJuZXkiLCJhIjoiY2p0Z2k5Nzh0MDRkZDN5cDJidmk0c2lwMyJ9.lchq4koczU1lPsZOZ8pWew');
 
@@ -993,37 +1002,72 @@ function map(type) {
                 reverseQueryParams: {
                     proximity: L.latLng(37.6909, -121.72615),
                     country: 'us'
-                }
+                },
             });
 
-
         let routingControl = L.Routing.control({
-            collapsed: true,
-            position: 'topleft',
+            show: true,
+            collapse: false,
+            collapsible: false,
+            position: 'topright',
             routeWhileDragging: true,
             router: routerMapbox,
             geocoder: geocoderMapbox,
-            waypointMode: 'snap',
-            fitSelectedRoutes: true,
-        }).addTo(map);
+            waypointMode: 'connect',
+            units: 'imperial',
+            lineOptions: {
+                addWaypoints: false
+            },
+            fitSelectedRoutes: false,
+            createMarker: function(i, wp, nWps) {
+                let mkr = L.marker(wp.latLng, {
+                    pane: 'newPhoto',
+                    draggable: true
+                });
+                return mkr;
+            }
+        });
 
-        let htmlObject = routingControl.getContainer();
-        let a = document.getElementById('geocodeControl');
-        function setParent(el, newParent){
-            newParent.appendChild(el);
-        }
-        setParent(htmlObject, a);
+        let state = 'control CLOSED and INACTIVE';
+        L.easyButton('<i id="directionsIcon" class="fas fa-directions myCustomHomeButton" data-fa-transform="grow-8 up-2"></i>',
+            function () {
 
+                if (state == 'control CLOSED and INACTIVE') {
+                    // load control
+                    state = 'control OPEN and ACTIVE';
+                    routingControl.setWaypoints([undefined, L.latLng(37.6905, -121.72615)]);
+                    routingControl.show();
+                    $('#directionsIcon').css('color','#0030FF');
 
+                } else if (state === 'control OPEN and ACTIVE') {
+                    // just hide control
+                    state = 'control CLOSED and ACTIVE';
+                    routingControl.hide();
 
+                } else if (state === 'control CLOSED and ACTIVE') {
+                    // deactivate, i.e. reset
+                    state = 'control CLOSED and INACTIVE';
+                    routingControl.hide();
+                    routingControl.setWaypoints([undefined, undefined]);
+                    $('#directionsIcon').css('color','#323232');
+                }
+            }, {position: 'topright'}).addTo(map);
+
+        routingControl.addTo(map);
+        routingControl.hide();
+
+        routingControl.on('routeselected', function (e) {
+            let route = e.route;
+            let line = L.Routing.line(route);
+            let bounds  = line.getBounds();
+            map.fitBounds(bounds, {padding: [50,50]});
+        });
     }
-
-
 
     function addFilterControl() {
         // div with icon for easy button
         let htmlString =
-            '<div class="p-0 m-0" id="filterPopover" data-toggle="popover"><i id="filterIcon" class="fas fa-filter myCustomHomeButton" data-fa-transform="grow-3 up-1" style="color:#1e1e1e" ></i></div>';
+            '<div class="p-0 m-0" id="filterPopover" data-toggle="popover"><i id="filterIcon" class="fas fa-filter myCustomHomeButton" data-fa-transform="grow-3 up-1" style="color:#323232" ></i></div>';
 
         L.easyButton(htmlString, function () {
             // doesnt need anything for popover to work
@@ -1044,7 +1088,7 @@ function map(type) {
         $('input:radio').on('click', function(e) {
             console.log(e.currentTarget.value); //e.currenTarget.value points to the property value of the 'clicked' target.
             if (e.currentTarget.value.valueOf() === "All") {
-                $('#filterIcon').css('color','#1e1e1e');
+                $('#filterIcon').css('color','#323232');
                 fShowAllFeatures();
             } else {
                 $('#filterIcon').css('color','#0030FF');
@@ -1094,37 +1138,6 @@ function map(type) {
         map.addLayer(mapCourt);
     }
 
-    function moveLayerControlToPopover(layerControl){
-        // div with icon for easy button
-        htmlString =
-            '<div class="p-0 m-0" id="layersPopover" data-toggle="popover">' +
-            '<i class="fas fa-layer-group myCustomHomeButton filterButton" data-fa-transform="grow-3 up-1"></i>' +
-            '</div>';
-
-        L.easyButton(htmlString, function () {
-            // doesnt need anything for popover to work
-        }).addTo(map);
-
-        //initialize popover
-        $(function () {
-            $('#layersPopover').popover({
-                title: "Layers",
-                html: true,
-                content: $("#layersControl"), // div with checks/radios/buttons
-                placement: 'right',
-                trigger: 'click'
-            })
-        });
-
-        let htmlObject = layerControl.getContainer();
-        let a = document.getElementById('layersControl');
-        function setParent(el, newParent){
-            newParent.appendChild(el);
-        }
-        setParent(htmlObject, a);
-
-    }
-
     function loadNewPhotosAfterPost() {
         // get locations of photos we already had
         let arrPhotoLatLon = [];
@@ -1155,11 +1168,13 @@ function map(type) {
             closeButton: false,
             className: 'popup-on-load',
             offset: L.point(0, 0),
-            maxWidth: 215
+            maxWidth: 215,
+            keepInView: false,
+            autoPan: false
         })
             .setLatLng([37.6912, -121.72615])
-            .setContent('<div><h6 class="mb-0">Welcome!</h6><br>Explore your neighborhood park using the controls at the ' +
-                'left.<br><br> Have a great day outside! <br><br></div>')
+            .setContent('<div><h6 class="mb-0 pb-1">Welcome to Tex Spruiell</h6><p class="my-0, py-0">' +
+                ' <small> Enjoy exploring your <br> neighborhood park! </small> </p></div>')
             .openOn(map);
 
 
@@ -1229,21 +1244,3 @@ function resize(map) {
 
     }).trigger("resize");
 }
-
-/*/==================================================================================================================
-------------------------------------------------------------------------------------------------------------- SCRATCH
-===================================================================================================================== /*/
-
-//         // setup printer (html2canvas)
-//         $("#printScreenButton").click(function() {
-//             html2canvas(document.querySelector("#mainContainer")).then(canvas => {
-//                 let url = canvas.toDataURL();
-//                 let triggerDownload = $("<a>").attr("href", url).attr("download",name+".png").appendTo("body");
-//                 triggerDownload[0].click();
-//                 triggerDownload.remove();
-//                 $("#modalPrintScreen").modal("hide");
-//                 console.log("print screen attempt");
-//                 //document.body.appendChild(canvas)
-//             });
-//         });
-//

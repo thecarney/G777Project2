@@ -1,11 +1,16 @@
 /* Stylesheet by J Carney, 2018 */
 
+
+
 body {
     padding-top: 0px;
     -webkit-padding-before: 0px;
 	overflow: hidden !important;
     /*overflow: hidden;*/
 }
+
+
+
 
 .bg-custom-darkblue {background-color: #0056b3;}
 
@@ -299,11 +304,12 @@ body {
     /*margin-right: 0;*/
 }
 
-.leaflet-routing-container {
-    border: none;
-    margin: 0;
-    padding: 0;
-}
+/*.leaflet-routing-container {*/
+    /*border: none;*/
+    /*margin: 0;*/
+    /*padding: 0;*/
+    /*margin-left: 10px;*/
+/*}*/
 
 .leaflet-routing-geocoder-result {
     z-index: 10000;
@@ -311,6 +317,7 @@ body {
 
 .leaflet-routing-geocoders {
     padding-top: 0;
+    border: none;
 }
 
 button.leaflet-routing-add-waypoint {
@@ -318,6 +325,28 @@ button.leaflet-routing-add-waypoint {
     display: none;
 }
 
-.leaflet-marker-icon.leaflet-zoom-animated.leaflet-interactive.leaflet-marker-draggable {
-    z-index: 10000;
+
+.popover-body.geocodeControl {
+    padding: 0;
 }
+
+.leaflet-routing-container-hide {
+    display: none !important;
+}
+
+
+
+/*.leaflet-control-container .leaflet-routing-container-hide {*/
+    /*display: none;*/
+/*}*/
+
+.leaflet-right .leaflet-control {
+    margin-right: 10px !important;
+    margin-top: 10px !important;
+    margin-left: 10px !important;
+}
+
+.leaflet-routing-alt {
+    display: none;
+}
+
