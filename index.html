@@ -15,13 +15,14 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.5.0/css/mdb.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.2.1/css/bootstrap.min.css" rel="stylesheet">
     <!--Material Design Bootstrap-->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.7.0/css/mdb.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.7.5/css/mdb.min.css" rel="stylesheet">
     <!--mapbox/leaflet-->
     <link href='https://api.mapbox.com/mapbox.js/v3.2.0/mapbox.css' rel='stylesheet' />
     <link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-locatecontrol/v0.43.0/L.Control.Locate.mapbox.css' rel='stylesheet' />
     <link rel="stylesheet" href="css/locateControlAdjust.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/dt-1.10.18/r-2.2.2/sl-1.3.0/datatables.min.css"/>
     <!--my css-->
     <link rel="stylesheet" href="css/style.css">
 </head>
@@ -31,20 +32,11 @@
     <nav class="navbar navbar-dark light-green darken-4 navbar-expand-sm mb-0 fixed-top z-depth-1 "  id="header1">
         <div class="container-fluid mx-0 my-0 py-0" id="appTitleInHeader1">
             <a class="navbar-brand my-0 py-0" id="appTitleInHeader2" href="https://thecarney.github.io/G777Project2/"><i class="far fa-map-marked pb-1" data-fa-transform="up-7"></i> <small style="vertical-align: super">Tex Spruiell Park</small></a>
-            <!--<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#myTogglerNav"><span class="navbar-toggler-icon"></span></button>-->
-
-            <!--<div class="collapse navbar-collapse text-right " id="myTogglerNav">-->
-                <!--<div class="navbar-nav ml-auto ">-->
-
-                    <!--<a class="nav-item nav-link align-middle" href="" data-toggle="modal" data-target="#modalPhoto" id="menuBtnPhoto">Add a Photo<i class="fas fa-camera-alt fa-lg ml-2 mr-2" data-fa-transform=""></i></a>-->
-                    <!--<a class="nav-item nav-link align-middle" href="">Get Directions<i class="fas fa-directions fa-lg ml-2 mr-2" data-fa-transform=""></i></a>-->
-                    <!--<a class="nav-item nav-link align-middle" href="" style="margin-right: 2px">Make a Report<i class="fas fa-map-marker-exclamation fa-lg ml-2 mr-2" data-fa-transform=""></i></a>-->
-                <!--</div>&lt;!&ndash; navbar &ndash;&gt;-->
-            <!--</div>&lt;!&ndash; collapse &ndash;&gt;-->
-        </div><!-- container -->
+        </div>
     </nav>
 </header>
 <!-- Navbar -->
+
 <!-- MAIN -->
 <main role="main">
     <!-- Photo Modal -->
@@ -58,10 +50,6 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <!--<div class="row pl-3">-->
-                        <!--<div class="h6 mr-2">Point: </div> <div class="h6" id="modalPhotoLatLon"></div>-->
-                    <!--</div>-->
-
 
                     <div class="input-default-wrapper mt-3 mb-3  col-12 px-0">
                         <div class="input-group-prepend">
@@ -128,6 +116,7 @@
             </div>
         </div>
     </div>
+
     <!-- Modal Failure -->
     <div class="modal fade" id="modalFailure" tabindex="-1" role="dialog" aria-labelledby="modalPhotoLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
@@ -149,6 +138,7 @@
             </div>
         </div>
     </div>
+
     <!-- Modal Success -->
     <div class="modal fade" id="modalSuccess" tabindex="-1" role="dialog" aria-labelledby="modalPhotoLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
@@ -161,6 +151,7 @@
             </div>
         </div>
     </div>
+
     <!-- Modal Loading -->
     <div class="modal fade" id="modalLoading" tabindex="-1" role="dialog" aria-labelledby="modalPhotoLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
@@ -173,30 +164,114 @@
         </div>
     </div>
 
-
-    <!-- Print Modal -->
-    <div class="modal fade" id="modalPrintScreen" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
+    <!-- Report Modal -->
+    <div class="modal fade" id="modalCreateReport" tabindex="-1" role="dialog" aria-labelledby="modalCreateReportLabel" aria-hidden="true">
+        <div class="modal-dialog " role="document">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="printScreenModalLabel">Export (Print) Map View to PNG</h5>
+
+                <div class="modal-header pb-1">
+                    <h5 class="modal-title" id="modalCreateReportTitle">Make a Report</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body">
-                    <div class="pl-1">This print tool will save a PNG of the current map and legend view. Because this
-                        project was built specifically to avoid the need for an ArcGIS Server instance, this print tool
-                        cannot render the basemap, but will render feature layers and any open info windows (popups).<br><br>
-                        Use the button below to close this modal and execute the print. </div>
-                    <div class="col text-center"><button type="button" class=" btn btn-primary btn-sm" id="printScreenButton">Print</button></div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-light btn-sm" data-dismiss="modal">Cancel</button>
+
+                <div class="modal-body pt-0">
+                    <div class="input-default-wrapper mt-3 mb-1  col-12 px-0">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="inputGroupPrependFeatureID">Feature</span>
+                        </div>
+                        <input type="text" class="form-control" id="modalReportFeatureID"  >
+                    </div>
+
+                    <form class="needs-validation" novalidate id="formCreateReport" action="" enctype="multipart/form-data">
+                        <div class="form-row pb-3">
+                            <div class="form-group mt-1 mb-1 col-12">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text col-12">
+                                        <span class="col-6 text-left pl-0" id="inputGroupPrependReportDetails">Details</span>
+                                        <h6 class="col-6 text-right pr-0 pb-0 mr-0 mb-0" id="count_message" style="font-size: smaller"></h6>
+                                    </div>
+                                </div>
+                                <input type="textarea" rows="4" maxlength="200" style="height:100%;" class="form-control" id="inputGroupReportDetails" required>
+                                <div class="valid-feedback" id="feed10">Looks good! </div>
+                                <div class="invalid-feedback" id="feed11">Please add a description</div>
+                            </div>
+                        </div>
+
+                        <div class="form-row mt-4 pb-2">
+                            <div class="input-default-wrapper mt-1 mb-1 col-12">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="inputGroupPrependReportType">Type</span>
+                                </div>
+                                <select class="form-control custom-select custom-select-sm" id="validationReportType" required>
+                                    <option value="">--Choose a Type--</option>
+                                    <option value="Cleanup Needed">Cleanup Needed</option>
+                                    <option value="Repair Needed">Repair Needed</option>
+                                    <option value="Replacement Needed">Replacement Needed</option>
+                                    <option value="Upgrade Request">Upgrade Request</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                                <div class="valid-feedback" id="feed12"> Looks good! </div>
+                                <div class="invalid-feedback" id="feed13"> Choose a Type </div>
+                            </div>
+                        </div>
+
+                        <div class="form-row col-12 pl-0 pr-0 mr-0 ml-0">
+
+                            <div class="input-group-prepend col-12 mx-0 px-0">
+                                <div class="input-group-text col-12">
+                                    <span class="col-6 text-left pl-0" id="inputGroupPrependReportEmail">Email</span>
+                                    <h6 class="col-6 text-right pr-0 pb-0 mr-0 mb-0" style="font-size: smaller">Optional</h6>
+                                </div>
+                            </div>
+
+                            <div class="col-6 mx-0 px-0">
+                                <label class="sr-only" for="inputCreateReportEmailUsername">Name</label>
+                                <input type="text" class="form-control mb-2" id="inputCreateReportEmailUsername" >
+                                <div class="valid-feedback" id="feed20"> Looks good! </div>
+                                <div class="invalid-feedback" id="feed21"> Choose a Type </div>
+                            </div>
+                            <div class="col-6 mx-0 px-0">
+                                <label class="sr-only" for="inputCreateReportEmailProvider">Username</label>
+                                <div class="input-group mb-2 ml-0 pl-0 mr-0 pr-0">
+                                    <div class="input-group-prepend pl-0 ml-0 mr-0 pr-0">
+                                        <div class="input-group-text">@</div>
+                                    </div>
+                                    <input type="text" class="form-control" id="inputCreateReportEmailProvider">
+                                    <div class="valid-feedback" id="feed30"> Looks good! </div>
+                                    <div class="invalid-feedback" id="feed31"> Choose a Type </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="form-row col-12 pl-0 pr-0 mr-0 ml-0 pt-1">
+                            <div class="input-group-prepend col-12 mx-0 px-0">
+                                <div class="input-group-text col-12">
+                                    <span class="col-6 text-left pl-0" id="inputGroupPrependReportPhone">Phone</span>
+                                    <h6 class="col-6 text-right pr-0 pb-0 mr-0 mb-0" style="font-size: smaller">Optional</h6>
+                                </div>
+                            </div>
+                            <div class="col-12 mx-0 px-0">
+                                <label class="sr-only" for="inputCreateReportPhone">#</label>
+                                <input type="text" class="form-control mb-2" id="inputCreateReportPhone" >
+                                <div class="valid-feedback" id="feed41"> Looks good! </div>
+                                <div class="invalid-feedback" id="feed42"> Enter your number </div>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="col text-center">
+                                <button class="btn btn-dark-green btn-sm" type="button" id="btnSubmitReport">Submit</button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
+
 
 
     <!-- MAP PAGE -->
@@ -205,7 +280,6 @@
             <!-- MAP -->
             <div class="" id="mainCard">
                 <div class="" id="map"></div>
-
             </div>
         </div>
     </div>
@@ -224,9 +298,16 @@
     </div>
 </div>
 
+<div id="reportsContainer">
+    <div class="table-responsive">
+        <table id="report_table_1" class="table table-bordered table-sm compact table-hover table-xtra-condensed" width="100%"> </table>
+    </div>
+</div>
+
 
 
 <!-- MAIN -->
+
 <!-- FOOTER -->
 <footer class="navbar footer-dark light-green darken-4 navbar-expand-sm mb-0 box-shadow fixed-bottom " id="footer1">
     <p class="navbar-nav ml-auto">
@@ -235,6 +316,7 @@
     </p>
 </footer>
 <!-- FOOTER -->
+
 <!-- device size tester -->
 <div id="device-size-detector">
     <div id="xs" class="d-block d-sm-none"></div>
@@ -244,18 +326,17 @@
     <div id="xl" class="d-none d-xl-block"></div>
 </div>
 <!-- device size tester -->
+
 <!--bootstap 4 scripts-->
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.0/dist/jquery.validate.js"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.0/dist/additional-methods.js"></script>
-
-
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.2.1/js/bootstrap.min.js"></script>
+
 <!-- material design bootstrap core JavaScript -->
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.7.0/js/mdb.min.js"></script>
-<!--html2canvas-->
-<script type="text/javascript" src="js/html2canvas.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.7.5/js/mdb.min.js"></script>
+
 <!--mapbox-->
 <script src='https://api.mapbox.com/mapbox.js/v3.2.0/mapbox.js'></script>
 <script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-locatecontrol/v0.43.0/L.Control.Locate.min.js'></script>
@@ -263,59 +344,17 @@
 <script src="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.js"></script>
 <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
 <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.18/r-2.2.2/sl-1.3.0/datatables.min.js"></script>
 <!--my scripts-->
-
 <script type="text/javascript" src="js/index.js"></script>
+
 </body>
 
 <popovers class="myCustomPopovers">
     <div id='layersControl' class="m-0 p-0 myCustomLayerControl"></div>
-
-    <div id="geocodeControl" class="m-0 p-0"></div>
-
 </popovers>
-
 
 </html>
 
 
-
-
-<!--&lt;!&ndash;&lt;!&ndash; Button trigger modal &ndash;&gt;&ndash;&gt;-->
-<!--&lt;!&ndash;<button type="button" class="btn btn-light btn-sm" data-toggle="modal" data-target="#modalDescription" id="seeDescbtn" data-html2canvas-ignore="true" >See Description</button>&ndash;&gt;-->
-<!--&lt;!&ndash;<button type="button" class="btn btn-light btn-sm" data-toggle="modal" data-target="#modalPrintScreen" id="seePrintScreenbtn" data-html2canvas-ignore="true" >Print Map View to PNG</button>&ndash;&gt;-->
-
-
-
-<!--&lt;!&ndash;&lt;!&ndash; Analysis &ndash;&gt;&ndash;&gt;-->
-<!--&lt;!&ndash;<div class="pl-1 mt-4 h6" data-html2canvas-ignore="true" >New Analysis</div>&ndash;&gt;-->
-<!--&lt;!&ndash;<form class="form-horizontal" onsubmit="return false;" data-html2canvas-ignore="true" >&ndash;&gt;-->
-<!--&lt;!&ndash;<div class="form-group">&ndash;&gt;-->
-<!--&lt;!&ndash;<div class="input-group input-group-sm mb-3 pl-1 pr-1">&ndash;&gt;-->
-<!--&lt;!&ndash;<input type="number" min="1" pattern="[0-9]"&ndash;&gt;-->
-<!--&lt;!&ndash;onkeypress="return !(event.charCode == 46)" step="1"&ndash;&gt;-->
-<!--&lt;!&ndash;class="form-control flex-center" id="userEnteredPower"&ndash;&gt;-->
-<!--&lt;!&ndash;placeholder="Integer >= 1" aria-label="Integer >= 1"&ndash;&gt;-->
-<!--&lt;!&ndash;aria-describedby="basic-addon2" required>&ndash;&gt;-->
-<!--&lt;!&ndash;<div class="input-group-append">&ndash;&gt;-->
-<!--&lt;!&ndash;<button class="btn btn-dark btn-sm" type="button" id="runButton">Run</button>&ndash;&gt;-->
-<!--&lt;!&ndash;</div>&ndash;&gt;-->
-<!--&lt;!&ndash;<div class="col-12 ml-0 pl-1">&ndash;&gt;-->
-<!--&lt;!&ndash;<small id="inputHelpText" class="form-text text-muted">&ndash;&gt;-->
-<!--&lt;!&ndash;<i>Enter Power for IDW analysis, click Run.</i>&ndash;&gt;-->
-<!--&lt;!&ndash;</small>&ndash;&gt;-->
-<!--&lt;!&ndash;</div>&ndash;&gt;-->
-<!--&lt;!&ndash;</div>&ndash;&gt;-->
-<!--&lt;!&ndash;</div>&ndash;&gt;-->
-<!--&lt;!&ndash;</form>&ndash;&gt;-->
-<!--&lt;!&ndash;&lt;!&ndash; Legend &ndash;&gt;&ndash;&gt;-->
-<!--&lt;!&ndash;<div class="pl-1 mt-4 h6 py-1">Directions?</div>&ndash;&gt;-->
-
-<!--&lt;!&ndash;<div class="container" >&ndash;&gt;-->
-<!--&lt;!&ndash;<div id="directions" >&ndash;&gt;-->
-<!--&lt;!&ndash;</div>&ndash;&gt;-->
-<!--&lt;!&ndash;</div>&ndash;&gt;-->
-<!--&lt;!&ndash;</div>&ndash;&gt;-->
-<!--&lt;!&ndash;</div>&ndash;&gt;-->
-<!--</div>-->
-<!--</div>-->
+v>

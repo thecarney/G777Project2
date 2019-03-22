@@ -23,5 +23,8 @@
     <orderEntry type="library" name="leaflet-routing-machine" level="application" />
     <orderEntry type="library" name="Control.Geocoder" level="application" />
     <orderEntry type="library" name="mapbox-gl-geocoder" level="application" />
+    <orderEntry type="library" name="dataTables.bootstrap4" level="application" />
+    <orderEntry type="library" name="jquery.dataTables" level="application" />
+    <orderEntry type="library" name="datatables" level="application" />
   </component>
 </module>

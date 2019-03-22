@@ -1,6 +1,4 @@
-/* Stylesheet by J Carney, 2018 */
-
-
+/* James Carney 2019 */
 
 body {
     padding-top: 0px;
@@ -8,9 +6,6 @@ body {
 	overflow: hidden !important;
     /*overflow: hidden;*/
 }
-
-
-
 
 .bg-custom-darkblue {background-color: #0056b3;}
 
@@ -33,7 +28,6 @@ body {
     padding: 0;
     margin: 0;
     vertical-align: text-top;
-
 }
 
 #mainCard {
@@ -70,8 +64,6 @@ body {
         margin-left: -1px;
     }
 }
-
-
 
 .leaflet-popup {
     margin-top: 0;
@@ -304,13 +296,6 @@ body {
     /*margin-right: 0;*/
 }
 
-/*.leaflet-routing-container {*/
-    /*border: none;*/
-    /*margin: 0;*/
-    /*padding: 0;*/
-    /*margin-left: 10px;*/
-/*}*/
-
 .leaflet-routing-geocoder-result {
     z-index: 10000;
 }
@@ -334,12 +319,6 @@ button.leaflet-routing-add-waypoint {
     display: none !important;
 }
 
-
-
-/*.leaflet-control-container .leaflet-routing-container-hide {*/
-    /*display: none;*/
-/*}*/
-
 .leaflet-right .leaflet-control {
     margin-right: 10px !important;
     margin-top: 10px !important;
@@ -348,5 +327,46 @@ button.leaflet-routing-add-waypoint {
 
 .leaflet-routing-alt {
     display: none;
+}
+
+.table-xtra-condensed > thead > tr > th,
+.table-xtra-condensed > tbody > tr > th,
+.table-xtra-condensed > tfoot > tr > th,
+.table-xtra-condensed > thead > tr > td,
+.table-xtra-condensed > tbody > tr > td,
+.table-xtra-condensed > tfoot > tr > td {
+    padding: 2px;
+}
+
+.popoverCustomTable {
+
+    position: absolute !important;
+    bottom: 0px !important;
+    margin-bottom:-22px !important;
+    margin-right: 0px !important;
+    max-width: 100% !important;
+    max-height: 45% !important;
+    transform: translate3d(5px, 5px, 0px);
+}
+
+table.dataTable tbody>tr.selected, table.dataTable tbody>tr>.selected {
+    background-color: #467848;
+}
+
+
+.pagination .page-item.active .page-link:hover {
+    background-color: #467848;
+}
+
+.pagination .page-item.active .page-link {
+    -webkit-box-shadow: 0 2px 5px 0 rgba(0,0,0,.16), 0 2px 10px 0 rgba(0,0,0,.12);
+    box-shadow: 0 2px 5px 0 rgba(0,0,0,.16), 0 2px 10px 0 rgba(0,0,0,.12);
+    -webkit-transition: all .2s linear;
+    -o-transition: all .2s linear;
+    transition: all .2s linear;
+    -webkit-border-radius: .125rem;
+    border-radius: .125rem;
+    background-color: #467848;
+    color: #fff;
 }
 
