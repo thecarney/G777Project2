@@ -3,7 +3,9 @@
 $(document).ready(initialize);
 
 // resize function wraps the main function to allow responsive sizing of panel with map
-function initialize() { resize(map()); }
+function initialize() {
+    resize(map());
+}
 
 // Main
 function map() {
@@ -66,11 +68,24 @@ function map() {
     let lyrCourtfAccess = L.layerGroup();
 
     // filter fn for accessible features
-    let filterAccess = function (feature) { if (feature.properties.f4 === "Yes") { return true; } };
+    let filterAccess = function (feature) {
+        if (feature.properties.f4 === "Yes") {
+            return true;
+        }
+    };
 
-    // async loading and layer creation  ////////////////////////////////////////////////////////////////////////////////////
+    // async loading and layer creation
     let fresh = 0;
-    loadEverything({photos:'y', trees:'y', equipment:'y', seating:'y', path:'y', groundCover:'y', court:'y', reports:'y'})
+    loadEverything({
+        photos: 'y',
+        trees: 'y',
+        equipment: 'y',
+        seating: 'y',
+        path: 'y',
+        groundCover: 'y',
+        court: 'y',
+        reports: 'y'
+    })
         .then((response) => {
             addDefaultLayers();
             makeLayerIDs();
@@ -79,32 +94,43 @@ function map() {
         })
         .then((response) => {
             //global listeners
-            mapEquipment.on('click', function (e) { activeLayerID = e.layer.options.layerID; });
+            mapEquipment.on('click', function (e) {
+                activeLayerID = e.layer.options.layerID;
+            });
 
-            mapSeating.on('click', function (e) { activeLayerID = e.layer.options.layerID; });
+            mapSeating.on('click', function (e) {
+                activeLayerID = e.layer.options.layerID;
+            });
 
-            mapGroundCover.on('click', function (e) { activeLayerID = e.layer.layerID; });
+            mapGroundCover.on('click', function (e) {
+                activeLayerID = e.layer.layerID;
+            });
 
-            mapCourt.on('click', function (e) { activeLayerID = e.layer.layerID; });
+            mapCourt.on('click', function (e) {
+                activeLayerID = e.layer.layerID;
+            });
         })
-        .then((response)=>{
+        .then((response) => {
             // for testing
         });
 
     // server fetches // params are optional yes/no's for each layer group to allow targeted re-fetch
-    async function loadEverything ({photos='n', trees='n', equipment='n', seating='n', path='n', groundCover='n',
-                                       court='n', reports='n'} = {}) {
+    async function loadEverything({
+                                      photos = 'n', trees = 'n', equipment = 'n', seating = 'n', path = 'n', groundCover = 'n',
+                                      court = 'n', reports = 'n'
+                                  } = {}) {
 
-        // layersGroups actually on map are only assigned on initial load
+        // layersGroups actually on map are only assigned on initial load fresh=0, subsequent calls are for data only
+        // to update those default layers
         if (fresh === 0) {
             // nested async to allow parallel requests and promise.all config
             // for promise
-            let doThese=[];
+            let doThese = [];
 
             // check and do
 
-            if (photos === 'y'){
-                let a = (async() => {
+            if (photos === 'y') {
+                let a = (async () => {
                     try {
                         let response = await fetch("https://thecarney2.ngrok.io/p2/photos");
                         let data = await response.json();
@@ -118,8 +144,8 @@ function map() {
                 doThese.push(a);
             }
 
-            if (trees === 'y'){
-                let b = (async() => {
+            if (trees === 'y') {
+                let b = (async () => {
                     try {
                         let response = await fetch("https://thecarney2.ngrok.io/p2/trees");
                         let data = await response.json();
@@ -133,8 +159,8 @@ function map() {
                 doThese.push(b);
             }
 
-            if (equipment === 'y'){
-                let c = (async() => {
+            if (equipment === 'y') {
+                let c = (async () => {
                     try {
                         let response = await fetch("https://thecarney2.ngrok.io/p2/equipment");
                         let data = await response.json();
@@ -151,8 +177,8 @@ function map() {
                 doThese.push(c);
             }
 
-            if (seating === 'y'){
-                let d = (async() => {
+            if (seating === 'y') {
+                let d = (async () => {
                     try {
                         let multipleFetch = await Promise.all([
                             (fetch("https://thecarney2.ngrok.io/p2/benches")).then((response) => response.json()),
@@ -174,8 +200,8 @@ function map() {
                 doThese.push(d);
             }
 
-            if (path === 'y'){
-                let e = (async() => {
+            if (path === 'y') {
+                let e = (async () => {
                     try {
                         let response = await fetch("https://thecarney2.ngrok.io/p2/parkloop");
                         let data = await response.json();
@@ -192,8 +218,8 @@ function map() {
                 doThese.push(e);
             }
 
-            if (groundCover === 'y'){
-                let f = (async() => {
+            if (groundCover === 'y') {
+                let f = (async () => {
                     try {
                         let multipleFetch = await Promise.all([
                             (fetch("https://thecarney2.ngrok.io/p2/lawn")).then((response) => response.json()),
@@ -215,8 +241,8 @@ function map() {
                 doThese.push(f);
             }
 
-            if (court === 'y'){
-                let g = (async() => {
+            if (court === 'y') {
+                let g = (async () => {
                     try {
                         let response = await fetch("https://thecarney2.ngrok.io/p2/bbcourt");
                         let data = await response.json();
@@ -233,8 +259,8 @@ function map() {
                 doThese.push(g);
             }
 
-            if (reports === 'y'){
-                let h = (async() => {
+            if (reports === 'y') {
+                let h = (async () => {
                     try {
                         let response = await fetch("https://thecarney2.ngrok.io/p2/reports");
                         let data = await response.json();
@@ -253,12 +279,12 @@ function map() {
         } else {
             // nested async to allow parallel requests and promise.all config
             // for promise
-            let doThese=[];
+            let doThese = [];
 
             // check and do
 
-            if (photos === 'y'){
-                let a = (async() => {
+            if (photos === 'y') {
+                let a = (async () => {
                     try {
                         let response = await fetch("https://thecarney2.ngrok.io/p2/photos");
                         let data = await response.json();
@@ -274,8 +300,8 @@ function map() {
                 doThese.push(a);
             }
 
-            if (trees === 'y'){
-                let b = (async() => {
+            if (trees === 'y') {
+                let b = (async () => {
                     try {
                         let response = await fetch("https://thecarney2.ngrok.io/p2/trees");
                         let data = await response.json();
@@ -289,8 +315,8 @@ function map() {
                 doThese.push(b);
             }
 
-            if (equipment === 'y'){
-                let c = (async() => {
+            if (equipment === 'y') {
+                let c = (async () => {
                     try {
                         let response = await fetch("https://thecarney2.ngrok.io/p2/equipment");
                         let data = await response.json();
@@ -307,8 +333,8 @@ function map() {
                 doThese.push(c);
             }
 
-            if (seating === 'y'){
-                let d = (async() => {
+            if (seating === 'y') {
+                let d = (async () => {
                     try {
                         let multipleFetch = await Promise.all([
                             (fetch("https://thecarney2.ngrok.io/p2/benches")).then((response) => response.json()),
@@ -330,8 +356,8 @@ function map() {
                 doThese.push(d);
             }
 
-            if (path === 'y'){
-                let e = (async() => {
+            if (path === 'y') {
+                let e = (async () => {
                     try {
                         let response = await fetch("https://thecarney2.ngrok.io/p2/parkloop");
                         let data = await response.json();
@@ -348,8 +374,8 @@ function map() {
                 doThese.push(e);
             }
 
-            if (groundCover === 'y'){
-                let f = (async() => {
+            if (groundCover === 'y') {
+                let f = (async () => {
                     try {
                         let multipleFetch = await Promise.all([
                             (fetch("https://thecarney2.ngrok.io/p2/lawn")).then((response) => response.json()),
@@ -371,8 +397,8 @@ function map() {
                 doThese.push(f);
             }
 
-            if (court === 'y'){
-                let g = (async() => {
+            if (court === 'y') {
+                let g = (async () => {
                     try {
                         let response = await fetch("https://thecarney2.ngrok.io/p2/bbcourt");
                         let data = await response.json();
@@ -389,8 +415,8 @@ function map() {
                 doThese.push(g);
             }
 
-            if (reports === 'y'){
-                let h = (async() => {
+            if (reports === 'y') {
+                let h = (async () => {
                     try {
                         let response = await fetch("https://thecarney2.ngrok.io/p2/reports");
                         let data = await response.json();
@@ -409,10 +435,11 @@ function map() {
 
     }
 
-    // "makeLayer..." takes JSON and returns Leaflet "layers" (i.e. features) as L.GeoJSON feature groups ///////////////////
-    // some functions take a filter parameter to allow creation of a filtered L.GeoJSON feature group ///////////////////////
-    function makeLayerPhoto(data, callback = function(){} ) {
-        let lyr = L.geoJSON(null,{
+    // "makeLayer..." takes JSON and returns Leaflet "layers" (i.e. features) as L.GeoJSON feature groups
+    // some functions take a filter parameter to allow creation of a filtered L.GeoJSON feature group
+    function makeLayerPhoto(data, callback = function () {
+    }) {
+        let lyr = L.geoJSON(null, {
             pointToLayer: function (feature, latlng) { ///data-fa-transform="left-3.25 up-3.25"
                 let iconPhoto = L.divIcon({
                     className: 'fa-icon-photo',
@@ -441,7 +468,7 @@ function map() {
                     offset: L.point(-4, -4)
                 })
                     .setContent('<img src="https://thecarney2.ngrok.io/images/'
-                        +layer.feature.properties.f4+
+                        + layer.feature.properties.f4 +
                         '" alt="pic" style="width: 275px;height: 275px;border-radius: 4px";">' +
                         '<strong>Caption</strong><i>: ' + layer.feature.properties.f2 + '</i>' +
                         '<br><strong>Facing</strong><i>: ' + layer.feature.properties.f5 + '</i>');
@@ -450,11 +477,8 @@ function map() {
         });
 
         lyr.addData(data[0]);
-
         callback();
-
         return lyr;
-
     }
 
     function makeLayerTrees(data) {
@@ -480,7 +504,9 @@ function map() {
         return lyr;
     }
 
-    function makeLayerEquipment( data, filter = function(){return true;}  ) {
+    function makeLayerEquipment(data, filter = function () {
+        return true;
+    }) {
         let iconSwingSet = L.divIcon({
             className: 'fa-icon-swingset',
             html: '<div class="fa-2x">\n' +
@@ -511,14 +537,14 @@ function map() {
                         icon: iconSwingSet,
                         opacity: 1,
                         pane: 'equipment',
-                        layerID: feature.properties.f5+'_'+feature.properties.f1
+                        layerID: feature.properties.f5 + '_' + feature.properties.f1
                     });
                 } else {
                     return L.marker(latlng, {
                         icon: iconPlayStructure,
                         opacity: 1,
                         pane: 'equipment',
-                        layerID: feature.properties.f5+'_'+feature.properties.f1
+                        layerID: feature.properties.f5 + '_' + feature.properties.f1
                     });
                 }
             },
@@ -534,7 +560,7 @@ function map() {
                         layer.feature.properties.f3 +
                         '</i><br><strong>Accessible? </strong>' + layer.feature.properties.f4 +
                         '<div class="col text-center m-0 p-0"><button class="btn btn-primary btn-sm p-1" type="button" id="btnCreateReportModal" style="box-shadow: none; border: 1px solid #656565">Make Report</button>'
-                        );
+                    );
                 layer.bindPopup(popup);
             },
             filter: filter
@@ -545,7 +571,9 @@ function map() {
         return lyr;
     }
 
-    function makeLayerSeating(data, filter = function(){return true;} ) {
+    function makeLayerSeating(data, filter = function () {
+        return true;
+    }) {
         let iconBench = L.divIcon({
             className: 'fa-icon-bench',
             html: '<div class="fa-2x">\n' +
@@ -576,14 +604,14 @@ function map() {
                         icon: iconTable,
                         opacity: 1,
                         pane: 'seats',
-                        layerID: feature.properties.f5+'_'+feature.properties.f1
+                        layerID: feature.properties.f5 + '_' + feature.properties.f1
                     });
                 } else {
                     return L.marker(latlng, {
                         icon: iconBench,
                         opacity: 1,
                         pane: 'seats',
-                        layerID: feature.properties.f5+'_'+feature.properties.f1
+                        layerID: feature.properties.f5 + '_' + feature.properties.f1
                     });
                 }
             },
@@ -623,14 +651,16 @@ function map() {
 
         let arr = data;
         let arrLen = arr.length;
-        for (let i=0; i < arrLen; i++) {
+        for (let i = 0; i < arrLen; i++) {
             lyr.addData(arr[i]);
         }
 
         return lyr;
     }
 
-    function makeLayerPath(data, filter = function(){return true;}) {
+    function makeLayerPath(data, filter = function () {
+        return true;
+    }) {
         let lyr = L.geoJSON(null, {
             pane: 'polyg509',
             style: {
@@ -666,7 +696,9 @@ function map() {
         return lyr;
     }
 
-    function makeLayerGroundCover(data, filter = function(){return true;} ) {
+    function makeLayerGroundCover(data, filter = function () {
+        return true;
+    }) {
         let styleLawn = {
             fill: true,
             fillColor: '#d5f46b',
@@ -729,7 +761,7 @@ function map() {
             pane: 'polyg505'
         };
 
-        let lyr = L.geoJSON(null,{
+        let lyr = L.geoJSON(null, {
             style: function (feature) {
                 if (feature.properties.f5 === "lawn") {
                     return styleLawn;
@@ -754,7 +786,7 @@ function map() {
                     })
                         .setContent('<strong>' + layer.feature.properties.f2 + '</strong><br><i>' +
                             layer.feature.properties.f3 +
-                            '</i><br><strong>Accessible? </strong>' + layer.feature.properties.f4+
+                            '</i><br><strong>Accessible? </strong>' + layer.feature.properties.f4 +
                             '<div class="col text-center m-0 p-0"><button class="btn btn-primary btn-sm p-1" type="button" id="btnCreateReportModal" style="box-shadow: none; border: 1px solid #656565">Make Report</button>'
                         );
                     layer.bindPopup(popup);
@@ -768,7 +800,7 @@ function map() {
                     })
                         .setContent('<strong>' + layer.feature.properties.f2 + '</strong><br><i>' +
                             layer.feature.properties.f3 +
-                            '</i><br><strong>Accessible? </strong>' + layer.feature.properties.f4+
+                            '</i><br><strong>Accessible? </strong>' + layer.feature.properties.f4 +
                             '<div class="col text-center m-0 p-0"><button class="btn btn-primary btn-sm p-1" type="button" id="btnCreateReportModal" style="box-shadow: none; border: 1px solid #656565">Make Report</button>'
                         );
                     layer.bindPopup(popup);
@@ -780,7 +812,7 @@ function map() {
                         autoPanPaddingTopLeft: L.point(60, 40),
                         offset: L.point(0, -4)
                     })
-                        .setContent('<strong>' + layer.feature.properties.f2 + '</strong>'+
+                        .setContent('<strong>' + layer.feature.properties.f2 + '</strong>' +
                             '<div class="col text-center m-0 p-0"><button class="btn btn-primary btn-sm p-1" type="button" id="btnCreateReportModal" style="box-shadow: none; border: 1px solid #656565">Make Report</button>'
                         );
                     layer.bindPopup(popup);
@@ -794,7 +826,7 @@ function map() {
                     })
                         .setContent('<strong>' + layer.feature.properties.f2 + '</strong><br><i>' +
                             layer.feature.properties.f3 +
-                            '</i><br><strong>Accessible? </strong>' + layer.feature.properties.f4+
+                            '</i><br><strong>Accessible? </strong>' + layer.feature.properties.f4 +
                             '<div class="col text-center m-0 p-0"><button class="btn btn-primary btn-sm p-1" type="button" id="btnCreateReportModal" style="box-shadow: none; border: 1px solid #656565">Make Report</button>'
                         );
                     layer.bindPopup(popup);
@@ -808,7 +840,7 @@ function map() {
                     })
                         .setContent('<strong>' + layer.feature.properties.f2 + '</strong><br><i>' +
                             layer.feature.properties.f3 +
-                            '</i><br><strong>Accessible? </strong>' + layer.feature.properties.f4+
+                            '</i><br><strong>Accessible? </strong>' + layer.feature.properties.f4 +
                             '<div class="col text-center m-0 p-0"><button class="btn btn-primary btn-sm p-1" type="button" id="btnCreateReportModal" style="box-shadow: none; border: 1px solid #656565">Make Report</button>'
                         );
                     layer.bindPopup(popup);
@@ -819,7 +851,7 @@ function map() {
 
         let arr = data;
         let arrLen = arr.length;
-        for (let i=0; i < arrLen; i++) {
+        for (let i = 0; i < arrLen; i++) {
             lyr.addData(arr[i]);
         }
 
@@ -827,7 +859,9 @@ function map() {
 
     }
 
-    function makeLayerCourt(data, filter = function(){return true;} ) {
+    function makeLayerCourt(data, filter = function () {
+        return true;
+    }) {
 
         let lyr = L.geoJSON(null, {
             pane: 'polyg508',
@@ -852,7 +886,7 @@ function map() {
                 })
                     .setContent('<strong>' + layer.feature.properties.f2 + '</strong><br><i>' +
                         layer.feature.properties.f3 +
-                        '</i><br><strong>Accessible? </strong>' + layer.feature.properties.f4+
+                        '</i><br><strong>Accessible? </strong>' + layer.feature.properties.f4 +
                         '<div class="col text-center m-0 p-0"><button class="btn btn-primary btn-sm p-1" type="button" id="btnCreateReportModal" style="box-shadow: none; border: 1px solid #656565">Make Report</button>'
                     );
                 layer.bindPopup(popup);
@@ -871,33 +905,31 @@ function map() {
         mapEquipment.eachLayer(function (layer) {
             tableName = layer.feature.properties.f5;
             dbID = layer.feature.properties.f1;
-            layer.layerID = tableName+"_"+dbID;
+            layer.layerID = tableName + "_" + dbID;
             //console.log(tableName+"_"+dbID);
         });
 
         mapSeating.eachLayer(function (layer) {
             tableName = layer.feature.properties.f5;
             dbID = layer.feature.properties.f1;
-            layer.layerID = tableName+"_"+dbID;
+            layer.layerID = tableName + "_" + dbID;
             //console.log(tableName+"_"+dbID);
         });
 
         mapGroundCover.eachLayer(function (layer) {
             tableName = layer.feature.properties.f6;
             dbID = layer.feature.properties.f1;
-            layer.layerID = tableName+"_"+dbID;
+            layer.layerID = tableName + "_" + dbID;
             //console.log(tableName+"_"+dbID);
         });
 
         mapCourt.eachLayer(function (layer) {
             tableName = layer.feature.properties.f5;
             dbID = layer.feature.properties.f1;
-            layer.layerID = tableName+"_"+dbID;
+            layer.layerID = tableName + "_" + dbID;
             //console.log(tableName+"_"+dbID);
         });
     }
-
-    // map setup and control setup  /////////////////////////////////////////////////////////////////////////////////////////
 
     function setupMap() {
         // token
@@ -958,9 +990,7 @@ function map() {
                 ' <small> Enjoy exploring your <br> neighborhood park! </small> </p></div>')
             .openOn(map);
 
-
         // inelegantly show when popup will auto-close
-
         let origContent = popupOnLoad.getContent();
 
         popupOnLoad.setContent(origContent + '<i class="text-warning">- 8 -</i>');
@@ -1051,7 +1081,7 @@ function map() {
     }
 
     function addLayerControlEasyButton() {
-        // empty button, but reserves control's position in stack
+        // reserves control's position in stack
         // div with icon for easy button
         htmlString =
             '<div class="p-0 m-0 layersPopoverDataToggle" id="layersPopover" data-toggle="popover">' +
@@ -1060,12 +1090,12 @@ function map() {
 
         let state = 'closed';
         L.easyButton(htmlString, function () {
-            if(state === 'closed') {
+            if (state === 'closed') {
                 state = 'open';
-                $('#layersIcon').css('color','#008b1f');
+                $('#layersIcon').css('color', '#008b1f');
             } else {
                 state = 'closed';
-                $('#layersIcon').css('color','#323232');
+                $('#layersIcon').css('color', '#323232');
             }
         }).addTo(map);
 
@@ -1078,35 +1108,28 @@ function map() {
                 placement: 'right',
                 trigger: 'click',
                 container: 'popovers',
-                viewport: {selector: '#map', padding: 5 }
+                viewport: {selector: '#map', padding: 5}
             })
         });
 
-        // close popover on lose focus
+        // listener to close popover on lose focus/click outside popover)
         $('body').on('click', function (e) {
             $('[data-toggle="popover"]').each(function () {
                 if ($(this).hasClass('layersPopoverDataToggle') && !$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0) {
                     $(this).popover('hide');
-                    $('#layersIcon').css('color','#323232');
-                    state='closed';
+                    $('#layersIcon').css('color', '#323232');
+                    state = 'closed';
                 }
             });
         });
-
     }
 
     function addLayerControl() {
-
+        // leaflet control
         layerControl = L.control.layers({
             'Streets': baseStreets.addTo(map),
             'Satellite': baseAerial
         }, {
-            // 'Visitor Photos': lyrPhoto,
-            // 'Tree Canopy': lyrTrees,
-            // 'Playground Equip.': lyrEquipment,
-            // 'Tables & Benches': lyrSeating,
-            // 'Loop Path': lyrPath,
-            // 'Park Grounds': lyrGroundCover
         }, {
             position: 'topleft',
             collapsed: false
@@ -1114,7 +1137,7 @@ function map() {
 
         moveLayerControlToPopover(layerControl);
 
-        // make a hidden polygon overlay
+        // make a hidden polygon overlay for tap interaction design
         let hiddenData = [{
             "type": "Feature",
             "properties": {
@@ -1148,20 +1171,23 @@ function map() {
         })
     }
 
-    function moveLayerControlToPopover(layerControl){
+    function moveLayerControlToPopover(layerControl) {
         // now that layer control is ready, move it to popover
         let htmlObject = layerControl.getContainer();
         let a = document.getElementById('layersControl');
-        function setParent(el, newParent){
+
+        function setParent(el, newParent) {
             newParent.appendChild(el);
         }
+
         setParent(htmlObject, a);
     }
 
     function addRoutingControl() {
-
+        // constructors with token
         let routerMapbox = L.Routing.mapbox('pk.eyJ1IjoiamhjYXJuZXkiLCJhIjoiY2p0Z2k5Nzh0MDRkZDN5cDJidmk0c2lwMyJ9.lchq4koczU1lPsZOZ8pWew');
 
+        // includes localization
         let geocoderMapbox = L.Control.Geocoder.mapbox(
             'pk.eyJ1IjoiamhjYXJuZXkiLCJhIjoiY2p0Z2k5Nzh0MDRkZDN5cDJidmk0c2lwMyJ9.lchq4koczU1lPsZOZ8pWew',
             {
@@ -1175,6 +1201,7 @@ function map() {
                 },
             });
 
+        // configure with options
         let routingControl = L.Routing.control({
             show: true,
             collapse: false,
@@ -1189,25 +1216,26 @@ function map() {
                 addWaypoints: false
             },
             fitSelectedRoutes: false,
-            createMarker: function(i, wp, nWps) {
+            createMarker: function (i, wp, nWps) { // marker constructor
                 let mkr = L.marker(wp.latLng, {
-                    pane: 'newPhoto',
+                    pane: 'newPhoto',              // reusing a pane with a high z value
                     draggable: true
                 });
                 return mkr;
             }
         });
 
+        // control button with state logic
         let state = 'control CLOSED and INACTIVE';
         L.easyButton('<i id="directionsIcon" class="fas fa-directions myCustomHomeButton" data-fa-transform="grow-8 up-2"></i>',
             function () {
 
-                if (state == 'control CLOSED and INACTIVE') {
+                if (state === 'control CLOSED and INACTIVE') {
                     // load control
                     state = 'control OPEN and ACTIVE';
                     routingControl.setWaypoints([undefined, L.latLng(37.6905, -121.72615)]);
                     routingControl.show();
-                    $('#directionsIcon').css('color','#0030FF');
+                    $('#directionsIcon').css('color', '#0030FF');
 
                 } else if (state === 'control OPEN and ACTIVE') {
                     // just hide control
@@ -1219,18 +1247,19 @@ function map() {
                     state = 'control CLOSED and INACTIVE';
                     routingControl.hide();
                     routingControl.setWaypoints([undefined, undefined]);
-                    $('#directionsIcon').css('color','#323232');
+                    $('#directionsIcon').css('color', '#323232');
                 }
             }, {position: 'topright'}).addTo(map);
 
         routingControl.addTo(map);
-        routingControl.hide();
+        routingControl.hide();  // the Easy Button triggers the control, but the control isnt actually attached to the button
 
+        // fit to route with buffer
         routingControl.on('routeselected', function (e) {
             let route = e.route;
             let line = L.Routing.line(route);
-            let bounds  = line.getBounds();
-            map.fitBounds(bounds, {padding: [50,50]});
+            let bounds = line.getBounds();
+            map.fitBounds(bounds, {padding: [50, 50]});
         });
     }
 
@@ -1264,13 +1293,13 @@ function map() {
         });
 
         // handle selections and filter layers
-        $('input:radio').on('click', function(e) {
+        $('input:radio').on('click', function (e) {
             //console.log(e.currentTarget.value); //e.currenTarget.value points to the property value of the 'clicked' target.
             if (e.currentTarget.value.valueOf() === "All") {
-                $('#filterIcon').css('color','#323232');
+                $('#filterIcon').css('color', '#323232');
                 fShowAllFeatures();
             } else {
-                $('#filterIcon').css('color','#0030FF');
+                $('#filterIcon').css('color', '#0030FF');
                 fShowAccessibleFeatures();
             }
         });
@@ -1278,12 +1307,16 @@ function map() {
     }
 
     function fShowAllFeatures() {
+        // change layer groups
+
         map.removeLayer(mapEquipment);
         map.removeLayer(mapSeating);
         map.removeLayer(mapPath);
         map.removeLayer(mapGroundCover);
         map.removeLayer(mapCourt);
 
+        // set layergroups to default version
+        // this assignment seems to work when both are LayerGroups
         mapEquipment = lyrEquipment;
         mapSeating = lyrSeating;
         mapPath = lyrPath;
@@ -1298,12 +1331,16 @@ function map() {
     }
 
     function fShowAccessibleFeatures() {
+        // change layer groups
+
         map.removeLayer(mapEquipment);
         map.removeLayer(mapSeating);
         map.removeLayer(mapPath);
         map.removeLayer(mapGroundCover);
         map.removeLayer(mapCourt);
 
+        // set layergroups to accessible version
+        // this assignment seems to work when both are LayerGroups
         mapEquipment = lyrEquipmentfAccess;
         mapSeating = lyrSeatingfAccess;
         mapPath = lyrPathfAccess;
@@ -1317,9 +1354,6 @@ function map() {
         map.addLayer(mapCourt);
     }
 
-
-
-
     function addPostPhotoControl() {
         // photo button
         let htmlString =
@@ -1328,104 +1362,97 @@ function map() {
             '    <i class="fas fa-circle addPhotoIcon" style="color:#323232" data-fa-transform="shrink-0 up-8 right-8"></i>\n' +
             '    <i class="fas fa-circle fa-inverse" data-fa-transform="shrink-3 up-8 right-8"></i>\n' +
             '    <i class="fas fa-plus addPhotoIcon" style="color:#323232" data-fa-transform="shrink-6 up-8 right-8"></i>\n' +
-            '  </span>'
+            '  </span>';
 
+        // store last new marker
+        let newPhotoMarker;
+
+        // control constructor and click logic
         let state = 'closed';
         L.easyButton(htmlString, function () {
-
-            // control icon color
-            if(state === 'closed') {
+            if (state === 'closed') {
                 state = 'open';
-                $('.addPhotoIcon').css('color','#0030FF');
+                $('.addPhotoIcon').css('color', '#0030FF');
+
+                // map marker logic
+                let markerLatLng = map.getCenter();
+
+                let iconNewPhoto = L.divIcon({
+                    className: 'fa-icon-photo',
+                    html: '<div class="fa-2x">\n' +
+                        '  <span class="fa-layers " style="background:rgba(0,0,0,0)">\n' +
+                        '    <i class="far fa-circle" data-fa-transform="grow-1" style="color:#fdfbfe"></i>\n' +
+                        '    <i class="fas fa-circle" style="color:#dc00b3"></i>\n' +
+                        '    <i class="fa-inverse fas fa-camera" data-fa-transform="shrink-8"></i>\n' +
+                        '  </span></div>',
+                    iconSize: [15, 15],
+                    popupAnchor: [5, -3],
+                    draggable: true
+                });
+
+                newPhotoMarker = new L.marker(markerLatLng, {
+                    icon: iconNewPhoto,
+                    opacity: 1,
+                    pane: 'newPhoto'
+                });
+
+                let popup = L.popup({
+                    closeButton: false,
+                    closeOnClick: false,
+                    className: 'popup-grey',
+                    maxWidth: 250,
+                    autoPanPaddingTopLeft: L.point(60, 40),
+                    offset: L.point(0, -4)
+                });
+                popup.setContent('<div class="col text-center m-0 p-0"> <strong> Drag marker to photo location </strong></div>' +
+                    '<div class="col text-center m-0 p-0"><button class="btn btn-primary btn-sm p-1" type="button" id="btnOpenPhotoModal" style="box-shadow: none; border: 1px solid #656565">Add Photo</button>' +
+                    '<button class="btn btn-light text-dark btn-sm p-1" type="button" id="btnCancelNewPhoto" style="box-shadow: none; border: 1px solid #656565">Close</button></div>');
+
+                newPhotoMarker.bindPopup(popup);
+                newPhotoMarker.addTo(map);
+                newPhotoMarker.dragging.enable();
+                newPhotoMarker.openPopup();
+                newPhotoMarker.on('dragend', function () { newPhotoMarker.openPopup(); });
             } else {
                 state = 'closed';
-                $('.addPhotoIcon').css('color','#323232');
+                map.removeLayer(newPhotoMarker);
+                $('.addPhotoIcon').css('color', '#323232');
             }
-
-            // map marker logic
-            let markerLatLng = map.getCenter();
-
-            let iconNewPhoto = L.divIcon({
-                className: 'fa-icon-photo',
-                html: '<div class="fa-2x">\n' +
-                    '  <span class="fa-layers " style="background:rgba(0,0,0,0)">\n' +
-                    '    <i class="far fa-circle" data-fa-transform="grow-1" style="color:#fdfbfe"></i>\n' +
-                    '    <i class="fas fa-circle" style="color:#dc00b3"></i>\n' +
-                    '    <i class="fa-inverse fas fa-camera" data-fa-transform="shrink-8"></i>\n' +
-                    '  </span></div>',
-                iconSize: [15, 15],
-                popupAnchor: [5, -3],
-                draggable: true
-            });
-
-            let newPhotoMarker = new L.marker(markerLatLng, {
-                icon: iconNewPhoto,
-                opacity: 1,
-                pane: 'newPhoto'
-            });
-
-            let popup = L.popup({
-                closeButton: false,
-                closeOnClick: false,
-                className: 'popup-grey',
-                maxWidth: 250,
-                autoPanPaddingTopLeft: L.point(60, 40),
-                offset: L.point(0, -4)
-            });
-            popup.setContent('<div class="col text-center m-0 p-0"> <strong> Drag marker to photo location </strong></div>' +
-                '<div class="col text-center m-0 p-0"><button class="btn btn-primary btn-sm p-1" type="button" id="btnOpenPhotoModal" style="box-shadow: none; border: 1px solid #656565">Add Photo</button>' +
-                '<button class="btn btn-light text-dark btn-sm p-1" type="button" id="btnCancelNewPhoto" style="box-shadow: none; border: 1px solid #656565">Close</button></div>');
-            newPhotoMarker.bindPopup(popup);
-
-            // click event for buttons in popup
-            $('#map').on('click', '#btnOpenPhotoModal', function () {
-                //console.log('clicked add photo button');
-
-                // open modal, pass latlon to form
-                // get marker latlon
-                let lat = newPhotoMarker.getLatLng().lat;
-                let latRnd = round(lat, 6);
-                let lon = newPhotoMarker.getLatLng().lng;
-                let lonRnd = round(lon, 6);
-                $("#modalPhotoLatLon").val(latRnd + ", " + lonRnd);
-                $('#modalPhotoLatLon').prop('readonly', true);
-                //console.log(latRnd + ", " + lonRnd);
-                $("#modalPhoto").modal('show');
-
-
-                // remove the temp layer at the end
-                map.removeLayer(newPhotoMarker);
-
-                function round(number, precision) {
-                    var shift = function (number, exponent) {
-                        var numArray = ("" + number).split("e");
-                        return +(numArray[0] + "e" + (numArray[1] ? (+numArray[1] + exponent) : exponent));
-                    };
-                    return shift(Math.round(shift(number, +precision)), -precision);
-                };
-
-                state = 'closed';
-                $('.addPhotoIcon').css('color','#323232');
-            });
-
-            $('#map').on('click', '#btnCancelNewPhoto', function () {
-                //console.log('clicked close button on add photo');
-                map.removeLayer(newPhotoMarker);
-                state = 'closed';
-                $('.addPhotoIcon').css('color','#323232');
-            });
-
-            newPhotoMarker.addTo(map);
-
-            newPhotoMarker.dragging.enable();
-
-            newPhotoMarker.openPopup();
-
-            newPhotoMarker.on('dragend', function () {
-                newPhotoMarker.openPopup();
-            });
-
         }).addTo(map);
+
+        // click event for buttons in popup
+        $('#map').on('click', '#btnOpenPhotoModal', function () {
+            //console.log('clicked add photo button');
+            // open modal, pass latlon to form
+            let lat = newPhotoMarker.getLatLng().lat;
+            let latRnd = round(lat, 6);
+            let lon = newPhotoMarker.getLatLng().lng;
+            let lonRnd = round(lon, 6);
+            $("#modalPhotoLatLon").val(latRnd + ", " + lonRnd);
+            $('#modalPhotoLatLon').prop('readonly', true);
+            //console.log(latRnd + ", " + lonRnd);
+            $("#modalPhoto").modal('show');
+            // remove the temp layer at the end
+            map.removeLayer(newPhotoMarker);
+
+            // round the lat lon
+            function round(number, precision) {
+                let shift = function (number, exponent) {
+                    let numArray = ("" + number).split("e");
+                    return +(numArray[0] + "e" + (numArray[1] ? (+numArray[1] + exponent) : exponent));
+                };
+                return shift(Math.round(shift(number, +precision)), -precision);
+            };
+            state = 'closed';
+            $('.addPhotoIcon').css('color', '#323232');
+        });
+
+        $('#map').on('click', '#btnCancelNewPhoto', function () {
+            //console.log('clicked close button on add photo');
+            map.removeLayer(newPhotoMarker);
+            state = 'closed';
+            $('.addPhotoIcon').css('color', '#323232');
+        });
     }
 
     function validateAndSendPhotoPostForm() {
@@ -1467,7 +1494,8 @@ function map() {
 
                 // toggle modal, open loading modal
                 $('#modalPhoto').modal('hide');
-                $('#modalLoading').modal('show');
+                setTimeout(function(){ $('#modalLoading').modal('show'); }, 200);
+
                 // post and show modals to user
                 $.ajax({
                     url: 'https://thecarney2.ngrok.io/p2/postPhoto',
@@ -1477,16 +1505,14 @@ function map() {
                     processData: false,
                     success: function (data, status, jqXHR) {
                         //console.log("photo posted");
-
-                        $('#modalLoading').modal('hide');
-                        $('#modalSuccess').modal('show');
-
+                        setTimeout(function(){ $('#modalLoading').modal('hide'); }, 100);
+                        setTimeout(function(){ $('#modalSuccess').modal('show'); }, 300);
                         loadNewPhotosAfterPost();
                     },
                     error: function (jqXHR, status, err) {
                         //console.log("error posting photo");
-                        $('#modalLoading').modal('hide');
-                        $('#modalFailure').modal('show');
+                        setTimeout(function(){ $('#modalLoading').modal('hide'); }, 100);
+                        setTimeout(function(){ $('#modalFailure').modal('show'); }, 300);
                     }
                 })
             }
@@ -1503,11 +1529,12 @@ function map() {
     }
 
     function loadNewPhotosAfterPost() {
+        // add the new one to the existng layer
 
         let newPhotoLayer = L.layerGroup();
 
         // make photo layer from server again
-        loadEverything({photos:'y'}).then((response) => {
+        loadEverything({photos: 'y'}).then((response) => {
 
             map.removeLayer(mapPhoto);
 
@@ -1526,7 +1553,7 @@ function map() {
             });
 
             newPhotoLayer.eachLayer(function (layer) {
-                if(layer.feature.properties.f1 === maxId) {
+                if (layer.feature.properties.f1 === maxId) {
                     layer.addTo(mapPhoto);
                 }
             });
@@ -1534,8 +1561,6 @@ function map() {
             mapPhoto.addTo(map);
         });
     }
-
-
 
     function addReportControl() {
         // table constructor
@@ -1554,11 +1579,11 @@ function map() {
             select: 'single',
             autoWidth: true,
             columns: [
-                { title: 'ID', data: "id" },
+                {title: 'ID', data: "id"},
                 //{ title: 'Name', data: "tsrelfeature" },
-                { title: 'Type', data: "tstype" },
-                { title: 'Status', data: "tsstatus" },
-                { title: 'Details', data: "tsdetails" },
+                {title: 'Type', data: "tstype"},
+                {title: 'Status', data: "tsstatus"},
+                {title: 'Details', data: "tsdetails"},
                 //{ title: 'Date Mod.', data: "tsdtmod", type: 'date', render: function (data, type, row, meta) { return data.substring(0,10); } }
             ]
         });
@@ -1572,14 +1597,14 @@ function map() {
         // make control and state logic
         let int = 0;
         L.easyButton(htmlString, function () {
-            datatable.order([0,'asc']).draw();
+            datatable.order([0, 'asc']).draw();
             $('#footer1').popover('toggle');
             int++;
-            if(int % 2 === 1) {
-                $('#reportsIcon').css('color','#008b1f');
+            if (int % 2 === 1) {
+                $('#reportsIcon').css('color', '#008b1f');
                 map.setView([37.6892, -121.72615], 17);
             } else {
-                $('#reportsIcon').css('color','#323232');
+                $('#reportsIcon').css('color', '#323232');
                 map.removeLayer(mapHighlights);
                 mapHighlights.clearLayers();
             }
@@ -1599,20 +1624,21 @@ function map() {
             })
         });
 
-        // events for selection
-        datatable.on( 'select', function ( e, dt, type, indexes ) {
+        // event for selection
+        datatable.on('select', function (e, dt, type, indexes) {
             // get the row and related feature name
             let cell = dt.cell('.selected', 0).index();
-            let data = dt.row( cell.row ).data();
+            let data = dt.row(cell.row).data();
             let featID = data.tsrelfeature;
             // call function to highlight it on map
             highlightFeature(featID);
-        } );
-        // events for deselection
-        datatable.on( 'deselect', function ( e, dt, type, indexes ) {
+        });
+
+        // event for deselection
+        datatable.on('deselect', function (e, dt, type, indexes) {
             map.removeLayer(mapHighlights);
             mapHighlights.clearLayers();
-        } );
+        });
 
         // click event for buttons in popup to create report
         $('#map').on('click', '#btnCreateReportModal', function () {
@@ -1627,7 +1653,7 @@ function map() {
         // loops all features in the four layer groups that can have reports to find the match
         // once found, make a copy of the feature, styles it pink, and adds it to the 'highlight' pane
         mapEquipment.eachLayer(function (layer) {
-            if (layer.layerID === featureCode){
+            if (layer.layerID === featureCode) {
                 //console.log('match found: ' + layer.layerID);
                 let coords = layer.feature.geometry.coordinates[0];
                 let lat = coords[1];
@@ -1652,7 +1678,7 @@ function map() {
         });
 
         mapSeating.eachLayer(function (layer) {
-            if (layer.layerID === featureCode){
+            if (layer.layerID === featureCode) {
                 //console.log('match found: ' + layer.layerID);
                 let coords = layer.feature.geometry.coordinates[0];
                 let lat = coords[1];
@@ -1677,7 +1703,7 @@ function map() {
         });
 
         mapGroundCover.eachLayer(function (layer) {
-            if (layer.layerID === featureCode){
+            if (layer.layerID === featureCode) {
                 let json = layer.toGeoJSON();
                 let highlightLayer = L.geoJSON(json, {
                     pane: 'highlight',
@@ -1699,7 +1725,7 @@ function map() {
         });
 
         mapCourt.eachLayer(function (layer) {
-            if (layer.layerID === featureCode){
+            if (layer.layerID === featureCode) {
                 let json = layer.toGeoJSON();
                 let highlightLayer = L.geoJSON(json, {
                     pane: 'highlight',
@@ -1725,7 +1751,7 @@ function map() {
         // form feedback for details length
         let text_max = 200;
         $('#count_message').html(text_max + ' remaining');
-        $('#inputGroupReportDetails').keyup(function() {
+        $('#inputGroupReportDetails').keyup(function () {
             let text_length = $('#inputGroupReportDetails').val().length;
             let text_remaining = text_max - text_length;
             $('#count_message').html(text_remaining + ' remaining');
@@ -1756,7 +1782,7 @@ function map() {
 
                 let email1 = document.getElementById('inputCreateReportEmailUsername').value;
                 let email2 = document.getElementById('inputCreateReportEmailProvider').value;
-                let email = email1+'@'+email2;
+                let email = email1 + '@' + email2;
                 //console.log(email);
 
                 let phone = document.getElementById('inputCreateReportPhone').value;
@@ -1771,7 +1797,8 @@ function map() {
 
                 // toggle modal, open loading modal
                 $('#modalCreateReport').modal('hide');
-                $('#modalLoading').modal('show');
+                setTimeout(function(){ $('#modalLoading').modal('show'); }, 200);
+
                 // post and show modals to user
                 $.ajax({
                     url: 'https://thecarney2.ngrok.io/p2/postReport',
@@ -1781,16 +1808,14 @@ function map() {
                     processData: false,
                     success: function (data, status, jqXHR) {
                         //console.log("report posted");
-
-                        $('#modalLoading').modal('hide');
-                        $('#modalSuccess').modal('show');
-
+                        setTimeout(function(){ $('#modalLoading').modal('hide'); }, 100);
+                        setTimeout(function(){ $('#modalSuccess').modal('show'); }, 300);
                         loadNewReportsAfterPost();
                     },
                     error: function (jqXHR, status, err) {
                         //console.log("error posting photo");
-                        $('#modalLoading').modal('hide');
-                        $('#modalFailure').modal('show');
+                        setTimeout(function(){ $('#modalLoading').modal('hide'); }, 100);
+                        setTimeout(function(){ $('#modalFailure').modal('show'); }, 300);
                     }
                 })
             }
@@ -1798,12 +1823,12 @@ function map() {
     }
 
     function loadNewReportsAfterPost() {
-        // fetch updated report data from server again
-        loadEverything({reports:'y'}).then((response) => {
-                map.removeLayer(mapHighlights);
-                mapHighlights.clearLayers();
-                datatable.clear().draw();
-                datatable.rows.add(jsonReports[0].rows).draw();
+        // fetch updated report data from server again and update the DataTable
+        loadEverything({reports: 'y'}).then((response) => {
+            map.removeLayer(mapHighlights);
+            mapHighlights.clearLayers();
+            datatable.clear().draw();
+            datatable.rows.add(jsonReports[0].rows).draw();
         });
     }
 
