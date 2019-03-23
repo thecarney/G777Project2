@@ -69,6 +69,7 @@ function map() {
     let filterAccess = function (feature) { if (feature.properties.f4 === "Yes") { return true; } };
 
     // async loading and layer creation  ////////////////////////////////////////////////////////////////////////////////////
+    let fresh = 0;
     loadEverything({photos:'y', trees:'y', equipment:'y', seating:'y', path:'y', groundCover:'y', court:'y', reports:'y'})
         .then((response) => {
             addDefaultLayers();
@@ -93,158 +94,319 @@ function map() {
     // server fetches // params are optional yes/no's for each layer group to allow targeted re-fetch
     async function loadEverything ({photos='n', trees='n', equipment='n', seating='n', path='n', groundCover='n',
                                        court='n', reports='n'} = {}) {
-        // nested async to allow parallel requests and promise.all config
 
-        // for promise
-        let doThese=[];
+        // layersGroups actually on map are only assigned on initial load
+        if (fresh === 0) {
+            // nested async to allow parallel requests and promise.all config
+            // for promise
+            let doThese=[];
 
-        // check and do
+            // check and do
 
-        if (photos === 'y'){
-            let a = (async() => {
-                try {
-                    let response = await fetch("https://thecarney2.ngrok.io/p2/photos");
-                    let data = await response.json();
-                    jsonPhoto.push(data);
-                    lyrPhoto = await makeLayerPhoto(jsonPhoto);
-                    mapPhoto = await lyrPhoto;
-                } catch (e) {
-                    console.log(e);
-                }
-            })();
-            doThese.push(a);
+            if (photos === 'y'){
+                let a = (async() => {
+                    try {
+                        let response = await fetch("https://thecarney2.ngrok.io/p2/photos");
+                        let data = await response.json();
+                        jsonPhoto.push(data);
+                        lyrPhoto = await makeLayerPhoto(jsonPhoto);
+                        mapPhoto = await lyrPhoto;
+                    } catch (e) {
+                        console.log(e);
+                    }
+                })();
+                doThese.push(a);
+            }
+
+            if (trees === 'y'){
+                let b = (async() => {
+                    try {
+                        let response = await fetch("https://thecarney2.ngrok.io/p2/trees");
+                        let data = await response.json();
+                        jsonTrees.push(data);
+                        lyrTrees = await makeLayerTrees(jsonTrees);
+                        mapTrees = await lyrTrees;
+                    } catch (e) {
+                        console.log(e);
+                    }
+                })();
+                doThese.push(b);
+            }
+
+            if (equipment === 'y'){
+                let c = (async() => {
+                    try {
+                        let response = await fetch("https://thecarney2.ngrok.io/p2/equipment");
+                        let data = await response.json();
+                        jsonEquipment.push(data);
+                        lyrEquipment = makeLayerEquipment(jsonEquipment);
+                        lyrEquipmentfAccess = makeLayerEquipment(jsonEquipment, filterAccess);
+                        await lyrEquipment;
+                        await lyrEquipmentfAccess;
+                        mapEquipment = await lyrEquipment;
+                    } catch (e) {
+                        console.log(e);
+                    }
+                })();
+                doThese.push(c);
+            }
+
+            if (seating === 'y'){
+                let d = (async() => {
+                    try {
+                        let multipleFetch = await Promise.all([
+                            (fetch("https://thecarney2.ngrok.io/p2/benches")).then((response) => response.json()),
+                            (fetch("https://thecarney2.ngrok.io/p2/picnic")).then((response) => response.json())
+                        ]);
+                        let data1 = multipleFetch[0];
+                        let data2 = multipleFetch[1];
+                        jsonSeating.push(data1);
+                        jsonSeating.push(data2);
+                        lyrSeating = makeLayerSeating(jsonSeating);
+                        lyrSeatingfAccess = makeLayerSeating(jsonSeating, filterAccess);
+                        await lyrSeating;
+                        await lyrSeatingfAccess;
+                        mapSeating = await lyrSeating;
+                    } catch (e) {
+                        console.log(e);
+                    }
+                })();
+                doThese.push(d);
+            }
+
+            if (path === 'y'){
+                let e = (async() => {
+                    try {
+                        let response = await fetch("https://thecarney2.ngrok.io/p2/parkloop");
+                        let data = await response.json();
+                        jsonPath.push(data);
+                        lyrPath = makeLayerPath(jsonPath);
+                        lyrPathfAccess = makeLayerPath(jsonPath, filterAccess);
+                        await lyrPath;
+                        await lyrPathfAccess;
+                        mapPath = await lyrPath;
+                    } catch (e) {
+                        console.log(e);
+                    }
+                })();
+                doThese.push(e);
+            }
+
+            if (groundCover === 'y'){
+                let f = (async() => {
+                    try {
+                        let multipleFetch = await Promise.all([
+                            (fetch("https://thecarney2.ngrok.io/p2/lawn")).then((response) => response.json()),
+                            (fetch("https://thecarney2.ngrok.io/p2/mulch")).then((response) => response.json()),
+                            (fetch("https://thecarney2.ngrok.io/p2/pavement")).then((response) => response.json()),
+                            (fetch("https://thecarney2.ngrok.io/p2/playground")).then((response) => response.json()),
+                            (fetch("https://thecarney2.ngrok.io/p2/sandbox")).then((response) => response.json())
+                        ]);
+                        Array.prototype.push.apply(jsonGroundCover, multipleFetch);
+                        lyrGroundCover = makeLayerGroundCover(jsonGroundCover);
+                        lyrGroundCoverfAccess = makeLayerGroundCover(jsonGroundCover, filterAccess);
+                        await lyrGroundCover;
+                        await lyrGroundCoverfAccess;
+                        mapGroundCover = await lyrGroundCover;
+                    } catch (e) {
+                        console.log(e);
+                    }
+                })();
+                doThese.push(f);
+            }
+
+            if (court === 'y'){
+                let g = (async() => {
+                    try {
+                        let response = await fetch("https://thecarney2.ngrok.io/p2/bbcourt");
+                        let data = await response.json();
+                        jsonCourt.push(data);
+                        lyrCourt = makeLayerCourt(jsonCourt);
+                        lyrCourtfAccess = makeLayerCourt(jsonCourt, filterAccess);
+                        await lyrCourt;
+                        await lyrCourtfAccess;
+                        mapCourt = await lyrCourt;
+                    } catch (e) {
+                        console.log(e);
+                    }
+                })();
+                doThese.push(g);
+            }
+
+            if (reports === 'y'){
+                let h = (async() => {
+                    try {
+                        let response = await fetch("https://thecarney2.ngrok.io/p2/reports");
+                        let data = await response.json();
+                        jsonReports.push(data);
+                    } catch (e) {
+                        console.log(e);
+                    }
+                })();
+                doThese.push(h);
+            }
+
+            fresh++;
+            // promise all called
+            let everything = await Promise.all(doThese);
+
+        } else {
+            // nested async to allow parallel requests and promise.all config
+            // for promise
+            let doThese=[];
+
+            // check and do
+
+            if (photos === 'y'){
+                let a = (async() => {
+                    try {
+                        let response = await fetch("https://thecarney2.ngrok.io/p2/photos");
+                        let data = await response.json();
+                        jsonPhoto = [];
+                        jsonPhoto.push(data);
+                        console.log('json should be different');
+                        lyrPhoto = await makeLayerPhoto(jsonPhoto);
+                        //mapPhoto = await lyrPhoto;
+                    } catch (e) {
+                        console.log(e);
+                    }
+                })();
+                doThese.push(a);
+            }
+
+            if (trees === 'y'){
+                let b = (async() => {
+                    try {
+                        let response = await fetch("https://thecarney2.ngrok.io/p2/trees");
+                        let data = await response.json();
+                        jsonTrees.push(data);
+                        lyrTrees = await makeLayerTrees(jsonTrees);
+                        //mapTrees = await lyrTrees;
+                    } catch (e) {
+                        console.log(e);
+                    }
+                })();
+                doThese.push(b);
+            }
+
+            if (equipment === 'y'){
+                let c = (async() => {
+                    try {
+                        let response = await fetch("https://thecarney2.ngrok.io/p2/equipment");
+                        let data = await response.json();
+                        jsonEquipment.push(data);
+                        lyrEquipment = makeLayerEquipment(jsonEquipment);
+                        lyrEquipmentfAccess = makeLayerEquipment(jsonEquipment, filterAccess);
+                        await lyrEquipment;
+                        await lyrEquipmentfAccess;
+                        //mapEquipment = await lyrEquipment;
+                    } catch (e) {
+                        console.log(e);
+                    }
+                })();
+                doThese.push(c);
+            }
+
+            if (seating === 'y'){
+                let d = (async() => {
+                    try {
+                        let multipleFetch = await Promise.all([
+                            (fetch("https://thecarney2.ngrok.io/p2/benches")).then((response) => response.json()),
+                            (fetch("https://thecarney2.ngrok.io/p2/picnic")).then((response) => response.json())
+                        ]);
+                        let data1 = multipleFetch[0];
+                        let data2 = multipleFetch[1];
+                        jsonSeating.push(data1);
+                        jsonSeating.push(data2);
+                        lyrSeating = makeLayerSeating(jsonSeating);
+                        lyrSeatingfAccess = makeLayerSeating(jsonSeating, filterAccess);
+                        await lyrSeating;
+                        await lyrSeatingfAccess;
+                        //mapSeating = await lyrSeating;
+                    } catch (e) {
+                        console.log(e);
+                    }
+                })();
+                doThese.push(d);
+            }
+
+            if (path === 'y'){
+                let e = (async() => {
+                    try {
+                        let response = await fetch("https://thecarney2.ngrok.io/p2/parkloop");
+                        let data = await response.json();
+                        jsonPath.push(data);
+                        lyrPath = makeLayerPath(jsonPath);
+                        lyrPathfAccess = makeLayerPath(jsonPath, filterAccess);
+                        await lyrPath;
+                        await lyrPathfAccess;
+                        //mapPath = await lyrPath;
+                    } catch (e) {
+                        console.log(e);
+                    }
+                })();
+                doThese.push(e);
+            }
+
+            if (groundCover === 'y'){
+                let f = (async() => {
+                    try {
+                        let multipleFetch = await Promise.all([
+                            (fetch("https://thecarney2.ngrok.io/p2/lawn")).then((response) => response.json()),
+                            (fetch("https://thecarney2.ngrok.io/p2/mulch")).then((response) => response.json()),
+                            (fetch("https://thecarney2.ngrok.io/p2/pavement")).then((response) => response.json()),
+                            (fetch("https://thecarney2.ngrok.io/p2/playground")).then((response) => response.json()),
+                            (fetch("https://thecarney2.ngrok.io/p2/sandbox")).then((response) => response.json())
+                        ]);
+                        Array.prototype.push.apply(jsonGroundCover, multipleFetch);
+                        lyrGroundCover = makeLayerGroundCover(jsonGroundCover);
+                        lyrGroundCoverfAccess = makeLayerGroundCover(jsonGroundCover, filterAccess);
+                        await lyrGroundCover;
+                        await lyrGroundCoverfAccess;
+                        //mapGroundCover = await lyrGroundCover;
+                    } catch (e) {
+                        console.log(e);
+                    }
+                })();
+                doThese.push(f);
+            }
+
+            if (court === 'y'){
+                let g = (async() => {
+                    try {
+                        let response = await fetch("https://thecarney2.ngrok.io/p2/bbcourt");
+                        let data = await response.json();
+                        jsonCourt.push(data);
+                        lyrCourt = makeLayerCourt(jsonCourt);
+                        lyrCourtfAccess = makeLayerCourt(jsonCourt, filterAccess);
+                        await lyrCourt;
+                        await lyrCourtfAccess;
+                        //mapCourt = await lyrCourt;
+                    } catch (e) {
+                        console.log(e);
+                    }
+                })();
+                doThese.push(g);
+            }
+
+            if (reports === 'y'){
+                let h = (async() => {
+                    try {
+                        let response = await fetch("https://thecarney2.ngrok.io/p2/reports");
+                        let data = await response.json();
+                        jsonReports = [];
+                        jsonReports.push(data);
+                    } catch (e) {
+                        console.log(e);
+                    }
+                })();
+                doThese.push(h);
+            }
+            fresh++;
+            // promise all called
+            let everything = await Promise.all(doThese);
         }
 
-        if (trees === 'y'){
-            let b = (async() => {
-                try {
-                    let response = await fetch("https://thecarney2.ngrok.io/p2/trees");
-                    let data = await response.json();
-                    jsonTrees.push(data);
-                    lyrTrees = await makeLayerTrees(jsonTrees);
-                    mapTrees = await lyrTrees;
-                } catch (e) {
-                    console.log(e);
-                }
-            })();
-            doThese.push(b);
-        }
-
-        if (equipment === 'y'){
-            let c = (async() => {
-                try {
-                    let response = await fetch("https://thecarney2.ngrok.io/p2/equipment");
-                    let data = await response.json();
-                    jsonEquipment.push(data);
-                    lyrEquipment = makeLayerEquipment(jsonEquipment);
-                    lyrEquipmentfAccess = makeLayerEquipment(jsonEquipment, filterAccess);
-                    await lyrEquipment;
-                    await lyrEquipmentfAccess;
-                    mapEquipment = await lyrEquipment;
-                } catch (e) {
-                    console.log(e);
-                }
-            })();
-            doThese.push(c);
-        }
-
-        if (seating === 'y'){
-            let d = (async() => {
-                try {
-                    let multipleFetch = await Promise.all([
-                        (fetch("https://thecarney2.ngrok.io/p2/benches")).then((response) => response.json()),
-                        (fetch("https://thecarney2.ngrok.io/p2/picnic")).then((response) => response.json())
-                    ]);
-                    let data1 = multipleFetch[0];
-                    let data2 = multipleFetch[1];
-                    jsonSeating.push(data1);
-                    jsonSeating.push(data2);
-                    lyrSeating = makeLayerSeating(jsonSeating);
-                    lyrSeatingfAccess = makeLayerSeating(jsonSeating, filterAccess);
-                    await lyrSeating;
-                    await lyrSeatingfAccess;
-                    mapSeating = await lyrSeating;
-                } catch (e) {
-                    console.log(e);
-                }
-            })();
-            doThese.push(d);
-        }
-
-        if (path === 'y'){
-            let e = (async() => {
-                try {
-                    let response = await fetch("https://thecarney2.ngrok.io/p2/parkloop");
-                    let data = await response.json();
-                    jsonPath.push(data);
-                    lyrPath = makeLayerPath(jsonPath);
-                    lyrPathfAccess = makeLayerPath(jsonPath, filterAccess);
-                    await lyrPath;
-                    await lyrPathfAccess;
-                    mapPath = await lyrPath;
-                } catch (e) {
-                    console.log(e);
-                }
-            })();
-            doThese.push(e);
-        }
-
-        if (groundCover === 'y'){
-            let f = (async() => {
-                try {
-                    let multipleFetch = await Promise.all([
-                        (fetch("https://thecarney2.ngrok.io/p2/lawn")).then((response) => response.json()),
-                        (fetch("https://thecarney2.ngrok.io/p2/mulch")).then((response) => response.json()),
-                        (fetch("https://thecarney2.ngrok.io/p2/pavement")).then((response) => response.json()),
-                        (fetch("https://thecarney2.ngrok.io/p2/playground")).then((response) => response.json()),
-                        (fetch("https://thecarney2.ngrok.io/p2/sandbox")).then((response) => response.json())
-                    ]);
-                    Array.prototype.push.apply(jsonGroundCover, multipleFetch);
-                    lyrGroundCover = makeLayerGroundCover(jsonGroundCover);
-                    lyrGroundCoverfAccess = makeLayerGroundCover(jsonGroundCover, filterAccess);
-                    await lyrGroundCover;
-                    await lyrGroundCoverfAccess;
-                    mapGroundCover = await lyrGroundCover;
-                } catch (e) {
-                    console.log(e);
-                }
-            })();
-            doThese.push(f);
-        }
-
-        if (court === 'y'){
-            let g = (async() => {
-                try {
-                    let response = await fetch("https://thecarney2.ngrok.io/p2/bbcourt");
-                    let data = await response.json();
-                    jsonCourt.push(data);
-                    lyrCourt = makeLayerCourt(jsonCourt);
-                    lyrCourtfAccess = makeLayerCourt(jsonCourt, filterAccess);
-                    await lyrCourt;
-                    await lyrCourtfAccess;
-                    mapCourt = await lyrCourt;
-                } catch (e) {
-                    console.log(e);
-                }
-            })();
-            doThese.push(g);
-        }
-
-        if (reports === 'y'){
-            let h = (async() => {
-                try {
-                    let response = await fetch("https://thecarney2.ngrok.io/p2/reports");
-                    let data = await response.json();
-                    jsonReports.push(data);
-                } catch (e) {
-                    console.log(e);
-                }
-            })();
-            doThese.push(h);
-        }
-
-        // promise all called
-        let everything = await Promise.all(doThese);
     }
 
     // "makeLayer..." takes JSON and returns Leaflet "layers" (i.e. features) as L.GeoJSON feature groups ///////////////////
@@ -266,7 +428,8 @@ function map() {
                 return L.marker(latlng, {
                     icon: iconPhoto,
                     opacity: 1,
-                    pane: 'photo'
+                    pane: 'photo',
+                    id: feature.properties.f1
                 });
             },
             onEachFeature: function (feature, layer) {
@@ -1340,13 +1503,37 @@ function map() {
     }
 
     function loadNewPhotosAfterPost() {
+
+        let newPhotoLayer = L.layerGroup();
+
         // make photo layer from server again
         loadEverything({photos:'y'}).then((response) => {
+
             map.removeLayer(mapPhoto);
-            map.addLayer(mapPhoto);
+
+            newPhotoLayer = makeLayerPhoto(jsonPhoto);
+            //newPhotoLayer.addTo(map);  // this works
+
+        }).then((response) => {
+            // get biggest id for new layer
+            maxId = 0;
+            newPhotoLayer.eachLayer(function (layer) {
+
+                if (layer.feature.properties.f1 > maxId) {
+                    maxId = layer.feature.properties.f1;
+                    //console.log(maxId);
+                }
+            });
+
+            newPhotoLayer.eachLayer(function (layer) {
+                if(layer.feature.properties.f1 === maxId) {
+                    layer.addTo(mapPhoto);
+                }
+            });
+        }).then((response) => {
+            mapPhoto.addTo(map);
         });
     }
-
 
 
 
