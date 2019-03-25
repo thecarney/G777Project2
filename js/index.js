@@ -1084,8 +1084,8 @@ function map() {
         // reserves control's position in stack
         // div with icon for easy button
         htmlString =
-            '<div class="p-0 m-0 layersPopoverDataToggle" id="layersPopover" data-toggle="popover">' +
-            '<i id="layersIcon" class="fas fa-layer-group myCustomHomeButton filterButton" data-fa-transform="grow-3 up-1"></i>' +
+            '<div class="p-0 m-0 layersPopoverDataToggle" tabindex = "0" id="layersPopover" data-toggle="popover">' +
+            '<i id="layersIcon" tabindex = "0" class="fas fa-layer-group myCustomHomeButton filterButton" data-fa-transform="grow-3 up-1"></i>' +
             '</div>';
 
         let state = 'closed';
