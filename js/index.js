@@ -1084,17 +1084,19 @@ function map() {
         // reserves control's position in stack
         // div with icon for easy button
         htmlString =
-            '<div class="p-0 m-0 layersPopoverDataToggle" tabindex = "0" id="layersPopover" data-toggle="popover">' +
-            '<i id="layersIcon" tabindex = "0" class="fas fa-layer-group myCustomHomeButton filterButton" data-fa-transform="grow-3 up-1"></i>' +
+            '<div class="p-0 m-0 layersPopoverDataToggle" id="layersPopover" data-toggle="popover">' +
+            '<i id="layersIcon" class="fas fa-layer-group myCustomHomeButton filterButton" data-fa-transform="grow-3 up-1"></i>' +
             '</div>';
 
         let state = 'closed';
         L.easyButton(htmlString, function () {
             if (state === 'closed') {
                 state = 'open';
+                $('#layersPopover').popover('toggle');
                 $('#layersIcon').css('color', '#008b1f');
             } else {
                 state = 'closed';
+                $('#layersPopover').popover('toggle');
                 $('#layersIcon').css('color', '#323232');
             }
         }).addTo(map);
@@ -1266,10 +1268,11 @@ function map() {
     function addFilterControl() {
         // div with icon for easy button
         let htmlString =
-            '<div class="p-0 m-0 myCustomFilterPopover" id="filterPopover" data-toggle="popover"><i id="filterIcon" class="fas fa-filter myCustomHomeButton" data-fa-transform="grow-3 up-1" style="color:#323232" ></i></div>';
+            '<div class="p-0 m-0 myCustomFilterPopover" id="filterPopover" data-toggle="popover"><i id="filterIcon" ' +
+            'class="fas fa-filter myCustomHomeButton" data-fa-transform="grow-3 up-1" style="color:#323232" ></i></div>';
 
         L.easyButton(htmlString, function () {
-            // doesnt need anything for popover to work
+            $('#filterPopover').popover('toggle');
         }).addTo(map);
 
         //initialize popover
@@ -1590,7 +1593,8 @@ function map() {
 
         // control icon
         let htmlString =
-            '<span id="reportsPopover" data-toggle="popover" class="fa-layers fa-fw myCustomReportPopover p-0 m-0 " style="background:rgba(255,228,225,0)">\n' +
+            '<span id="reportsPopover" data-toggle="popover" class="fa-layers fa-fw myCustomReportPopover p-0 m-0 " ' +
+            'style="background:rgba(255,228,225,0)">\n' +
             '    <i id="reportsIcon" class="fas fa-file-exclamation" data-fa-transform="grow-7 right-1 up-1"></i>\n' +
             '  </span>';
 
