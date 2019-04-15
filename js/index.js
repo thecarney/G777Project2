@@ -943,8 +943,17 @@ function map() {
             maxZoom: 22,
             maxNativeZoom: 20
         });
+
+        // check if mobile (hide zoom control if on mobile)
+        let showZoom = true;
+        if (/Mobi|Android/i.test(navigator.userAgent)) {
+            showZoom = false;
+        }
+
+        console.log(showZoom);
+
         // make map
-        let map = L.mapbox.map('map', null, {zoomControl: false, attributionControl: false});
+        let map = L.mapbox.map('map', null, {zoomControl: showZoom, attributionControl: false});
         map.setView([37.6913, -121.72615], 17);
 
         // pane for highlights
